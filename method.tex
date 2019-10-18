@@ -1,0 +1,98 @@
+\section{Method}
+\subsection{Algorithms}
+\paragraph{Hoeffding Tree~\cite{VFDT}}
+\begin{itemize}
+	\item Quick description of the idea.
+	\item StreamDM-cpp implementation.
+	\item OrpailleCC implementation.
+	\begin{itemize}
+		\item Reserved size with a given size.
+		\item Binary tree.
+		\item Focus on real numbers features.
+		\item The number of split considered by features is given by the user.
+		\item Split are determined by forming a boxes and spliting these boxes.
+		\item Majority vote at the leaves.
+		\item All floating point values are double and all counters are int.
+	\end{itemize}
+\end{itemize}
+\paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
+\begin{itemize}
+	\item Quick description of the idea.
+	\item Specify the magic numbers (max cluster, error threshold, performance threshold).
+	\item no specific details about the implementation.
+\end{itemize}
+\paragraph{Mondrian Forest~\cite{mondrian2014}}
+\begin{itemize}
+	\item Quick description of the idea.
+	\item Size controlled by a buffer.
+	\item Buffer shared by all trees.
+	\item Specify the magic numbers (max lifetime, discount factor, base measure).
+\end{itemize}
+\paragraph{Naïve Bayes~\cite{naive_bayes}}
+\begin{itemize}
+	\item Very quick description of the idea.
+	\item Same as before, the magic numbers (smoothing).
+\end{itemize}
+\paragraph{kNN~\cite{biased_reservoir_sampling}}
+\begin{itemize}
+	\item Use a biased reservoir sampling.
+	\begin{itemize}
+		\item Describe how the bias works.
+	\end{itemize}
+	\item Not implemented yet.
+\end{itemize}
+
+\subsection{Evaluation}
+\paragraph{Datasets}
+\begin{itemize}
+	\item Banos~\cite{Banos_2014}.
+	\begin{itemize}
+		\item 50 Hz sampling.
+		\item 117 data per sample.
+		\item 33 activities.
+		\item Sensors cover the body.
+		\item Type of data (ideal or self)
+		\item Number of subject.
+	\end{itemize}
+	\item Recofit~\cite{recofit}.
+	\begin{itemize}
+		\item Sampling rate?
+		\item How many value per data point?
+		\item How the sensors are placed?
+		\item Number of subject?
+	\end{itemize}
+	\item Size of the window.
+	\item Non-overlaping window.
+	\item Which feature are extracted.
+\end{itemize}
+
+\paragraph{Subject Cross-Validation~\cite{subject_cross_validation}}
+\begin{itemize}
+	\item windows are grouped by subject.
+	\item Each cross-validation iteration keeps one subject out.
+	\item This subject is used as a test set.
+	\item The average metric are computed for all iterations.
+\end{itemize}
+
+\paragraph{Prequential Error~\cite{issues_learning_from_stream}}
+\begin{itemize}
+	\item The idea is for each new data point, we test the model, then train the model with it.
+	\item The loss function used.
+\end{itemize}
+
+
+\subsection{Metrics}
+\begin{itemize}
+	\item Time to process one element.
+	\item Memory footprint
+	\item Explain the concept drift recovery time.
+	\item Energy consumption.
+	\begin{itemize}
+		\item Refer to rapl tools (\url{https://github.com/kentcz/rapl-tools.git}).
+		\item Explain the methods to remove the activity of the computer.
+		\item Intricate the measurement of algorithm and a sleep.
+		\item Remove the average energy consumption of the sleep command to the average energy consumption to the algorithm.
+		\item Randomize execution.
+	\end{itemize}
+\end{itemize}
+
