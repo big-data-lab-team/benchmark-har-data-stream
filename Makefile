@@ -1,8 +1,8 @@
 all:
-	pdflatex exam.tex
-	bibtex exam
-	pdflatex exam.tex
-	pdflatex exam.tex
+	pdflatex paper.tex
+	bibtex paper
+	pdflatex paper.tex
+	pdflatex paper.tex
 
 clean:
-	rm -f exam.aux exam.bbl exam.blg exam.log exam.pdf exam.out exam.toc
+	rm -f paper.aux paper.bbl paper.blg paper.log paper.pdf paper.out paper.toc
