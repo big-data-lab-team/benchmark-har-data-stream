@@ -7,7 +7,7 @@ from statistics import mean
 def mondrian_forest_command(tree_count):
     return ["-DCLASSIFIER_INITIALIZATION_FILE=\"mond.cpp\"", \
             "-DTREE_COUNT=" + str(tree_count), \
-            "-o", "mondrian_l" + str(lifetime) + "_b" + str(base_measure) + "_d" + str(discount_factor) + "_t" + str(tree_count)]
+            "-o", "mondrian_t" + str(tree_count)]
 
 def empty_classifier_command():
     return ["-DCLASSIFIER_INITIALIZATION_FILE=\"empty.cpp\"", \
@@ -38,6 +38,11 @@ def compile():
         print(" ".join(command))
         command_result = subprocess.call(command)
 
+    subprocess.call(["make"], cwd="rapl-tools/")
+
+def latex():
+    subprocess.call(["make"], cwd="paper/")
+
 def extract_features(window):
     starting_index = 2
     window_transposed = [[float(i) for i in x] for x in zip(*window)]
@@ -60,6 +65,7 @@ def process_file(in_f, out_f, window_size):
             window = []
             out_f.write("\t".join(features) + "\n")
 
+
 #Build the dataset
 def dataset():
     output_directory = "/tmp/"
@@ -81,4 +87,6 @@ if len(sys.argv) > 1:
         compile()
     if sys.argv[1] == "dataset":
         dataset()
+    if sys.argv[1] == "latex":
+        latex()
 

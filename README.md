@@ -1,6 +1,13 @@
 paper-benchmark
 ===============
 
+Downloading the repository
+--------------------------
+
+```
+git clone --recursive git@github.com:azazel7/paper-benchmark.git
+```
+
 Generating latex
 ----------------
 
