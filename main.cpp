@@ -1,7 +1,10 @@
 #include <fstream>
 #include <iostream> 
 #include <cmath>
+#include "utils.hpp"
+
 using namespace std;
+
 
 class functions{
 	public:
