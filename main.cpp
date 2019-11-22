@@ -149,10 +149,10 @@ int main(int argc, char** argv){
 		return 0;
 	}
 	char* filename = argv[1];
-	Evaluation<3> evaluator;
+	Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
 	auto classifier = get_classifier(argc-2, argv+2);
 	if(classifier != nullptr)
-		process_file<3, functions>(filename, classifier, &evaluator);
+		process_file<FEATURES_COUNT, functions>(filename, classifier, &evaluator);
 	return 0;
 }
 
