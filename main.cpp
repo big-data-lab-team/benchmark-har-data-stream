@@ -100,14 +100,18 @@ class Evaluation{
 
 template<int feature_count, class func, class C, class E>
 int process_file(string const filename, C* classifier, E* evaluator){
-	ifstream myfile;
+	ifstream myfile, statm;
 	string line;
 	myfile.open (filename);
 	if(!myfile.is_open()){
 		return 1;
 	}
-
-	int right_prediction = 0;
+	statm.open("/proc/self/statm");
+	if(!myfile.is_open()){
+		return 2;
+	}
+	cout << "File processed: " << filename << endl;
+	int line_count = 1;
 	//Start reading the file
 	while (getline (myfile,line) ) {
 		double features[feature_count+1]; //+1 because we need the label
@@ -116,6 +120,23 @@ int process_file(string const filename, C* classifier, E* evaluator){
 		int const prediction = classifier->predict(features);
 		evaluator->count(prediction, label);
 		classifier->train(features, label);
+		line_count += 1;
+		if(line_count%10 == 0){
+			cout << "Accuracy: " << line_count << "~" << evaluator->accuracy() << endl;
+			cout << "F1: " << line_count << "~" << evaluator->f1() << endl;
+		}
+		if(line_count%40 == 0){
+			//rewind cursor
+			statm.seekg(0, ios::beg);
+			cout << "Memory: " << line_count << "~";
+			char letter = 'A';
+			while(letter != ' '){
+				statm.read(&letter, 1);
+				if(letter != ' ')
+					cout << letter;
+			}
+			cout << endl;
+		}
 	}
 	myfile.close();
 	return 0;
