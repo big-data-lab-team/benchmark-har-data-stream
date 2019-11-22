@@ -50,17 +50,51 @@ class functions{
 
 template<int label_count>
 class Evaluation{
-	double counts[label_count][label_count];
-	double total = 0;
+	double counts[label_count+1][label_count+1];
+	double fading_factor;
 	public:
-		Evaluation(){
+		Evaluation(double const fading_factor){
+			this->fading_factor = fading_factor;
 			for(int i = 0; i < label_count; ++i)
 				for(int j = 0; j < label_count; ++j)
 						counts[i][j] = 0;
 		}
 		void count(int const prediction, int const label){
-			counts[label][prediction] += 1;
-			total += 1;
+			for(int i = 0; i <= label_count; ++i)
+				for(int j = 0; j <= label_count; ++j)
+					counts[i][j] *= fading_factor;
+
+			counts[prediction][label] += 1;
+			counts[label_count][label] += 1;
+			counts[prediction][label_count] += 1;
+			counts[label_count][label_count] += 1;
+		}
+		double accuracy(void) const{
+			double right = 0;
+			for(int i = 0; i < label_count; ++i)
+				right += counts[i][i];
+			double const total = counts[label_count][label_count];
+			return right / total;
+		}
+		double f1(void) const{
+			double score_sum = 0;
+			double real_label_count = static_cast<double>(label_count);
+			for(int i = 0; i < label_count; ++i){
+				if(counts[i][label_count] != 0 && counts[label_count][i] != 0){
+					double const precision = counts[i][i] / counts[i][label_count];
+					double const recall = counts[i][i] / counts[label_count][i];
+					if(precision != 0 || recall != 0 && !(isnan(precision) && isnan(recall))){
+						double const score = 2 * ((precision * recall) / (precision + recall));
+						score_sum += score;
+					}
+				}
+				else{
+					real_label_count -= 1;
+				}
+			}
+			if(real_label_count == 0)
+				return 0;
+			return score_sum / real_label_count;
 		}
 };
 
