@@ -1,7 +1,7 @@
 OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
-LABEL_COUNT=2
-FEATURES_COUNT=3
+LABEL_COUNT=33
+FEATURES_COUNT=6
 
 ifeq ($(config), debug)
 DEBUG_FLAGS=-DDEBUG -g -O0 $(FLAG_GCOV)
@@ -11,14 +11,14 @@ endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) $(DEBUG_FLAGS)
 
-compile: AppPowerMeter mondrian_t10 empty_classifier
+compile: AppPowerMeter mondrian_t10 mondrian_t50 mondrian_t100 empty_classifier
 
-mondrian_t%: mond.cpp
-	#$* contains everything within "%" of the target
+mondrian_t%: mond.cpp main.cpp
+#	$* contains everything within "%" of the target
 	g++ main.cpp  $(COMMON_FLAGS)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o $@
 
-empty_classifier:
+empty_classifier: empty.cpp main.cpp
 	g++ main.cpp $(COMMON_FLAGS) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -DTREE_COUNT=10 -o $@
 
@@ -30,6 +30,13 @@ latex:
 	python makefile.py latex
 dataset:
 	python makefile.py dataset
+run:
+	python makefile.py run
+rerun:
+	rm -f /tmp/output
+	python makefile.py run
+process:
+	python makefile.py process
 clean:
 	$(MAKE) -C rapl-tools clean
 	rm -rf mondrian_t* empty_classifier
