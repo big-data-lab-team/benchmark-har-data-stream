@@ -38,6 +38,7 @@ rerun:
 process:
 	python makefile.py process
 clean:
-	$(MAKE) -C rapl-tools clean
 	rm -rf mondrian_t* empty_classifier
+fullclean: clean
+	$(MAKE) -C rapl-tools clean
 	rm -f AppPowerMeter PowerMonitor
