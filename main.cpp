@@ -156,19 +156,6 @@ int main(int argc, char** argv){
 	return 0;
 }
 
-//#define INPUT_SIZE 120
-//#define FEATURES_COUNT (3*3)
-//#define WINDOW_SIZE 50
-//void parse_line(string line, double* features){
-	//std::string delimiter = "\t";
-	//int prev_token = 0;
-	//for(int i = 0; i < INPUT_SIZE; ++i){
-		//int new_token = line.find(delimiter, prev_token);
-		//std::string data = line.substr(prev_token, new_token); // token is "scott"
-		//prev_token = new_token+delimiter.size();
-		//features[i] = std::stod(data);
-	//}
-//}
 //void extract_features(double window[][INPUT_SIZE], double* features, int *label){
 	//int const starting_input = 2;
 	//int labels[33] = {0};
