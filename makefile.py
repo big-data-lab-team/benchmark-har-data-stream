@@ -67,6 +67,7 @@ def run(output_filename):
     for filename in dataset_filenames:
         for i in range(10):
             commands.append(["./empty_classifier", filename])
+            commands.append(["./mcnn_c20e10p10", filename])
             for lt in ["2.0", "1.8", "0.8", "0.6"]:
                 commands.append(["./mondrian_t10", filename, lt, "0.5", "0.2"])
 
@@ -97,7 +98,6 @@ def process_output(filename):
         line = line[:line.find("\n")]
         if line.startswith("Model: "):
             #archive the previous model
-            print("Archive something")
             #Introduce a new model
             current_model = line[7:]
             if current_model not in results:
@@ -132,6 +132,7 @@ def process_output(filename):
 
     return results
 
+
 def additional_computation(results):
     for model in results:
         for filename in results[model]:
@@ -144,10 +145,39 @@ def additional_computation(results):
         if model != "Empty":
             tmp = results[model]["/tmp/processed_subject1_ideal.log"]["accuracy"]
             x = [d[0] for d in tmp]
-            plt.plot(x, [d[1] for d in tmp])
-            # plt.fill_between(x, [d[1]-d[2] for d in tmp], [d[1]+d[2] for d in tmp])
+            plt.plot(x, [d[1] for d in tmp], label=model)
 
-    plt.show()
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.savefig("perf_accuracy.png", bbox_inches="tight")
+    plt.clf()
+
+    for model in results:
+        if model != "Empty":
+            tmp = results[model]["/tmp/processed_subject1_ideal.log"]["f1"]
+            x = [d[0] for d in tmp]
+            plt.plot(x, [d[1] for d in tmp], label=model)
+
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.savefig("perf_f1.png", bbox_inches="tight")
+    plt.clf()
+
+    for model in results:
+        if model != "Empty":
+            tmp = results[model]["/tmp/processed_subject1_ideal.log"]["memory"]
+            x = [d[0] for d in tmp]
+            plt.plot(x, [d[1] for d in tmp], label=model)
+
+    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.savefig("memory.png", bbox_inches="tight")
+    plt.clf()
+
+    heights = [mean(map(float, results[model]["/tmp/processed_subject1_ideal.log"]["energy"])) for model in results]
+    x = [model for model in results]
+    plt.bar([i for i in range(len(x))], heights)
+    plt.xticks([i for i in range(len(x))], x, rotation=90)
+
+
+    plt.savefig("energy.png", bbox_inches="tight")
 
 def aggregate_list_measurement(measurements):
     #measurements = [[d1, d2, d3], [d4, d5, d6]]
