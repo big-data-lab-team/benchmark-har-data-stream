@@ -12,6 +12,10 @@ MondrianForest<double, functions, TREE_COUNT, FEATURES_COUNT, LABEL_COUNT, 60000
 
 	cout << "Model: Mondrian "; //All parameters forms the name of the model
 	cout << "Lifetime: " << lifetime << " Base measure: " << base_measure << " Discount factor: " << discount_factor << " Tree count: " << TREE_COUNT << endl;
+	int seed = time(nullptr);
+	cout << "Seed: " << seed << endl;
+	srand(seed);
+		
 	return new MondrianForest<double, functions, TREE_COUNT, FEATURES_COUNT, LABEL_COUNT, 600000>(lifetime, base_measure, discount_factor);
 }
 
