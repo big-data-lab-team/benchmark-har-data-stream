@@ -2,6 +2,7 @@ OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
 LABEL_COUNT=33
 FEATURES_COUNT=6
+SHELL := /bin/bash
 
 ifeq ($(config), debug)
 DEBUG_FLAGS=-DDEBUG -g -O0 $(FLAG_GCOV)
@@ -11,7 +12,16 @@ endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) $(DEBUG_FLAGS)
 
-compile: AppPowerMeter mondrian_t10 mondrian_t50 mondrian_t100 empty_classifier
+compile: AppPowerMeter mondrian_t10 mondrian_t50 mondrian_t100 empty_classifier mcnn_c20e10p10
+
+mcnn_%: main.cpp mcnn.cpp
+	$(eval clusters=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\1/p' <<< $*))
+	$(eval error_th=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\2/p' <<< $*))
+	$(eval performa=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\3/p' <<< $*))
+	g++ main.cpp  $(COMMON_FLAGS)\
+		-DCLASSIFIER_INITIALIZATION_FILE="\"mcnn.cpp\"" -DMAX_CLUSTERS=$(clusters)\
+		-DERROR_THRESHOLD=$(error_th)\
+		-DPERFORMANCE_THRESHOLD=$(performa) -o $@
 
 mondrian_t%: mond.cpp main.cpp
 #	$* contains everything within "%" of the target
