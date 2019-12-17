@@ -1,6 +1,6 @@
 OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
-LABEL_COUNT=33
+LABEL_COUNT=34
 FEATURES_COUNT=6
 SHELL := /bin/bash
 
@@ -42,7 +42,7 @@ dataset:
 	python makefile.py dataset
 run:
 	python makefile.py run
-rerun:
+rerun: compile
 	rm -f /tmp/output
 	python makefile.py run
 process:
