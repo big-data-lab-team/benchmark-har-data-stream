@@ -1,4 +1,4 @@
-template<class feature_type, int default_prediction=1>
+template<class feature_type, int default_prediction=0>
 class EmptyClassifier{
 	public:
 		EmptyClassifier(){
@@ -13,11 +13,11 @@ class EmptyClassifier{
 			c[i] = 1;
 	}
 	inline int predict(feature_type const* features){
-		memory_leak();
+		//memory_leak();
 		return default_prediction; //1 because 0 is when there is no activity therefore 0 is more dominant
 	}
 };
-EmptyClassifier<double>* get_classifier(int argc, char** argv){
-	cout << "Model: Empty" << endl;
+EmptyClassifier<double>* get_classifier(int seed, int argc, char** argv){
+	srand(seed);
 	return new EmptyClassifier<double>();
 }
