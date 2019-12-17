@@ -55,8 +55,8 @@ class Evaluation{
 	public:
 		Evaluation(double const fading_factor){
 			this->fading_factor = fading_factor;
-			for(int i = 0; i < label_count; ++i)
-				for(int j = 0; j < label_count; ++j)
+			for(int i = 0; i <= label_count; ++i)
+				for(int j = 0; j <= label_count; ++j)
 						counts[i][j] = 0;
 		}
 		void count(int const prediction, int const label){
@@ -80,8 +80,8 @@ class Evaluation{
 			double score_sum = 0;
 			double real_label_count = static_cast<double>(label_count);
 			for(int i = 0; i < label_count; ++i){
-				if(counts[i][label_count] != 0 && counts[label_count][i] != 0){
-					double const precision = counts[i][i] / counts[i][label_count];
+				if(counts[label_count][i] != 0){ //The label has to have been encountered
+					double const precision = counts[i][label_count] == 0 ? 1 : counts[i][i] / counts[i][label_count];
 					double const recall = counts[i][i] / counts[label_count][i];
 					if(precision != 0 || recall != 0 && !(isnan(precision) && isnan(recall))){
 						double const score = 2 * ((precision * recall) / (precision + recall));
