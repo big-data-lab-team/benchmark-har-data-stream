@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream> 
+#include <sstream>
 #include <cmath>
 #include "utils.hpp"
 
@@ -44,7 +45,9 @@ class functions{
 	static int floor(T const x){
 		return std::floor(x);
 	}
+
 };
+
 
 #include CLASSIFIER_INITIALIZATION_FILE
 
@@ -99,7 +102,7 @@ class Evaluation{
 };
 
 template<int feature_count, class func, class C, class E>
-int process_file(string const filename, C* classifier, E* evaluator){
+int process_file(int const model_id, int const run_id, int const seed, string const filename, C* classifier, E* evaluator){
 	ifstream myfile, statm;
 	string line;
 	myfile.open (filename);
@@ -110,7 +113,6 @@ int process_file(string const filename, C* classifier, E* evaluator){
 	if(!myfile.is_open()){
 		return 2;
 	}
-	cout << "File processed: " << filename << endl;
 	int line_count = 1;
 	//Start reading the file
 	while (getline (myfile,line) ) {
@@ -121,22 +123,21 @@ int process_file(string const filename, C* classifier, E* evaluator){
 		evaluator->count(prediction, label);
 		classifier->train(features, label);
 		line_count += 1;
-		if(line_count%10 == 0){
-			cout << "Accuracy: " << line_count << "~" << evaluator->accuracy() << endl;
-			cout << "F1: " << line_count << "~" << evaluator->f1() << endl;
-		}
-		if(line_count%40 == 0){
+		//if(line_count%40 == 0){
+			cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
 			//rewind cursor
 			statm.seekg(0, ios::beg);
-			cout << "Memory: " << line_count << "~";
 			char letter = 'A';
 			while(letter != ' '){
 				statm.read(&letter, 1);
 				if(letter != ' ')
 					cout << letter;
 			}
-			cout << endl;
-		}
+			cout << "," << endl;
+		//}
+		//else if(line_count%10 == 0){
+			//cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",," << endl;
+		//}
 	}
 	myfile.close();
 	return 0;
@@ -144,118 +145,19 @@ int process_file(string const filename, C* classifier, E* evaluator){
 
 int main(int argc, char** argv){
 
-	if(argc < 2){
-		cout << "usage: " << argv[0] << " <file1> <parameter classifier ...>" << endl;
+	if(argc < 5){
+		cout << "usage: " << argv[0] << " <file1> <seed> <model id> <run id> <parameter classifier ...>" << endl;
 		return 0;
 	}
 	char* filename = argv[1];
-	Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
-	auto classifier = get_classifier(argc-2, argv+2);
+	int const seed = stoi(argv[2]);	
+	int const model_id = stoi(argv[3]);	
+	int const run_id = stoi(argv[4]);	
+	//Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
+	Evaluation<LABEL_COUNT> evaluator(1.0);
+	auto classifier = get_classifier(seed, argc-5, argv+5);
 	if(classifier != nullptr)
-		process_file<FEATURES_COUNT, functions>(filename, classifier, &evaluator);
+		process_file<FEATURES_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
 	return 0;
 }
 
-//void extract_features(double window[][INPUT_SIZE], double* features, int *label){
-	//int const starting_input = 2;
-	//int labels[33] = {0};
-	//for(int f = starting_input; f < starting_input+3; ++f){
-		//int const ff = f-starting_input; //index to access features based on f
-		//for(int i = 0; i < WINDOW_SIZE; ++i){
-			//features[ff*3] += window[i][f]; //sum
-			//features[ff*3+1] = features[ff*3+1] < window[i][f] ? window[i][f] : features[ff*3+1]; //Max
-			//features[ff*3+2] = features[ff*3+2] > window[i][f] ? window[i][f] : features[ff*3+2]; //min
-			//labels[static_cast<int>(window[i][119])] += 1;
-		//}
-		//features[ff*3] /= WINDOW_SIZE; //turn the sum into average
-	//}
-	//int label_max = 0;
-	//for(int i = 1; i < 33; ++i)
-		//if(labels[i] > labels[label_max])
-			//label_max = i;
-	//*label = label_max;
-//}
-//void discretize_feature(double* features){
-	//double schmi[][4] = {
-		//{-29.084, -19.0646, -9.04526, 10.9935},
-		//{0, 8.988, 17.976, 35.952},
-		//{-60.032, -47.3277, -34.6234, -9.2149},
-		//{-11.7437, -2.57032, 6.60306, 24.9498},
-		//{2.2894, 18.7538, 35.2182, 68.147},
-		//{-40.94, -30.705, -20.47, 0},
-		//{-16.8507, -9.13749, -1.42424, 14.0023},
-		//{4.1023, 17.4012, 30.7002, 57.298},
-		//{-61.453, -46.0898, -30.7265, 0}
-	//};
-	//for(int f = 0; f < FEATURES_COUNT; ++f){
-		//if(features[f] < schmi[f][0]){
-			//features[f] = 0;
-		//}
-		//else{
-			//bool done = false;
-			//for(int i = 0; i < 3; ++i){
-				//if(features[f] >= schmi[f][i] && features[f] < schmi[f][i+1]){
-					//features[f] = i+1;
-					//done = true;
-					//break;
-				//}
-			//}
-			//if(!done)
-				//features[f] = 4;
-		//}
-	//}
-//}
-
-//class loutre{
-	//public:
-		//static void extract_features(double window[][INPUT_SIZE], double* features, int *label){
-			//int const starting_input = 2;
-			//int labels[33] = {0};
-			//for(int f = starting_input; f < starting_input+3; ++f){
-				//int const ff = f-starting_input; //index to access features based on f
-				//for(int i = 0; i < WINDOW_SIZE; ++i){
-					//features[ff*3] += window[i][f]; //sum
-					//features[ff*3+1] = i == 0 || features[ff*3+1] < window[i][f] ? window[i][f] : features[ff*3+1]; //Max
-					//features[ff*3+2] = i == 0 || features[ff*3+2] > window[i][f] ? window[i][f] : features[ff*3+2]; //min
-					//labels[static_cast<int>(window[i][119])] += 1;
-				//}
-				//features[ff*3] /= WINDOW_SIZE; //turn the sum into average
-			//}
-			//int label_max = 0;
-			//for(int i = 1; i < 33; ++i)
-				//if(labels[i] > labels[label_max])
-					//label_max = i;
-			//*label = label_max;
-			//discretize_feature(features);
-		//}
-	//static void discretize_feature(double* features){
-		//double schmi[FEATURES_COUNT][4] = {
-			//{-29.084, -19.0646, -9.04526, 10.9935},
-			//{0, 8.988, 17.976, 35.952},
-			//{-60.032, -47.3277, -34.6234, -9.2149},
-			//{-11.7437, -2.57032, 6.60306, 24.9498},
-			//{2.2894, 18.7538, 35.2182, 68.147},
-			//{-40.94, -30.705, -20.47, 0},
-			//{-16.8507, -9.13749, -1.42424, 14.0023},
-			//{4.1023, 17.4012, 30.7002, 57.298},
-			//{-61.453, -46.0898, -30.7265, 0}
-		//};
-		//for(int f = 0; f < FEATURES_COUNT; ++f){
-			//if(features[f] < schmi[f][0]){
-				//features[f] = 0;
-			//}
-			//else{
-				//bool done = false;
-				//for(int i = 0; i < 3; ++i){
-					//if(features[f] >= schmi[f][i] && features[f] < schmi[f][i+1]){
-						//features[f] = i+1;
-						//done = true;
-						//break;
-					//}
-				//}
-				//if(!done)
-					//features[f] = 4;
-			//}
-		//}
-	//}
-//};
