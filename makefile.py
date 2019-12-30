@@ -76,13 +76,16 @@ def write_model_ids(filename):
 
 def run(output_filename):
     dataset_filenames = ["/tmp/processed_subject1_ideal.log"]
+    # dataset_filenames = ["dataset_3.arff"]
     output_file = open(output_filename, "w")
     commands = []
     for filename in dataset_filenames:
-        for run_id in map(str,range(10)):
+        for run_id in map(str,range(1)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
             commands.append(["./empty_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("Previous," + filename)
+            commands.append(["./previous_classifier", filename, seed, model_id, run_id])
             model_id = get_model_id("MCNN," + filename + ",20,10,10")
             commands.append(["./mcnn_c20e10p10", filename, seed, model_id, run_id])
             for lt in ["2.0", "1.8", "0.8", "0.6"]:
@@ -181,31 +184,31 @@ def additional_computation(results):
             results[model][filename]["accuracy"] = aggregate_list_measurement(results[model][filename]["accuracy"])
             results[model][filename]["memory"] = aggregate_list_measurement(results[model][filename]["memory"])
 
+    filename = "/tmp/processed_subject1_ideal.log"
     # model_name = "Mondrian Lifetime: 2 Base measure: 0.5 Discount factor: 0.2 Tree count: 10"
     for model in results:
-        tmp = results[model]["/tmp/processed_subject1_ideal.log"]["accuracy"]
+        tmp = results[model][filename]["accuracy"]
         x = [d[0] for d in tmp]
         plt.plot(x, [d[1] for d in tmp], label=model)
 
-    plt.plot([x/33 for x in class_repartition], label="Hipster")
+    # plt.plot([x/33 for x in class_repartition], label="Hipster")
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.savefig("perf_accuracy.png", bbox_inches="tight")
     plt.show()
     plt.clf()
 
     for model in results:
-        tmp = results[model]["/tmp/processed_subject1_ideal.log"]["f1"]
+        tmp = results[model][filename]["f1"]
         x = [d[0] for d in tmp]
         plt.plot(x, [d[1] for d in tmp], label=model)
 
-    plt.plot([x/33 for x in class_repartition], label="Hipster")
+    # plt.plot([x/33 for x in class_repartition], label="Hipster")
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.savefig("perf_f1.png", bbox_inches="tight")
-    plt.show()
     plt.clf()
 
     for model in results:
-        tmp = results[model]["/tmp/processed_subject1_ideal.log"]["memory"]
+        tmp = results[model][filename]["memory"]
         x = [d[0] for d in tmp]
         plt.plot(x, [d[1] for d in tmp], label=model)
 
@@ -213,7 +216,7 @@ def additional_computation(results):
     plt.savefig("memory.png", bbox_inches="tight")
     plt.clf()
 
-    heights = [mean(map(float, results[model]["/tmp/processed_subject1_ideal.log"]["energy"])) for model in results]
+    heights = [mean(map(float, results[model][filename]["energy"])) for model in results]
     x = [model for model in results]
     plt.bar([i for i in range(len(x))], heights)
     plt.xticks([i for i in range(len(x))], x, rotation=90)
@@ -223,10 +226,6 @@ def additional_computation(results):
     plt.savefig("energy.png", bbox_inches="tight")
 
     plt.clf()
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.plot(class_repartition, label="Hipster")
-    # plt.savefig("labels.png", bbox_inches="tight")
-    # plt.show()
 
 
 def aggregate_list_measurement(measurements):
