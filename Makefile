@@ -20,8 +20,15 @@ endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) $(DEBUG_FLAGS)
 
+ALL_TARGET = AppPowerMeter empty_classifier previous_classifier \
+			 mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t20 mondrian_t50 mondrian_t100 \
+			 mcnn_c10e10p10 mcnn_c20e10p10 mcnn_c32e10p10 mcnn_c33e10p10 mcnn_c34e10p10 mcnn_c40e10p10 mcnn_c50e10p10 \
+			 mcnn_c10e2p10 mcnn_c20e2p10 mcnn_c32e2p10 mcnn_c33e2p10 mcnn_c34e2p10 mcnn_c40e2p10 mcnn_c50e2p10 \
+			 mcnn_c10e4p10 mcnn_c20e4p10 mcnn_c32e4p10 mcnn_c33e4p10 mcnn_c34e4p10 mcnn_c40e4p10 mcnn_c50e4p10 \
+			 mcnn_c10e8p10 mcnn_c20e8p10 mcnn_c32e8p10 mcnn_c33e8p10 mcnn_c34e8p10 mcnn_c40e8p10 mcnn_c50e8p10 \
+			 mcnn_c10e16p10 mcnn_c20e16p10 mcnn_c32e16p10 mcnn_c33e16p10 mcnn_c34e16p10 mcnn_c40e16p10 mcnn_c50e16p10
 
-compile: AppPowerMeter mondrian_t10 mondrian_t1 mondrian_t5 mondrian_t50 mondrian_t100 empty_classifier mcnn_c20e10p10 previous_classifier mcnn_c10e10p10 mcnn_c40e10p10 mcnn_c100e10p10 mcnn_c31e10p10 mcnn_c33e10p10 mcnn_c34e10p10 mcnn_c50e10p10 mcnn_c50e10p10
+compile:  $(ALL_TARGET)
 
 mcnn_%: main.cpp mcnn.cpp
 	$(eval clusters=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\1/p' <<< $*))
@@ -60,6 +67,7 @@ latex:
 	python makefile.py latex
 dataset:
 	python makefile.py dataset
+	shuf /tmp/processed_subject1_ideal.log > /tmp/processed_subject1_ideal_shuf.log
 run:
 	python makefile.py run
 rerun: compile
@@ -68,7 +76,7 @@ rerun: compile
 process:
 	PYTHONHASHSEED=0 python makefile.py process
 clean:
-	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_*
+	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_ht
 fullclean: clean
 	$(MAKE) -C rapl-tools clean
 	rm -f AppPowerMeter PowerMonitor
