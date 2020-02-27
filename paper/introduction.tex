@@ -1,147 +1,24 @@
 \section{Introduction}
 \label{sec:introduction}
 %Introduce the internet of thing.
-From smart lights~\cite{smart-lamp-2011} to smart
-cities~\cite{smart-cities}, the requirements of
-the Internet of Things (IoT) are constantly
-growing~\cite{iot-platform}. 
 %Description of the IoT
-The Internet of
-Things is a concept in which a wide variety
-of objects are connected to the Internet to
-provide new services.  The
-type of objects that can be connected could be a
-watch\footnote{\url{https://www.apple.com/watch/}}
-as well as a street light~\cite{smart-lamp-2011}
-or a basic sensor. A sensor is a very small device
-designed to detect events in its environment such
-as temperature, humidity, or acceleration.  The
-sensor is said wearable when it is incorporated
-into clothing or worn as an implant. These objects often
-embed a wireless communication system like wifi
-or Bluetooth.  Finally, they can be
-connected to Internet directly, with their own IP
-address, or indirectly, through another connected
-object such as a phone.
-
 %Example of use
-Connected objects can be used in various
-situations.  For instance, a network of street
-lights can be designed to keep a high feeling of
-security while minimizing energy consumption.  On
-the other hand, wearable sensors that gather data
-about human activity, as described
-in~\cite{recofit}, can be leveraged to improve
-athletes performances and health. 
-As a concrete example, the Motsai company develops
-the Neblina, a wearable device as big as a coin
-that incorporates nine motion sensors with 64KB
-of main
-memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
-This wearable sensor is designed to track and
-analyze human motion.
-
 %Describe the pipeline
-The current pipelines that process data from
-connected appliances are centralized, as
-illustrated in~\cite{recofit}.  Data are produced
-on a device, then transmitted to a centralized
-cloud or a laptop where they are stored and turned
-into a proper dataset. Then, the dataset is used
-to extract useful information in an offline
-manner.  The extraction is qualified as offline
-because it starts once all data are collected. For
-instance, when training a Machine learning model,
-the data are gather then carefully cured to select
-the best features. Then the model is trained and
-tested on the data set.
-
 %Explain the drawback of this pipeline
-However, these data analysis pipelines need to be
-updated as centralizing the raw data raises a
-few issues.
 %Privacy issue
-For instance, in the case of smart homes, the
-user would like the use of their data to respect
-their privacy.
-They may not agree to disclose their bedtime or
-how long they usually stay in the restroom.
 %Battery issue
-In addition to this privacy concern, the
-centralized approach diminishes the batteries
-lifetime of the object because transmitting
-information is the most energy-consuming action
-for a connected
-device~\cite{sensor-network-survey,
-sensor-energy-model}.  
 %NOTE: Keep the next three lines :D.
 %\cite{sensor-energy-consumption} (conclusion, second paragraph) communication uses more energy.
 %\cite{leach} and \cite{sensor-energy-model}(page 3, first column, check equations and values)
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
 
 %Maintenance problems (not necesserly related to the pipeline.)
-Let aside those pipeline related problems, the
-spreading of inter-connected objects in wide
-areas could cause maintenance issues. For instance,
-a farmer having a network of sensors spread across
-his land is unlikely to have time to change
-broken sensors every two weeks. Given the fact
-that sensors are more likely to exhaust their
-battery than being shattered by an external
-cause~\cite{sensor-network-survey}, the
-maintenance matter would greatly benefit from
-energy-efficient communication algorithms.
-
-%Security issue
-%Finally, users could
-%also worry about the security of their new object.
-%Recent events~\cite{pacemakers-hacked} have shown
-%the fragility of the automated object security. A
-%fragile security could lead to a paralyzed home
-%and to unwillingly extracted data from the user.
-
-
-To tackle these privacy and energy issues,
-algorithms with small memory footprint were
-developed to mine information directly on the
-devices rather than in a centralized cloud.  These
-algorithms were inspired of Big Data, in
-particular, from data stream algorithms because it
-is common for these fields to handle more data
-than available resources can accommodate.
-Designing such method allow transmitting only the
-relevant data to the cluster. The survey
-in~\cite{kejariwal2015} reviews the problems faced
-by connected devices.
-However,~\cite{kejariwal2015} did not cover the
-problem of supervised learning which raises the
-following question: Is it possible to design
-classification algorithms for data streams on
-connected devices? 
 
 %Outline of the report
-The next section will explain the main data stream
-algorithms in more details and a few problems will
-be described.  Then, we will focus on data stream
-classification, including online learning. One
-section will first briefly cover common
-classifiers such as Naïve Bayes, kNN, and Decision
-Trees. Another section will solely focus on Random
-Forest.  The final section will summarize the two
-preceding section and answer the question asked in
-this introduction.
 
 %How do we repatriate the data when it has been
 %produce on a sensor on the far end of a sensor
 %network? How do we do it efficiently?
 
 %How to we mine those data? Which framework?
-\subsection{Canard}
-Construire des modéles spécific à chaque sujet.
-
-\paragraph{Prequential Error~\cite{issues_learning_from_stream}}
-\begin{itemize}
-	\item The idea is for each new data point, we test the model, then train the model with it.
-	\item The loss function used.
-\end{itemize}
 % vim: tw=50 ts=2
