@@ -8,33 +8,67 @@ Expliquer concept de base d'OrpailleCC.
 
 \subsection{Implementation}
 \paragraph{Hoeffding Tree~\cite{VFDT}}
-\begin{itemize}
-	\item Quick description of the idea.
-	\item StreamDM-cpp implementation.
-	\item OrpailleCC implementation.
-	\begin{itemize}
-		\item Reserved size with a given size.
-		\item Binary tree.
-		\item Focus on real numbers features.
-		\item The number of split considered by features is given by the user.
-		\item Split are determined by forming a boxes and spliting these boxes.
-		\item Majority vote at the leaves.
-		\item All floating point values are double and all counters are int.
-	\end{itemize}
-\end{itemize}
+%\item Quick description of the idea.
+%\item StreamDM-cpp implementation.
+%\item OrpailleCC implementation.
+%\begin{itemize}
+	%\item Reserved size with a given size.
+	%\item Binary tree.
+	%\item Focus on real numbers features.
+	%\item The number of split considered by features is given by the user.
+	%\item Split are determined by forming a boxes and spliting these boxes.
+	%\item Majority vote at the leaves.
+	%\item All floating point values are double and all counters are int.
+%\end{itemize}
+The Hoeffding tree act like a decision tree and recursively split the space to
+maximize a mectric function. Often, this function is the information gain or
+the Gini index. However, instead of using the entire dataset, the Hoeffding
+tree relies on the Hoeffding bound to estimate when a leaf has seen enough data
+points to do a safe split.
+
+This algorithm is common in data stream classification, however it suffers from
+one main disadvantage. Once a split is decided, it cannot be re-considered
+which make this algorithm weak to concept drift.
+
 \paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
-\begin{itemize}
-	\item Quick description of the idea.
-	\item Specify the magic numbers (max cluster, error threshold, performance threshold).
-	\item no specific details about the implementation.
-\end{itemize}
+The Micro Cluster Nearest Neighbor~(MCNN) is a variant of k-nearest neighbor
+were data points are aggregated into clusters.  When trained, the algorithm
+merge the new data point to the closest cluster that shares the same label. If
+the closest cluster does not share the same label as the data point, this
+closest cluster and the closest cluster with the same label as the data point
+receive an error. When a cluster receive to many errors, it is split. When MCNN
+is asked to predict, it returns the label of the closest cluster.  Note that
+the distance used is the Euclidean distance.
+Regularly, the algorithm also assign a participation score to each cluster and
+when this score get below a threshold, the cluster is removed. Given that the
+maximum number of cluster is fixed, this mechanism helps making space for new
+clusters in the future.  
+
+In OrpailleCC, we decided to remove the participation threshold mechanism.
+Instead, the cluster with the lowest participation is removed when space is
+needed. This choice was made to save computation time.
+
+The MCNN algorithm can be tuned using two parameter: the maximum number of
+cluster and the error threshold after which a cluster is split.
+
+
 \paragraph{Mondrian Forest~\cite{mondrian2014}}
-\begin{itemize}
-	\item Quick description of the idea.
-	\item Size controlled by a buffer.
-	\item Buffer shared by all trees.
-	\item Specify the magic numbers (max lifetime, discount factor, base measure).
-\end{itemize}
+The Mondrian forest algorithm uses a forest of Mondrian tree to classify. Each
+tree recursivly split the space as a regular decision tree. However, the
+feature to split and the value of the split are decided randomly. A feature is
+more likely to be choosen for a split the wider its observed ranged is. The
+value for the split is uniformly selected in the range of the feature.
+
+In OrpailleCC, the size alocated for the forest is set at the beginning and it
+is shared by all the trees.  Therefore, the memory footprint of the classifier
+is constant.
+
+The Mondrian trees can be tuned using three parameters. The budget, that
+control the likelihood for a tree to be deep.  The discount factor that impact
+the prediction of the nodes. A discount factor closer to one makes the
+prediction of this node closer to the prediction of its parent. Finally, the
+base measure or base count is used to initialize the prediction for the root.
+
 \paragraph{Naïve Bayes~\cite{naive_bayes}}
 \begin{itemize}
 	\item Very quick description of the idea.
@@ -50,36 +84,36 @@ Expliquer concept de base d'OrpailleCC.
 \end{itemize}
 
 \subsection{Datasets}
-\begin{itemize}
-	\item Banos~\cite{Banos_2014}.
-	\begin{itemize}
-		\item 50 Hz sampling.
-		\item 117 data per sample.
-		\item 33 activities.
-		\item Sensors cover the body.
-		\item Type of data (ideal or self)
-		\item Number of subject.
-	\end{itemize}
-	\item Recofit~\cite{recofit}.
-	\begin{itemize}
-		\item Sampling rate?
-		\item How many value per data point?
-		\item How the sensors are placed?
-		\item Number of subject?
-	\end{itemize}
-	\item Size of the window.
-	\item Non-overlaping window.
-	\item Which feature are extracted.
-\end{itemize}
+\subsubsection{Banos}
+%50 Hz sampling.
+%117 data per sample.
+%33 activities.
+%Sensors cover the body.
+%Type of data (ideal or self)
+%17 subject.
+The Banos dataset~\cite{Banos_2014} is a human activity dataset. Each of the 17
+participants were equiped with 9 sensors. Each sensor samples a 3D
+acceleration, gyroscope and magnetic field. Additionnaly, each sensor also
+estimates their orientation in a quaternion format, thus each sensor produce 13
+values. These sensors are sampled at 50 Hz and each sample is associated with
+one of the 33 activities. Note that in addition of the 33 activity, there the
+activity 0 that indicates no specific activity.
+
+The Banos dataset was preprocessed using non-overlapping windows of one second
+(50 samples).  Only the 3 acceleration axis of the right forearm sensor were
+used. From each axis, the average and the standard deviation over the window
+were extracted. The label given to the window was obtain as a most common label of the window.
+Finally, the resulting data points were shuffled.
 
 \subsection{Evaluation}
-\paragraph{Subject Cross-Validation~\cite{subject_cross_validation}}
-\begin{itemize}
-	\item windows are grouped by subject.
-	\item Each cross-validation iteration keeps one subject out.
-	\item This subject is used as a test set.
-	\item The average metric are computed for all iterations.
-\end{itemize}
+
+The prequential error~\cite{issues_learning_from_stream} was used to evaluate algorithms. Each
+algorithm was tested with new data points, then train with it. No fading factor
+were applied. Multiple runs are aggregated by the average.
+
+The first time a label is encountered, the algorithm is not tested with the
+corresponding data point. The algorithm is solely trained with it. In the same
+way, the label not encountered are not included in the average F1 score.
 
 \subsection{Master Script}
 Le détail du master script
