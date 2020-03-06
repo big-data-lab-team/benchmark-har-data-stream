@@ -91,7 +91,7 @@ rerun: compile
 process:
 	PYTHONHASHSEED=0 python makefile.py process
 clean:
-	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_ht streamdm_perceptron
+	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_ht streamdm_perceptron streamdm_naive_bayes
 fullclean: clean
 	$(MAKE) -C rapl-tools clean
 	rm -f AppPowerMeter PowerMonitor
