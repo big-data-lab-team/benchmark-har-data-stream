@@ -21,6 +21,7 @@ endif
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) $(DEBUG_FLAGS)
 
 ALL_TARGET = AppPowerMeter empty_classifier previous_classifier \
+			 streamdm_ht \
 			 mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t20 mondrian_t50 mondrian_t100 \
 			 mcnn_c10e10p10 mcnn_c20e10p10 mcnn_c32e10p10 mcnn_c33e10p10 mcnn_c34e10p10 mcnn_c40e10p10 mcnn_c50e10p10 \
 			 mcnn_c10e2p10 mcnn_c20e2p10 mcnn_c32e2p10 mcnn_c33e2p10 mcnn_c34e2p10 mcnn_c40e2p10 mcnn_c50e2p10 \
@@ -46,11 +47,11 @@ mondrian_t%: mond.cpp main.cpp
 
 empty_classifier: empty.cpp main.cpp
 	g++ main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
-		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -DTREE_COUNT=10 -o $@
+		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -o $@
 
 previous_classifier: previous.cpp main.cpp
 	g++ main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
-		-DCLASSIFIER_INITIALIZATION_FILE="\"previous.cpp\"" -DTREE_COUNT=10 -o $@
+		-DCLASSIFIER_INITIALIZATION_FILE="\"previous.cpp\"" -o $@
 
 streamdm_ht: streamdm_ht.cpp main.cpp
 	g++ main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
@@ -58,7 +59,21 @@ streamdm_ht: streamdm_ht.cpp main.cpp
 		-llog4cpp \
 		-L/home/magoa/phd/streamDM-Cpp \
 		-lstreamdm \
-		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -DTREE_COUNT=10 -o $@ 
+		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -o $@ 
+streamdm_naive_bayes: streamdm_naive_bayes.cpp main.cpp
+	g++ main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-I/home/magoa/phd/streamDM-Cpp/code \
+		-llog4cpp \
+		-L/home/magoa/phd/streamDM-Cpp \
+		-lstreamdm \
+		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_naive_bayes.cpp\"" -o $@ 
+streamdm_perceptron: streamdm_ht.cpp main.cpp
+	g++ main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-I/home/magoa/phd/streamDM-Cpp/code \
+		-llog4cpp \
+		-L/home/magoa/phd/streamDM-Cpp \
+		-lstreamdm \
+		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o $@ 
 AppPowerMeter:
 	$(MAKE) -C rapl-tools
 	cp rapl-tools/AppPowerMeter rapl-tools/PowerMonitor .
@@ -76,7 +91,7 @@ rerun: compile
 process:
 	PYTHONHASHSEED=0 python makefile.py process
 clean:
-	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_ht
+	rm -rf mondrian_t* empty_classifier previous_classifier mcnn_* streamdm_ht streamdm_perceptron
 fullclean: clean
 	$(MAKE) -C rapl-tools clean
 	rm -f AppPowerMeter PowerMonitor
