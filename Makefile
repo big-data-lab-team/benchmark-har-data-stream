@@ -1,5 +1,7 @@
 OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
+MOA_DIR=/home/magoa/phd/moa
+MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif
@@ -21,24 +23,17 @@ endif
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) $(DEBUG_FLAGS)
 
 ALL_TARGET = AppPowerMeter empty_classifier previous_classifier \
-			 streamdm_ht \
+			 streamdm_ht streamdm_naive_bayes streamdm_perceptron\
 			 mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t20 mondrian_t50 mondrian_t100 \
-			 mcnn_c10e10p10 mcnn_c20e10p10 mcnn_c32e10p10 mcnn_c33e10p10 mcnn_c34e10p10 mcnn_c40e10p10 mcnn_c50e10p10 \
-			 mcnn_c10e2p10 mcnn_c20e2p10 mcnn_c32e2p10 mcnn_c33e2p10 mcnn_c34e2p10 mcnn_c40e2p10 mcnn_c50e2p10 \
-			 mcnn_c10e4p10 mcnn_c20e4p10 mcnn_c32e4p10 mcnn_c33e4p10 mcnn_c34e4p10 mcnn_c40e4p10 mcnn_c50e4p10 \
-			 mcnn_c10e8p10 mcnn_c20e8p10 mcnn_c32e8p10 mcnn_c33e8p10 mcnn_c34e8p10 mcnn_c40e8p10 mcnn_c50e8p10 \
-			 mcnn_c10e16p10 mcnn_c20e16p10 mcnn_c32e16p10 mcnn_c33e16p10 mcnn_c34e16p10 mcnn_c40e16p10 mcnn_c50e16p10
+			 mcnn_c10 mcnn_c20 mcnn_c32 mcnn_c33 mcnn_c34 mcnn_c40 mcnn_c50
 
 compile:  $(ALL_TARGET)
 
 mcnn_%: main.cpp mcnn.cpp
-	$(eval clusters=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\1/p' <<< $*))
-	$(eval error_th=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\2/p' <<< $*))
-	$(eval performa=$(shell sed -nr 's/^c([0-9]+)e([0-9]+)p([0-9]+)/\3/p' <<< $*))
+	$(eval clusters=$(shell sed -nr 's/^c([0-9]+)/\1/p' <<< $*))
 	g++ main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-DCLASSIFIER_INITIALIZATION_FILE="\"mcnn.cpp\"" -DMAX_CLUSTERS=$(clusters)\
-		-DERROR_THRESHOLD=$(error_th)\
-		-DPERFORMANCE_THRESHOLD=$(performa) -o $@
+		-DCLASSIFIER_INITIALIZATION_FILE="\"mcnn.cpp\"" \
+		-DMAX_CLUSTERS=$(clusters) -o $@
 
 mondrian_t%: mond.cpp main.cpp
 #	$* contains everything within "%" of the target
@@ -74,6 +69,10 @@ streamdm_perceptron: streamdm_ht.cpp main.cpp
 		-L/home/magoa/phd/streamDM-Cpp \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o $@ 
+
+mlp_%: neural_network.cpp main.cpp
+	g++ main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-DCLASSIFIER_INITIALIZATION_FILE="\"neural_network.cpp\"" -DLAYER_COUNT=$* -o $@
 AppPowerMeter:
 	$(MAKE) -C rapl-tools
 	cp rapl-tools/AppPowerMeter rapl-tools/PowerMonitor .
@@ -88,6 +87,15 @@ run:
 rerun: compile
 	rm -f /tmp/output /tmp/output_runs models.csv
 	python makefile.py run
+moa:
+	cd $(MOA_DIR)
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -a 3 -k 0) -f dataset_1.arff -m 20000"
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 777 -i 888 -a 3 -n 20) -f dataset\_2.arff -m 20000"
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomTreeGenerator -r 777 -i 888 -c 10 -o 0 -u 6 -d 10 -l 5) -f dataset\_3.arff -m 20000"
+	 sed 's/,class\([0-9]*\),/,\1/g' dataset_1.arff | sed 's/,/  /g' > dataset_1.log
+	 sed 's/,class\([0-9]*\),/,\1/g' dataset_2.arff | sed 's/,/  /g' > dataset_2.log
+	 sed 's/,class\([0-9]*\),/,\1/g' dataset_3.arff | sed 's/,/  /g' > dataset_3.log
+	 cp dataset_*.log /tmp
 process:
 	PYTHONHASHSEED=0 python makefile.py process
 clean:
