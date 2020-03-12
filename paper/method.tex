@@ -169,88 +169,118 @@ error threshold after which a cluster is split.
 
 
 \paragraph{Mondrian Forest~\cite{mondrian2014}}
-The Mondrian forest algorithm uses a forest of Mondrian tree to classify. Each
-tree recursivly split the space as a regular decision tree. However, the
-feature to split and the value of the split are decided randomly. A feature is
-more likely to be choosen for a split the wider its observed ranged is. The
-value for the split is uniformly selected in the range of the feature.
+The Mondrian forest algorithm uses a forest of
+Mondrian tree to classify. Each tree recursively
+split the space as a regular decision tree.
+However, the feature to split and the value of the
+split are decided randomly. A feature is more
+likely to be chosen for a split the wider its
+observed range is. The value for the split is
+uniformly selected in the range of the feature.
 
-In OrpailleCC, the size alocated for the forest is set at the beginning and it
-is shared by all the trees.  Therefore, the memory footprint of the classifier
-is constant.
+In OrpailleCC, the size allocated for the forest
+is set at the beginning and it is shared by all
+the trees.  Therefore, the memory footprint of the
+classifier is constant.
 
-The Mondrian trees can be tuned using three parameters. The budget, that
-control the likelihood for a tree to be deep.  The discount factor that impact
-the prediction of the nodes. A discount factor closer to one makes the
-prediction of this node closer to the prediction of its parent. Finally, the
-base measure or base count is used to initialize the prediction for the root.
+The Mondrian trees can be tuned using three
+parameters. The budget controls the
+likelihood for a tree to be deep.  The discount
+factor that impacts the prediction of the nodes. A
+discount factor closer to one makes the prediction
+of this node closer to the prediction of its
+parent. Finally, the base measure or base count is
+used to initialize the prediction for the root.
 
 \paragraph{Naïve Bayes~\cite{naive_bayes}}
-The Naïve Bayes algorithm keeps a table of counters for each features values
-and each label. When ask to predict, the algorithm will assign a score for each
-label depending on how the data point to predict is similar with the values
-observed during the training phase.
+The Naïve Bayes algorithm keeps a table of
+counters for each feature's values and each label.
+When asked to predict, the algorithm will assign a
+score for each label depending on how the data
+point to predict is similar to the values observed
+during the training phase.
 
-The implementation from streamdm was used in this benchmark. This
-implementation uses a Gaussian estimation for numeric attributes.
+The implementation from streamdm was used in this
+benchmark. This implementation uses a Gaussian
+estimation for numeric attributes.
 
-We do not use any smoothing since the dataset type we are focusing on only
-contains numeric attribute. Therefore, as long as there is one data point to
-train with, there will be a Gaussian estimation for each attribute.
+We do not use any smoothing since the dataset type
+we are focusing on only contains numeric
+attribute. Therefore, as long as there is one data
+point to train with, there will be a Gaussian
+estimation for each attribute.
 
 \paragraph{k-Nearest Neighbors~\cite{biased_reservoir_sampling}}
-The k-Nearest Neighbors~(kNN) is a classification algorithm that uses the k
-nearest data points from the training set to classify.  An adaption of this
-algorithm to data stream classification is the use of a sliding
-window~\cite{Mining_Massive_Datasets} as the training set.
+The k-Nearest Neighbors~(kNN) is a classification
+algorithm that uses the k nearest data points from
+the training set to classify.  An adaption of this
+algorithm to data stream classification is the use
+of a sliding window~\cite{Mining_Massive_Datasets}
+as the training set.
 
-Normally, the sliding window stores the most recent data point, but in this
-benchmark, we used a biased window. This window act like a sample of the stream
-(similar to a reservoir sampling) but biased on the most recent data point.
-Therefore, the window does not contains the most recent data point, but
-instead, these data point will have a higher chance of being in the window.
-This type of window is useful to keep knowledge from the past while focusing on
-the recent part of the dataset.
+Normally, the sliding window stores the most
+recent data point, but in this benchmark, we used
+a biased window. This window acts as a sample of
+the stream (similar to a reservoir sampling) but
+biased on the most recent data point.  Therefore,
+the window does not contain the most recent data
+point, but instead, these data points will have a
+higher chance of being in the window.  This type
+of window is useful to keep knowledge from the
+past while focusing on the recent part of the
+dataset.
 
-The kNN algorithm can be tuned by adjusting the parameter k. It can also be
-tuned by changing the distance function. Finally, it can be optimized by
+The kNN algorithm can be tuned by adjusting the
+parameter k. It can also be tuned by changing the
+distance function. Finally, it can be optimized by
 adapting the window size.
 
 \paragraph{Neural Network}
-A neural network is a combination of artificial neuron (also known as
-perceptron). Each perceptron has weighted input values and an activation
-function. To do a prediction, the perceptron sums its input values then passes
-this sum through the activation function. The output value of the perceptron is
-the result of this activation function. This prediction phase is also called
-feed forward.  To train the neural network, we feed forward, then the error
-between the prediction and expected result is used in the backpropagation
-algorithm to adjust the weights of the input values.  A neural network combines
-multiple perceptron so some perceptron output are plugged on input of other
-perceptron.
+%We need a citation there
+A neural network is a combination of artificial
+neurons (also known as perceptron). Each
+perceptron has weighted input values and an
+activation function. To do a prediction, the
+perceptron sums its input values then passes this
+sum through the activation function. The output
+value of the perceptron is the result of this
+activation function. This prediction phase is also
+called feed-forward.  To train the neural network,
+we feed-forward, then the error between the
+prediction and the expected result is used in the
+backpropagation process to adjust the weights of
+the input values.  A neural network combines
+multiple perceptrons so some perceptron outputs
+are plugged on inputs of other perceptrons.  In
+this benchmark, we used a Multi-Layer Perceptron.
+Perceptrons are organized on layers and all output
+values from perceptrons of layer $n-1$ serve as
+input values for perceptrons of layer $n$. 
 
-In this benchmark, we used a Multi-Layer Perceptron. Perceptron are organized
-on layers and all output values from perceptrons of layer $n-1$ serve as input
-values for perceptron of layer $n$. 
-
-This neural network can be tuned by changing the number of layer and the size
-of each layer. Additionnaly, the activation function and the learning ratio can
-be changed. The learning ratio indicates by how much the weights should change
+This neural network can be tuned by changing the
+number of layers and the size of each layer.
+Additionally, the activation function and the
+learning ratio can be changed. The learning ratio
+indicates by how much the weights should change
 during the backpropagation.
 
-\paragraph{Hyper-parameter Tuning}
-The hyper-parameters were tuned using the first subject from the Banos dataset.
-The dataset was transform the same way the Banos dataset was transformed
-(window size of one second, average and standard deviation on the three
-acceleration axis of the right forearm sensor, $\cdots$). We tested multiple
-values for the parameters and the runs were randomized.
-
-We did not explore all the parameter at once, but instead a small combination
-of them each at a time.
+\paragraph{Hyperparameters Tuning}
+The hyperparameters were tuned using the first
+subject from the Banos dataset.  The data from
+this subject received the same transformation as
+the Banos dataset (window size of one second,
+average and standard deviation on the three
+acceleration axis of the right forearm sensor,
+$\cdots$). We tested multiple values for the
+parameters and the runs were randomized.  We did
+not explore all the parameters at once, but
+instead a small combination of them each at a
+time.
 
 \subsection{Evaluation}
 The prequential error~\cite{issues_learning_from_stream} was used to evaluate the algorithms. Each
 algorithm was tested with new data points, then train with it. No fading factor
-were applied. Multiple runs are aggregated by the average.
+was applied. Multiple runs are aggregated by the average.
 
 The first time a label is encountered, the algorithm is not tested with the
 corresponding data point. The algorithm is solely trained with it. 
@@ -264,7 +294,7 @@ On the other hand, the energy metric is obtained at the end of each run.
 The classification performances of the classifiers are measured using the
 accuracy and the F1-score.  They are computed every ten elements to avoid
 overloading the run with this computation, however, the computation uses the
-count over the whole stream. No fading factor were used to attenuate error from
+count over the whole stream. No fading factor was used to attenuate error from
 the beginning.
 
 The
@@ -272,7 +302,7 @@ F1-score\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039
 computed in
 one-versus-all fashion, then the F1-scores are averaged. Note that, when a
 class has not been encountered yet, its F1-score is ignored. Similarly to the
-accuracy, no fading factor are applied.
+accuracy, no fading factor is applied.
 
 \subsubsection{Memory}
 The memory is measured by reading the file "/proc/self/statm". This measure is
@@ -281,25 +311,43 @@ The number returned by the file is in KB.
 
 \subsubsection{Energy}
 The energy is measured using rapl
-tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}. We use the
+tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}.
+We use the
 AppPowerMeter\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/makefile.py\#L122}{Code
-for the use of AppPowerMeter here}.} that measure the energy used by the
-computer while an application is running. The amount of Joules used is output
-at the end of the run as well as the power in Watt.
+is the use of AppPowerMeter here}.} that measure
+the energy used by the computer while an
+application is running. The amount of Joules used
+is output at the end of the run as well as the
+power in Watt.
 
-To ensure we measure the energy consumption of the classifier is
-correct, we run each classifier multiple times on a minimal environment. The
-run are randomized. Finally, we also slip an empty classifier in the list of
-classifier we benchmark. This empty classifier does not classify anything and
-always returns zero. However, when its energy is measured, that gives us the
-nominal energy used by the computer that is not related to any classification
-task.
+To ensure we measure the energy consumption of the
+classifier is correct, we run each classifier
+multiple times in a minimal environment. The runs
+are randomized. Finally, we also slip an empty
+classifier in the list of classifiers. This empty
+classifier does not classify anything and always
+returns zero. However, when its energy is
+measured, the value indicates the nominal energy
+used by the computer that is not related to any
+classification task.
 
 \subsection{Experimental Condition}
-A python script was used to organized the classifier evaluation. 
-The execution order is randomized and each evaluation is run multiple time. The metrics are averaged.
+A python script was used to organize the
+bencharmk.  It processes the Banos dataset. It
+lists the classifiers to run and define which
+parameter to uses. It randomizes the runs and
+collects the output. Finally, it read the result
+files to plot the data. Note that the datasets and
+the output results are small enough to be stored in
+memory through "/tmp".
 
-A run correspond to the evaluation of one classifier on one dataset.
-Le détail du master script. Lien to it. Multiple run. Randomized. Output dans /tmp. Dataset dans /tmp.
+When collecting the data, metrics from multiple
+runs of the same classifier (same classifier, same
+parameters, and same file) are averaged. The
+energy consumption is the average energy
+consumption of all runs. Regarding the
+classification performance, measurements are
+average when they are obtained on the same x-axis
+value.
 
 % vim: tw=50 ts=2
