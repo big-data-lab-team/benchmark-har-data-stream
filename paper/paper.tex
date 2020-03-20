@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usepackage{grffile} %Used to allow filename with many dots 
 \usepackage{float} %Used to force figure placement
+\usepackage{xspace} %Used in \banosdataset
 % Fix link colors
 \hypersetup{
     colorlinks = true,
@@ -25,13 +26,13 @@
 \newcommand{\rand}[1]{
 \pgfmathparse{random(#1)}\pgfmathresult }
 
-\newcommand{\TG}[1]{\noindent{\color{blue}[\textsc{T.Glatard:} #1]}}
+\newcommand{\TG}[1]{\noindent{\color{blue}[\textsc{From Tristan:} #1]}}
 %\newcommand{\TG}[1]{}
 \newcommand{\english}[1]{\uwave{#1}} % Indicates that the sentence has syntax errors or uses weird words
 \newcommand{\writing}[1]{\color{red}#1\color{black}} % Indicates that the sentence is unlcear, heavy, or has too many words
 %\newcommand{\english}[1]{#1}
 \newcommand{\MK}[1]{\noindent{\color{red}[\textsc{M.Khannouz:} #1]}}
-
+\newcommand{\banosdataset}[0]{Banos \textit{et al}\xspace}
 
 \title{A Benchmark on data stream classification
 for human activity recognition
