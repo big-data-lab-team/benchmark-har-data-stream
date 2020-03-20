@@ -1,38 +1,38 @@
 \section{Method}
-For this study, we identified six classifiers to
-evaluate. These classifiers are implemented in
+We evaluated 6 classifiers implemented in
 either StreamDM-Cpp~\cite{streamDM} or
 OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a
-C++ implementation of StreamDM, a
-software for mining big data streams using Spark
-Streaming. This implementation is faster than
-StreamDM, especially on trees. It also works on a
-smaller scale. However, StreamDM-Cpp makes heavy
-use of the standard library such as the vector or
-list structures. These structures may not be
-available in all environments especially those who
-come with little to no operating systems.
+C++ implementation of StreamDM \TG{ref?}, a
+software to mine big data streams using Spark
+Streaming. StreamDM-Cpp is faster than
+StreamDM, especially on trees \TG{why?}, and it also works at a
+smaller scale \TG{what does it mean?}. However, StreamDM-Cpp makes heavy
+use of the C standard library, in particular the vector and
+list structures that may not be available on embedded systems
+with limited OS functions \TG{This could be explained in intro rather than here.}.
 
-For this purpose, we developed OrpailleCC, a
+OrpailleCC is a
 collection of data stream algorithms developed to
 be deployed on embedded devices. The key
-functions, such as a rand or a malloc, are
-parametrizable through the class template.
+functions, such as random number generation or memory allocation, are
+parametrizable through the class template and can thus be customized 
+on a given execution platform.
 OrpailleCC is not limited to classification
-algorithm and implement other data stream
+algorithms, it implements other data stream
 algorithms such as the Cuckoo filter~\cite{cuckoo}
-or the multi-dimensional extension of the
+or a multi-dimensional extension of the
 Lightweight Temporal Compression~\cite{multi-ltc}.
 
-Algorithms were selected based on how common they
-were in the field. The Mondrian
-forest~\cite{mondrian2014} builds decision trees
-without the need for labels, even though they are
-needed for the actual classification. Such
-classifiers can be helpful in situations were
-labels are delayed as described
-in~\cite{stream_learning_review}.  A previous
-study~\cite{Janidarmian_2017} has shown that a
+The benchmarked algorithms were selected based on their popularity \TG{how did you measure that? 
+If you don't have an objective way to justify that, just say that ``This benchmark includes 6 popular algorithms.''}.
+The Mondrian forest~\cite{mondrian2014} builds decision trees
+independently of class labels, which are only used during classification. Mondrian forests
+ are useful in situations where
+labels are delayed, as described
+in~\cite{stream_learning_review}. \TG{Writing: to make things more readable, 
+it's good to preserve symmetry in enumerations. If you start the first sentence with "The Mondrian forest"
+then we expect the next one to start with "The Micro Cluster ...", etc} A previous
+study~\cite{Janidarmian_2017} showed that a
 K-nearest neighbor~(KNN) would achieve the best
 classification performance on human activity
 recognition with data acquired by wearable
@@ -45,65 +45,62 @@ Naïve Bayes~\cite{naive_bayes} and the Hoeffding
 Tree~\cite{VFDT} are two common algorithms in
 classification and data stream classification.
 
-Neural Network classifiers are a trendy type of
-classifier that has managed to achieve
+\TG{no need for a new paragraph, just say 'Finally, NN classifiers ...'}
+Neural Network classifiers are a trendy \TG{avoid "trendy", it has a 
+negative connotation $\rightarrow$popular} type of
+classifier that achieves
 human-like performance in many fields such as
 image recognition or game playing. For this study,
 we decided to explore the use of Multi-Layer
-Perceptron with one hidden layer, as depicted
-in~\cite{omid_2019}.
+Perceptron with one hidden layer, as adopted
+in~\cite{omid_2019} \TG{add a few words to highlight the paper}.
 
-In the rest of this section, we will describe the
-datasets followed by the classifier. Then we
-will explain how the classifiers will be evaluated
-and by which metric. Finally, we will add a few
-words about the experimental condition.
+The remainder of this section describes the datasets, classifiers,
+evaluation metrics and parameters used in our benchmark.
 
 \subsection{Datasets}
-\subsubsection{Banos}
+\subsubsection{\banosdataset}
 %50 Hz sampling.
 %117 data per sample.
 %33 activities.
 %Sensors cover the body.
 %Type of data (ideal or self)
 %17 subject.
-The Banos dataset~\cite{Banos_2014} is a human
-activity dataset. Each of the 17 participants was
+The \banosdataset dataset~\cite{Banos_2014} is a human
+activity dataset with 17 participants
 equipped with 9 sensors. Each sensor samples a 3D
-acceleration, gyroscope, and magnetic field.
-Additionally, each sensor also estimates their
-orientation in a quaternion format, thus each
-sensor produces 13 values. These sensors are
+acceleration, gyroscope, and magnetic field, as well as 
+the orientation in a quaternion format, producing a total of 13 values.
+Sensors are
 sampled at 50 Hz and each sample is associated
-with one of the 33 activities. Note that in
-addition to the 33 activity, there is the activity
-0 that indicates no specific activity.
+with one of 33 activities. In
+addition to the 33 activities, an extra activity
+labelled 0 indicates no specific activity.
 
-The Banos dataset was preprocessed using
+We pre-processed the \banosdataset using
 non-overlapping windows of one second (50
-samples).  Only the 3 acceleration axis of the
-right forearm sensor was used. From each axis, the
-average and the standard deviation over the window
-were extracted to form the feature of the new data
-point. The label assigned to this data
-point was the most common label in the window.
-Finally, the resulting data points were shuffled
-across subject.
-
+samples), and using only the 3 acceleration axes of the
+right forearm sensor. From each axis, features were computed as the
+average and the standard deviation over the window. The label assigned to this data
+point was the most frequent label in the window.
+The resulting data points were shuffled
+across subjects.
 
 \subsubsection{MOA dataset}
-Massive Online Analysis~\cite{moa} (MOA) is a Java framework designed to compare
-data stream classifiers. In addition to learning algorithms, MOA provides many
+Massive Online Analysis~\cite{moa} (MOA\TG{ref?}) is a Java framework to compare
+data stream classifiers. In addition to classification algorithms, MOA provides many
 tools to read and generate datasets.
 
 Since the framework does not correspond to the low-level environment we wanted
 to represent, we decided to generate the dataset using the MOA interface, then
-use the generated dataset in this study.  We used these three commands to
+use the generated dataset in this study \TG{I'm not sure what this sentence means,
+rewrite or remove.}.  We used these three commands to
 generate three synthetic datasets\footnote{MOA commands available
 \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
 a hyperplane, a RandomRBF, and a RandomTree
-datasets. 20000 data points were
-generated for each of these synthetic datasets.
+dataset. We generated 20,000 data points
+ for each of these synthetic datasets.
+\TG{You should put this dataset in the paper repo, and \banosdataset too if the license allows}
 
 \subsection{Algorithm and Implementation}
 \paragraph{Hoeffding Tree~\cite{VFDT}}
@@ -116,52 +113,51 @@ generated for each of these synthetic datasets.
 	%\item Majority vote at the leaves.
 	%\item All floating point values are double and all counters are int.
 %\end{itemize}
-The Hoeffding tree behaves like a decision tree
-and recursively split the space to maximize a
-metric function. Often, this function is the
+Similar to a decision tree, the Hoeffding tree recursively splits the space to maximize a
+metric function, often the
 information gain or the Gini index. However,
 instead of using the entire dataset, the Hoeffding
 tree relies on the Hoeffding bound to estimate
-when a leaf has seen enough data points to do a
-safe split. When a prediction is required on a
+when a leaf should be split. When a prediction is required on a
 data point, this data point is sorted to a leaf,
 then the classification is done using leaf-level
-information. The most common way is to apply a
+information \TG{aggregation?}. The most common way is to apply a
 majority vote or a Naïve Bayes.
 
 This classifier is implemented in StreamDM.
 
 This algorithm is common in data stream
 classification, however, it suffers from one main
-disadvantage. Once a split is decided, it cannot
+disadvantage: once a split is decided, it cannot
 be re-considered which makes this algorithm weak
 to concept drift.
 
 \paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(MCNN) is a
 variant of k-nearest neighbor were data points are
-aggregated into clusters.  When trained, the
-algorithm merges the new data point to the closest
+aggregated into clusters.  During training, the
+algorithm merges a new data point to its closest
 cluster that shares the same label. If the closest
 cluster does not share the same label as the data
 point, this closest cluster and the closest
 cluster with the same label as the data point
 receive an error. When a cluster have received too
-many errors, it is split. When asked to predict,
+many errors, it is split. During classification,
 MCNN returns the label of the closest cluster.
 Note that the distance used is the Euclidean
-distance.  Regularly, the algorithm also assigns a
+distance \TG{It sounds like this is an important comment, if it's not I'd remove this sentence}.
+  Regularly, the algorithm also assigns a
 participation score to each cluster and when this
 score gets below a threshold, the cluster is
 removed. Given that the maximum number of clusters
 is fixed, this mechanism helps to make space for
 new clusters in the future.  
 
-In OrpailleCC, we decided to remove the
-participation threshold mechanism.  Instead, the
-cluster with the lowest participation is removed
-when space is needed. This choice was made to save
-computation time.
+We implemented MCNN in OrpailleCC. To save computation time, we decided to remove the
+participation threshold mechanism and to remove the
+cluster with the lowest participation
+when space is needed \TG{An immediate question is: does it indeed reduce computation time?
+It would be nice to compare with the original MCNN.}. 
 
 The MCNN algorithm can be tuned using two
 parameters: the maximum number of clusters and the
@@ -169,13 +165,11 @@ error threshold after which a cluster is split.
 
 
 \paragraph{Mondrian Forest~\cite{mondrian2014}}
-The Mondrian forest algorithm uses a forest of
-Mondrian tree to classify. Each tree recursively
-split the space as a regular decision tree.
+Each tree in a Mondrian forest recursively
+splits the space, as a regular decision tree.
 However, the feature to split and the value of the
-split are decided randomly. A feature is more
-likely to be chosen for a split the wider its
-observed range is. The value for the split is
+split are decided randomly. The probability to select a feature is 
+proportional to its normalized range. The value for the split is
 uniformly selected in the range of the feature.
 
 In OrpailleCC, the size allocated for the forest
@@ -183,30 +177,30 @@ is set at the beginning and it is shared by all
 the trees.  Therefore, the memory footprint of the
 classifier is constant.
 
-The Mondrian trees can be tuned using three
+Mondrian trees can be tuned using three
 parameters. The budget controls the
-likelihood for a tree to be deep.  The discount
-factor that impacts the prediction of the nodes. A
+likelihood for a tree to be deep \TG{the expectation of the tree depth?}.  The discount
+factor impacts the prediction of the nodes: a
 discount factor closer to one makes the prediction
 of this node closer to the prediction of its
-parent. Finally, the base measure or base count is
+parent \TG{this is unclear}. Finally, the base measure or base count is
 used to initialize the prediction for the root.
 
-\paragraph{Naïve Bayes~\cite{naive_bayes}}
-The Naïve Bayes algorithm keeps a table of
+\paragraph{Naive Bayes~\cite{naive_bayes}}
+The Naive Bayes algorithm keeps a table of
 counters for each feature's values and each label.
-When asked to predict, the algorithm will assign a
+During prediction, the algorithm assigns a
 score for each label depending on how the data
-point to predict is similar to the values observed
+point to predict compares to the values observed
 during the training phase.
 
-The implementation from streamdm was used in this
-benchmark. This implementation uses a Gaussian
+The implementation from StreamDM was used in this
+benchmark. It uses a Gaussian
 estimation for numeric attributes.
 
-We do not use any smoothing since the dataset type
-we are focusing on only contains numeric
-attribute. Therefore, as long as there is one data
+We do not use any smoothing \TG{of what?} since the datasets
+we are focusing on only contain numeric
+attributes. Therefore, as long as there is one data
 point to train with, there will be a Gaussian
 estimation for each attribute.
 
@@ -220,7 +214,7 @@ as the training set.
 
 Normally, the sliding window stores the most
 recent data point, but in this benchmark, we used
-a biased window. This window acts as a sample of
+a biased window \TG{ref [1] should be placed here as it's not a ref on kNN specifically}. This window acts as a sample of
 the stream (similar to a reservoir sampling) but
 biased on the most recent data point.  Therefore,
 the window does not contain the most recent data
@@ -238,22 +232,23 @@ adapting the window size.
 \paragraph{Neural Network}
 %We need a citation there
 A neural network is a combination of artificial
-neurons (also known as perceptron). Each
+neurons also known as perceptrons. Each
 perceptron has weighted input values and an
-activation function. To do a prediction, the
-perceptron sums its input values then passes this
-sum through the activation function. The output
+activation function. To predict a class label, the
+perceptron applies the activation function to the sum
+of its input values. The output
 value of the perceptron is the result of this
 activation function. This prediction phase is also
-called feed-forward.  To train the neural network,
+called feed-forward. To train the neural network,
 we feed-forward, then the error between the
 prediction and the expected result is used in the
 backpropagation process to adjust the weights of
 the input values.  A neural network combines
-multiple perceptrons so some perceptron outputs
-are plugged on inputs of other perceptrons.  In
-this benchmark, we used a Multi-Layer Perceptron.
-Perceptrons are organized on layers and all output
+multiple perceptrons by connecting perceptron outputs
+to inputs of other perceptrons.  In
+this benchmark, we used a Multi-Layer Perceptron, 
+that is, a network where perceptrons are organized in
+layers and all output
 values from perceptrons of layer $n-1$ serve as
 input values for perceptrons of layer $n$. 
 
@@ -262,84 +257,79 @@ number of layers and the size of each layer.
 Additionally, the activation function and the
 learning ratio can be changed. The learning ratio
 indicates by how much the weights should change
-during the backpropagation.
+during backpropagation.
 
 \paragraph{Hyperparameters Tuning}
-The hyperparameters were tuned using the first
-subject from the Banos dataset.  The data from
+Hyperparameters were tuned using the first
+subject from the \banosdataset dataset.  The data from
 this subject received the same transformation as
-the Banos dataset (window size of one second,
+the \banosdataset (window size of one second,
 average and standard deviation on the three
 acceleration axis of the right forearm sensor,
 $\cdots$). We tested multiple values for the
-parameters and the runs were randomized.  We did
+parameters and the runs were randomized \TG{out of curiosity, why? Do you mean that 
+the runs of different classifiers were randomized?}.  We did
 not explore all the parameters at once, but
 instead a small combination of them each at a
 time.
 
 \subsection{Evaluation}
-The prequential error~\cite{issues_learning_from_stream} was used to evaluate the algorithms. Each
-algorithm was tested with new data points, then train with it. No fading factor
-was applied. Multiple runs are aggregated by the average.
+The prequential error~\cite{issues_learning_from_stream} was used to evaluate the algorithms. 
+Algorithms were first tested with each new data point, then trained with it. No fading factor
+was applied. Multiple runs were aggregated by the average. \TG{Your text switches between passive and active voice. 
+It's often clearer to use active voice (We did ...) but I'd leave it up to you.}
 
-The first time a label is encountered, the algorithm is not tested with the
-corresponding data point. The algorithm is solely trained with it. 
+The first time a label is encountered, the algorithm is not tested with the 
+corresponding data point. The algorithm is solely trained with it. \TG{This should be in the previous paragraph, as it is still
+about the prequential error.}
+\TG{Likewise, this is now present tense while the previous paragraph was past. This should be harmonized.}
 
 The F1-score, the accuracy, and the memory footprint are measured periodically.
-On the other hand, the energy metric is obtained at the end of each run.
+The energy metric is obtained at the end of each run.
 
 %Time to process one element.
 %Explain the concept drift recovery time.
 \subsubsection{Classification Performance}
 The classification performances of the classifiers are measured using the
 accuracy and the F1-score.  They are computed every ten elements to avoid
-overloading the run with this computation, however, the computation uses the
+overloading the run with this computation, however, the calculation uses the
 count over the whole stream. No fading factor was used to attenuate error from
 the beginning.
 
-The
-F1-score\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{Code of the F1-score}.} is computed as follow. For each class, the F1-score is
+For each class, the
+F1-score\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{Code of the F1-score}.} is
 computed in
-one-versus-all fashion, then the F1-scores are averaged. Note that, when a
+one-versus-all fashion, then the F1-scores of all classes are averaged (macro-average). When a
 class has not been encountered yet, its F1-score is ignored. Similarly to the
 accuracy, no fading factor is applied.
 
 \subsubsection{Memory}
-The memory is measured by reading the file "/proc/self/statm". This measure is
+The memory is measured by reading file "/proc/self/statm". This measure is
 taken every 40 data points to avoid spending too much time reading the file.
-The number returned by the file is in KB.
 
 \subsubsection{Energy}
 The energy is measured using rapl
 tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}.
 We use the
 AppPowerMeter\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/makefile.py\#L122}{Code
-is the use of AppPowerMeter here}.} that measure
+is the use of AppPowerMeter here}.} that measures
 the energy used by the computer while an
 application is running. The amount of Joules used
 is output at the end of the run as well as the
-power in Watt.
+power in Watts.
 
-To ensure we measure the energy consumption of the
-classifier is correct, we run each classifier
+We measured the energy consumed by each classifier
 multiple times in a minimal environment. The runs
-are randomized. Finally, we also slip an empty
-classifier in the list of classifiers. This empty
-classifier does not classify anything and always
-returns zero. However, when its energy is
-measured, the value indicates the nominal energy
-used by the computer that is not related to any
-classification task.
+were randomized. We also added an empty
+classifier that did not classify anything and always
+returned zero, to serve as nominal energy consumption.
 
-\subsection{Experimental Condition}
-A python script was used to organize the
-bencharmk.  It processes the Banos dataset. It
-lists the classifiers to run and define which
-parameter to uses. It randomizes the runs and
-collects the output. Finally, it read the result
-files to plot the data. Note that the datasets and
-the output results are small enough to be stored in
-memory through "/tmp".
+\subsection{Experimental Conditions}
+
+Our experimental conditions are implemented in a Python script that defines
+classifiers and their parameters, randomizes all the runs, and plots the
+resulting data. The datasets and output results are stored in memory
+through "/tmp", to minimize the impact of I/O on classification time.
 
 When collecting the data, metrics from multiple
 runs of the same classifier (same classifier, same
@@ -348,6 +338,6 @@ energy consumption is the average energy
 consumption of all runs. Regarding the
 classification performance, measurements are
 average when they are obtained on the same x-axis
-value.
+value \TG{not sure what that means}.
 
 % vim: tw=50 ts=2
