@@ -1,8 +1,6 @@
 template<class feature_type, int default_prediction=0>
 class EmptyClassifier{
 	public:
-		EmptyClassifier(){
-		}
 	inline bool train(feature_type const* features, int const label){
 		return true;
 	}
@@ -17,7 +15,7 @@ class EmptyClassifier{
 		return default_prediction; //1 because 0 is when there is no activity therefore 0 is more dominant
 	}
 };
-EmptyClassifier<double>* get_classifier(int seed, int argc, char** argv){
+EmptyClassifier<double, 0>* get_classifier(int seed, int argc, char** argv){
 	srand(seed);
-	return new EmptyClassifier<double>();
+	return new EmptyClassifier<double, 0>();
 }

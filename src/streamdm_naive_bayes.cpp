@@ -29,7 +29,7 @@ class NaiveBayesClassifier{
 		instance->addLabels(labels);
 		instance->addValues(values);
 		learner->train(*instance);
-
+		delete instance;
 		return true;
 	}
 	inline int predict(feature_type const* features){
@@ -42,6 +42,7 @@ class NaiveBayesClassifier{
 		for(int i = 0; i < label_count; ++i)
 			if(predictions[i] > predictions[hightest])
 				hightest = i;
+		delete instance;
 		return hightest;
 	}
 };

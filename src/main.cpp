@@ -45,6 +45,12 @@ class functions{
 	static int floor(T const x){
 		return std::floor(x);
 	}
+	static double activation(double input){
+		return 1.0 / (1 + exp(-input));
+	}
+	static int derivative(double const x){
+		return x * (1 - x);
+	}
 
 };
 
@@ -101,7 +107,7 @@ class Evaluation{
 		}
 };
 
-template<int feature_count, class func, class C, class E>
+template<int feature_count, int label_count, class func, class C, class E>
 int process_file(int const model_id, int const run_id, int const seed, string const filename, C* classifier, E* evaluator){
 	ifstream myfile, statm;
 	string line;
@@ -114,33 +120,50 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 		return 2;
 	}
 	int line_count = 1;
+	int* stats = new int[LABEL_COUNT];
+	bool seen_label[label_count];
+	for(int i = 0; i < label_count; ++i)
+		seen_label[i] = false;
+
 	//Start reading the file
 	while (getline (myfile,line) ) {
 		double features[feature_count+1]; //+1 because we need the label
 		parse_line<feature_count+1>(line, features);
 		int label = func::round(features[feature_count]);
-		int const prediction = classifier->predict(features);
-		evaluator->count(prediction, label);
-		classifier->train(features, label);
-		line_count += 1;
-		//if(line_count%40 == 0){
-			cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
-			//rewind cursor
-			statm.seekg(0, ios::beg);
-			char letter = 'A';
-			while(letter != ' '){
-				statm.read(&letter, 1);
-				if(letter != ' ')
-					cout << letter;
+#ifdef BANOS
+		if(label > 0){
+			label -= 1; //We removed the zero
+#endif
+			int const prediction = classifier->predict(features);
+			if(seen_label[label]){
+				evaluator->count(prediction, label);
 			}
-			cout << "," << endl;
-		//}
-		//else if(line_count%10 == 0){
-			//cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",," << endl;
-		//}
+			else{
+				seen_label[label] = true;
+			}
+			classifier->train(features, label);
+			line_count += 1;
+			if(line_count%40 == 0){
+				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
+				//rewind cursor
+				statm.seekg(0, ios::beg);
+				char letter = 'A';
+				while(letter != ' '){
+					statm.read(&letter, 1);
+					if(letter != ' ')
+						cout << letter;
+				}
+				cout << endl;
+			}
+			else if(line_count%10 == 0){
+				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
+			}
+#ifdef BANOS
+		}
+#endif
 	}
 	myfile.close();
-	return 0;
+	return line_count;
 }
 
 int main(int argc, char** argv){
@@ -156,8 +179,9 @@ int main(int argc, char** argv){
 	//Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
 	Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
-	if(classifier != nullptr)
-		process_file<FEATURES_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
+	if(classifier != nullptr){
+		int datapoint_count = process_file<FEATURES_COUNT, LABEL_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
+	}
 	return 0;
 }
 
