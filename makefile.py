@@ -232,16 +232,30 @@ def process_output(output_filename, run_output_filename, model_filename):
     for row in csv_structure:
         color = hashStringToColor(row[1] + "".join(row[3:]))
         models[row[0]] = {"name": row[1], "file": row[2], "color": color}
-        if row[1] == "Mondrian":
+        if row[1].find("Mondrian") >= 0:
             models[row[0]]["lifetime"] = row[3]
             models[row[0]]["base"] = row[4]
             models[row[0]]["discount"] = row[5]
-            models[row[0]]["fullname"] = "Mondrian " + row[3] + "-" + row[4] + "-" + row[5]
+            models[row[0]]["fullname"] = "Mondrian T" + row[1][row[1].find("Mondrian")+8:] + " " + row[3] + "-" + row[4] + "-" + row[5]
         elif row[1] == "MCNN":
             models[row[0]]["cluster_count"] = row[3]
             models[row[0]]["error_threshold"] = row[4]
-            models[row[0]]["p"] = row[5]
-            models[row[0]]["fullname"] = "MCNN " + row[3] + " (" + row[4] + ")"
+            models[row[0]]["cleaning"] = row[5]
+            models[row[0]]["perf_threshold"] = row[6]
+            models[row[0]]["fullname"] = "MCNN " + row[3] + " (" + row[4] + ") + C" + row[5] + " - " + row[6]
+        elif row[1] == "StreamDM HoeffdingTree":
+            models[row[0]]["confidence"] = row[4]
+            models[row[0]]["grace_period"] = row[5]
+            models[row[0]]["adaptive"] = row[3]
+            if models[row[0]]["adaptive"] == "1":
+                models[row[0]]["fullname"] = "StreamDM HAT c" + row[3] + " (" + row[4] + ")"
+            else:
+                models[row[0]]["fullname"] = "StreamDM HT c" + row[3] + " (" + row[4] + ")"
+        elif row[1] == "MLP":
+            models[row[0]]["learning_rate"] = row[3]
+            models[row[0]]["layer_count"] = row[4]
+            models[row[0]]["hidden_size"] = row[5]
+            models[row[0]]["fullname"] = "MLP L" + row[3] + " (" + row[5] + ")"
         else:
             models[row[0]]["fullname"] = models[row[0]]["name"]
 
