@@ -208,12 +208,16 @@ def run(output_filename, run_output_filename):
                     if line.startswith("\tTotal Energy:\t"):
                         joule_index = line.find(" J", 15)
                         energy = line[15:joule_index]
-                        run_output_file.write(command[4] + "," + command[5] + ",," + energy + "\n")
+                        run_output_file.write(command[4] + "," + command[5] + ",," + energy + ",\n")
                         #The line of power contains the linecount of -1
+                    if line.startswith("\tAverage Power:\t"):
+                        watt_index = line.find(" W", 16)
+                        watt = line[16:watt_index]
+                        run_output_file.write(command[4] + "," + command[5] + ",,," + watt + "\n")
                     if line.startswith("\tTime:\t"):
                         sec_index = line.find(" sec", 7)
                         timy = line[7:sec_index]
-                        run_output_file.write(command[4] + "," + command[5] + "," + timy + ",\n")
+                        run_output_file.write(command[4] + "," + command[5] + "," + timy + ",,\n")
                         #The line of power contains the linecount of -1
                 else:
                     output_file.write(line + "\n")
@@ -252,9 +256,9 @@ def process_output(output_filename, run_output_filename, model_filename):
         filename = models[row[0]]["file"]
         color = models[row[0]]["color"]
         if name not in results:
-            results[name] = {filename : {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}}}
+            results[name] = {filename : {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}, "power": []}}
         elif filename not in results[name]:
-            results[name][filename] = {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}}
+            results[name][filename] = {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}, "power": []}
 
         #I know, it is awful :) Enjoy reading this code
         for type_perf in [("accuracy", 5), ("f1", 4), ("memory", 6)]:
@@ -277,6 +281,8 @@ def process_output(output_filename, run_output_filename, model_filename):
             results[name][filename]["energy"].append(float(row[3]))
         if row[2] != "":
             results[name][filename]["time"].append(float(row[2]))
+        if row[4] != "":
+            results[name][filename]["power"].append(float(row[4]))
 
     for model_name in results:
         for filename in results[model_name]:
