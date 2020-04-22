@@ -308,16 +308,126 @@ def process_output(output_filename, run_output_filename, model_filename):
                  #[AA]: a list of accuracy for each run
                  # AA : a list of accuracy, each element contains [number of data points, accuracy]
 
-    return results
-
-def additional_computation(results):
     for model in results:
         for filename in results[model]:
             results[model][filename]["f1"] = aggregate_list_measurement(results[model][filename]["f1"])
             results[model][filename]["accuracy"] = aggregate_list_measurement(results[model][filename]["accuracy"])
             results[model][filename]["memory"] = aggregate_list_measurement(results[model][filename]["memory"])
 
-    filename = "/tmp/processed_subject1_ideal_shuf.log"
+    return results
+
+def print_results(results, output_directory="."):
+    for filename in ["/tmp/dataset_3.log", "/tmp/dataset_2.log", "/tmp/dataset_1.log", "/tmp/processed_full_shuf.log"]:
+        names = sorted([model for model in results])
+        lines = {}
+        markers = {}
+        for name in names:
+            if name.find("MCNN") >= 0:
+                markers[name] = "s"
+                lines[name] = "-"
+            elif name.find("Mondrian") >= 0:
+                markers[name] = "*"
+                lines[name] = "-"
+            elif name.find("StreamDM") >= 0:
+                if name.find("Naive") >= 0:
+                    markers[name] = "o"
+                else:
+                    markers[name] = "x"
+                lines[name] = ":"
+            elif name.find("Naive") >= 0:
+                markers[name] = "o"
+                lines[name] = "-"
+            else:
+                markers[name] = ""
+                lines[name] = "-"
+        dataset_name = filename[filename.rfind("/")+1:filename.rfind(".")]
+        print(dataset_name)
+
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for model in names:
+            tmp = results[model][filename]["memory"]
+            x = [tmp[i][0] for i in range(len(tmp))]
+            y = [tmp[i][1] for i in range(len(tmp))]
+            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
+        plt.ylabel("KByte")
+        plt.xlabel("Element")
+        plt.title(dataset_name + " memory usage")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
+        # plt.show()
+        plt.clf()
+
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for model in names:
+            tmp = results[model][filename]["f1"]
+            x = [tmp[i][0] for i in range(len(tmp))]
+            y = [tmp[i][1] for i in range(len(tmp))]
+            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.ylabel("F1")
+        plt.xlabel("Element")
+        plt.ylim(0,1)
+        plt.title(dataset_name + " F1 score")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
+        # plt.show()
+        plt.clf()
+
+        plt.figure(figsize=(23.38582, 16.53544))
+        for model in names:
+            tmp = results[model][filename]["accuracy"]
+            x = [tmp[i][0] for i in range(len(tmp))]
+            y = [tmp[i][1] for i in range(len(tmp))]
+            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.ylabel("Accuracy")
+        plt.xlabel("Element")
+        plt.ylim(0,1)
+        plt.title(dataset_name + " accuracy")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
+        # plt.show()
+        plt.clf()
+
+        colors = [results[model][filename]["color"] for model in names]
+
+        plt.figure(figsize=(23.38582, 16.53544))
+        heights = [results[model][filename]["energy"] for model in names]
+        plt.boxplot(heights)
+        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
+        plt.ylabel("Joules")
+        plt.ylim(0,25)
+        plt.title(dataset_name + " Energy")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_energy" + ".png")
+        plt.clf()
+
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        heights = [results[model][filename]["power"] for model in names]
+        plt.boxplot(heights)
+        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
+
+        plt.ylabel("Watt")
+        plt.title(dataset_name + " Power")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_power" + ".png")
+        plt.clf()
+
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        heights = [results[model][filename]["time"] for model in names]
+        plt.boxplot(heights)
+        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
+
+        plt.ylabel("Second")
+        plt.title(dataset_name + " Runtime")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_runtime" + ".png")
+        plt.clf()
+
+def additional_computation(results):
+    print("Done")
+    filename = "processed_subject1_ideal_shuf.log"
+    pattern = re.compile("Mondrian T10 1.0-.*")
     # filename = "dataset_1.arff"
     # model_name = "Mondrian Lifetime: 2 Base measure: 0.5 Discount factor: 0.2 Tree count: 10"
     for model in results:
