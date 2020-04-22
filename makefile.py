@@ -4,7 +4,7 @@ import math
 import os
 import csv
 import random
-import statistics
+import statistics, re
 from statistics import mean
 import matplotlib.pyplot as plt
 from random import shuffle
@@ -30,7 +30,49 @@ def latex():
     subprocess.call(["make"], cwd="paper/")
 
 #Build the dataset
-def dataset():
+def dataset_banos():
+    output_directory = "/tmp/"
+    input_directory = "recofit/"
+    filenames = ["subject_62.log"]
+    ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
+    filenames = ["subject_" + str(i) + ".log" for i in ids]
+    for filename in filenames:
+        try:
+            in_f = open(input_directory + filename,"r")
+            output_filename = output_directory + \
+                                "processed_" + \
+                                os.path.basename(filename)
+            out_f = open(output_filename,"w")
+            process_file(in_f, out_f, 50)
+            print(filename)
+        except IOError:
+            print("Could not open file: " + filename)
+    return
+
+def process_file(in_f, out_f, window_size):
+    window = []
+    a = 0
+    for line in in_f:
+        window.append(line.split("\t"))
+        if len(window) >= window_size:
+            a = a+1
+            features = extract_features(window)
+            window = []
+            out_f.write("\t".join(features) + "\n")
+
+def extract_features(window):
+    starting_index = 2
+    window_transposed = [[float(i) if i != "" else 0.0 for i in x] for x in zip(*window)]
+
+    features = []
+    for i in range(2, 5):
+        features.append(mean(window_transposed[i]))
+        features.append(stdev(window_transposed[i]))
+    #Extract the most frequent label in the window and use it as the label for the data point.
+    features.append(max(set(window_transposed[-1]), key = window_transposed[-1].count))
+    return [str(i) for i in features]
+
+def dataset_recofit():
     output_directory = "/tmp/"
     input_directory = "sensor_dataset/"
     filenames = ["subject1_ideal.log"]
@@ -47,28 +89,6 @@ def dataset():
         except IOError:
             print("Could not open file: " + filename)
     return
-
-def process_file(in_f, out_f, window_size):
-    window = []
-    for line in in_f:
-        window.append(line.split("\t"))
-        if len(window) >= window_size:
-            features = extract_features(window)
-            window = []
-            out_f.write("\t".join(features) + "\n")
-
-def extract_features(window):
-    starting_index = 2
-    window_transposed = [[float(i) for i in x] for x in zip(*window)]
-
-    features = []
-    for i in range(2, 5):
-        features.append(mean(window_transposed[i]))
-        features.append(stdev(window_transposed[i]))
-    #Extract the most frequent label in the window and use it as the label for the data point.
-    features.append(max(set(window_transposed[-1]), key = window_transposed[-1].count))
-    return [str(i) for i in features]
-
 model_hashes = {}
 
 def get_model_id(model_name):
