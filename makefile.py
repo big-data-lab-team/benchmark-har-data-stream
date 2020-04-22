@@ -429,15 +429,62 @@ def additional_computation(results):
     filename = "processed_subject1_ideal_shuf.log"
     pattern = re.compile("Mondrian T10 1.0-.*")
     # filename = "dataset_1.arff"
-    # model_name = "Mondrian Lifetime: 2 Base measure: 0.5 Discount factor: 0.2 Tree count: 10"
-    for model in results:
-        tmp = results[model][filename]["accuracy"]
-        x = [d[0] for d in tmp]
-        plt.plot(x, [d[1] for d in tmp], label=model, color=results[model][filename]["color"])
+    # for pattern in [re.compile("Mondrian T10 0.8-0.0.*"), \
+            # re.compile("MLP.*"), \
+            # re.compile("Mondrian T10 1.0-.*"), \
+            # re.compile("Mondrian T1 1.0-.*"), \
+            # re.compile("Mondrian T1(0)? 1.0-[0\\.1]{3}-.*"), \
+            # re.compile("Mondrian T[0-9]+ 1.0-0.5-.*"), \
+            # re.compile("Mondrian T[0-9]+ 1.0-0.1-.*"), \
+            # re.compile("Mondrian T1 .{3}-0.5-.*"), \
+            # re.compile("Mondrian T1 .{3}-0.1-.*"), \
+            # re.compile("Mondrian T10 .{3}-0.1-.*"), \
+            # # re.compile("(HT.*|HAT.*)"), \
+            # # re.compile("(HT.*|HAT.*)"), \
+            # re.compile("MCNN 40.*"),\
+            # re.compile("MCNN 10.*"),\
+            # re.compile("MCNN 20.*")
+            # ]:
+        # break
+        # for model in results:
+            # if pattern.match(model):
+                # tmp = results[model][filename]["accuracy"]
+                # x = [d[0] for d in tmp]
+                # plt.plot(x, [d[1] for d in tmp], label=model, color=results[model][filename]["color"])
 
-    # plt.plot([x/33 for x in class_repartition], label="Hipster")
+        # # plt.plot([x/33 for x in class_repartition], label="Hipster")
+        # plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        # plt.savefig("perf_accuracy.png", bbox_inches="tight")
+        # plt.ylabel("Accuracy")
+        # plt.xlabel("Element")
+        # plt.ylim(0,1)
+        # plt.show()
+        # plt.clf()
+
+    print("look best of")
+    for pattern in [\
+                    re.compile("MCNN 50 [^C]*C0.*"), \
+                    re.compile("MCNN 50 [^C]*C1.*"), \
+                    re.compile("MCNN 50 [^C]*C1 - 50.*"), \
+                    re.compile("Hoeffding"), \
+                    re.compile("Empty")]:
+        model_name = []
+        average = 0
+        for model in results:
+            if pattern.match(model):
+                m = mean([d[1] for d in results[model][filename]["accuracy"][-250:]])
+                if m > average:
+                    actual_plot = model
+                    average = m
+        tmp = results[actual_plot][filename]["accuracy"]
+        x = [d[0] for d in tmp]
+        plt.plot(x, [d[1] for d in tmp], label=actual_plot, color=results[actual_plot][filename]["color"])
+
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.savefig("perf_accuracy.png", bbox_inches="tight")
+    plt.ylabel("Accuracy")
+    plt.xlabel("Element")
+    plt.ylim(0,1)
     plt.show()
     plt.clf()
 
@@ -471,7 +518,6 @@ def additional_computation(results):
     plt.rcParams["figure.figsize"][1] = 10
     plt.savefig("runs_energy.png", bbox_inches="tight")
 
-    plt.show()
     plt.clf()
 
     heights = [mean(map(float, results[model][filename]["time"])) for model in results]
@@ -480,8 +526,6 @@ def additional_computation(results):
     plt.xticks([i for i in range(len(x))], x, rotation=90)
 
     plt.ylabel("Seconds")
-    plt.rcParams["figure.figsize"][0] = 10
-    plt.rcParams["figure.figsize"][1] = 10
     plt.savefig("runs_time.png", bbox_inches="tight")
 
     plt.clf()
