@@ -100,35 +100,87 @@ def write_model_ids(filename):
     f = open(filename, "w")
     for key, value in model_hashes.items():
         f.write(value + "," + key + "\n")
+def calibration_list(commands):
+    for filename in ["processed_subject1_ideal_shuf.log"]:
+        for run_id in map(str,range(10)):
+            seed = str(random.randint(0, 2**24))
+            model_id = get_model_id("Empty," + filename)
+            commands.append(["bin/banos/empty_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("Previous," + filename)
+            commands.append(["bin/banos/previous_classifier", filename, seed, model_id, run_id])
+            for cluster in ["10", "20", "32", "33", "34", "40", "50"]:
+                for error_th in ["2", "4", "8", "10", "16"]:
+                    for cleaning in ["0", "1", "2"]:
+                        if cleaning == "0":
+                            model_id = get_model_id("MCNN," + filename + "," + cluster + "," + error_th + "," + cleaning + ",10")
+                            commands.append(["bin/banos/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, "10"])
+                        else:
+                            for performance_th in ["10", "30", "50", "70", "90"]:
+                                model_id = get_model_id("MCNN," + filename + "," + cluster + "," + error_th + "," + cleaning + "," + performance_th)
+                                commands.append(["bin/banos/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, performance_th])
+
+            # for hidden_layer_size in ["1", "3", "5", "7", "9", "11"]:
+                # for learning_rate in ["0.01", "0.05", "0.1", "0.15", "0.2"]:
+                    # model_id = get_model_id("MLP," + filename + "," + learning_rate + ",3," + hidden_layer_size)
+                    # commands.append(["bin/banos/mlp_3", filename, seed, model_id, run_id, learning_rate, hidden_layer_size])
+
+
+            # for confidence in ["0.01"]:
+                # for grace_period in ["10"]:
+                    # for adaptive in ["0", "1"]:
+                        # model_id = get_model_id("StreamDM HoeffdingTree," + filename + "," + adaptive + "," + confidence + "," + grace_period)
+                        # commands.append(["bin/banos/streamdm_ht", filename, seed, model_id, run_id, adaptive, confidence, grace_period])
+
+            # for base_count in ["0.0", "0.01", "0.05", "0.005", "0.1", "0.3", "0.8"]:
+                # for budget in ["2.0", "1.6", "0.8", "0.6"]:
+                    # for discount in ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]:
+                        # for tree_count in [1, 5, 20, 10, 50]:
+                            # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + discount)
+                            # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
+def final_list(commands):
+    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos", "recofit"]:
+        filename = "/tmp/" + dataset_name + ".log"
+        for run_id in map(str,range(50)):
+            seed = str(random.randint(0, 2**24))
+            model_id = get_model_id("Empty," + filename)
+            commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("Previous," + filename)
+            commands.append(["bin/" + dataset_name + "/previous_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("MCNN," + filename + ",50,2,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c50", filename, seed, model_id, run_id, "2", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",10,16,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "16", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",20,4,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "4", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",40,4,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "4", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",33,10,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "10", "0", "10"])
+            model_id = get_model_id("Mondrian1," + filename + ",0.8,0.1,1.0")
+            commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
+            model_id = get_model_id("Mondrian5," + filename + ",0.8,0.0,1.0")
+            commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.8", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian10," + filename + ",0.6,0.0,1.0")
+            commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.6", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian50," + filename + ",0.6,0.0,0.1")
+            commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
+            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
+            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
+            model_id = get_model_id("NaiveBaye," + filename)
+            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
+            model_id = get_model_id("StreamDM NaiveBaye," + filename)
+            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
 def run(output_filename, run_output_filename):
     dataset_filenames = ["/tmp/processed_subject1_ideal_shuf.log"]
     # dataset_filenames = ["sensor_dataset/windowed/processed_full_shuf.log"]
-    # dataset_filenames = ["dataset_1.arff"]
+    # dataset_filenames = ["dataset_1.log", "dataset_2.log", "dataset_3.log", "sensor_dataset/windowed/processed_full_shuf.log"]
+    dataset_filenames = ["sensor_dataset/windowed/processed_full_shuf.log"]
     output_file = open(output_filename, "w")
     run_output_file = open(run_output_filename, "w")
     commands = []
-    for filename in dataset_filenames:
-        for run_id in map(str,range(1)):
-            seed = str(random.randint(0, 2**24))
-            model_id = get_model_id("Empty," + filename)
-            commands.append(["./empty_classifier", filename, seed, model_id, run_id])
-            model_id = get_model_id("Previous," + filename)
-            commands.append(["./previous_classifier", filename, seed, model_id, run_id])
-
-            for cluster in ["10", "20", "31", "33", "34", "40", "50", "100"]:
-                model_id = get_model_id("MCNN," + filename + "," + cluster + ",10,10")
-                commands.append(["./mcnn_c" + cluster + "e10p10", filename, seed, model_id, run_id])
-
-            model_id = get_model_id("HoeffdingTree," + filename)
-            commands.append(["./streamdm", filename, seed, model_id, run_id])
-
-            # for base_count in ["0.1", "0.2", "0.3", "0.4", "0.5", "1.0", "1.2", "1.4", "1.6"]:
-                # for budget in ["2.0", "1.8", "1.6", "1.4", "1.2", "1.0", "0.8", "0.6"]:
-                    # for tree_count in [1, 5, 10, 50]:
-                        # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + "0.2")
-                        # commands.append(["./mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, "0.2"])
-
+    calibration_list(commands)
+    # final_list(commands)
 
     shuffle(commands)
 
