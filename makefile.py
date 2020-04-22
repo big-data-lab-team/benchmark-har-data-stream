@@ -555,10 +555,13 @@ if len(sys.argv) > 1:
     if sys.argv[1] == "run":
         run("/tmp/output", "/tmp/output_runs")
     if sys.argv[1] == "dataset":
-        dataset()
+        dataset_banos()
     if sys.argv[1] == "latex":
         latex()
     if sys.argv[1] == "process":
-        results = process_output("/tmp/output", "/tmp/output_runs", "models.csv")
+        # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
+        results = process_output("tmp/output", "tmp/output_runs", "tmp/models.csv")
+        # results = process_output("results/output", "results/output_runs", "results/models.csv")
+        # print_results(results)
         additional_computation(results)
 
