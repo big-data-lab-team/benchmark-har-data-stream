@@ -38,33 +38,43 @@ and memory).
 
 %How to we mine those data? Which framework?
 \subsection{Related Work}
-\cite{memory_consumption_machine_learning}
+%Implemented in R modules
+%List des classifier, quel sont les résultat
+%The comparison in, the benchmark done in, the study in
+%Profiling
+%EN discussion, compared avec les résultat obtenu dans ce papier.
+%En future work, éventuellement pousser la
+%comparaison pour évaluer les étape de chaque algo en terme mémoire/énergy
+The work in \cite{memory_consumption_machine_learning}
 explores the memory consumption and
 the runtime of many R classifiers. The conclusion proposes different ways to
 limit the overhead related to the implementation of the R module.
 
 \cite{Janidarmian_2017} is an extensive study that
-observes offline classifiers'
-performance with wearable sensor data. This study shows high accuracy using a
-K-fold validation and good accuracy when using subject-independent
-cross-validation. It also explores different sensor placement as well as
-different window sizes. The conclusion states that KNN is the most stable
-classifier across sensor placement and window
-size. Additionally to the
-classification performances, the study also analyzes the trade-off between
-runtime and efficiency.
+observes offline classifiers' performance with
+wearable sensor data. This study shows high
+accuracy using a K-fold validation and good
+accuracy when using subject-independent
+cross-validation. It also explores different
+sensor placement as well as different window
+sizes. The conclusion states that KNN is the most
+stable classifier across sensor placement and
+window size. Additionally to the classification
+performances, the study also analyzes the
+trade-off between runtime and efficiency.
 
-\cite{omid_2019} studies the feasibility of running classifier directly on
-wearable sensors. The paper focuses on a comparison between a Feedforward
-Neural Network~(FNN) and a K-nearest neighbor~(KNN). It shows
-that a trained neural network achieves high
-accuracy and performs better than KNN. The dataset
-was acquired with the Neblina, a wearable sensor
-placed on the right forearm. The data from the
-Nebline was merged to send to the computer a
-stream of 9-axis. Only then, the stream was
-processed to extract features and feed the
-classifier.
+\cite{omid_2019} studies the feasibility of
+running classifier directly on wearable sensors.
+The paper focuses on a comparison between a
+Feedforward Neural Network~(FNN) and a K-nearest
+neighbor~(KNN). It shows that a trained neural
+network achieves high accuracy and performs better
+than KNN. The dataset was acquired with the
+Neblina, a wearable sensor placed on the right
+forearm. The data from the Nebline was merged to
+send to the computer a stream of 9-axis. Only
+then, the stream was processed to extract features
+and feed the classifier.
 
 These three studies compared classification
 performances, runtime, and resource usage of many
@@ -80,5 +90,7 @@ constant. Therefore, only the runtime affects
 energy consumption, and reducing the runtime
 reduces the energy needed.
 
+%Étendre related work, regarder les papiers qui ont cité ces papier
+%En particulier la référence Janidarmian_2017, pareil pour memory_consumption_machine_learning
 
 % vim: tw=50 ts=2
