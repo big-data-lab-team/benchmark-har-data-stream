@@ -8,9 +8,11 @@ template<class feature_type, int label_count, int feature_count>
 class HoeffdingTreeClassifier{
 	HT::HoeffdingTree* ht = nullptr;
 	InstanceInformation* ii = nullptr;
+	Instance* instance = nullptr;
+	vector<double> labels, values;
 
 	public:
-	HoeffdingTreeClassifier(bool const adaptive, double const confidence, int const grace_period){
+	HoeffdingTreeClassifier(bool const adaptive, double const confidence, int const grace_period): labels(1), values(feature_count){
 		if(adaptive)
 			ht = new HT::HoeffdingAdaptiveTree();
 		else
@@ -26,31 +28,29 @@ class HoeffdingTreeClassifier{
 			vec[i] = to_string(i);
 		}
 		ii->addClass(new Attribute(vec), 0);
+		instance = new DenseInstance();
+		instance->setInstanceInformation(ii);
 
 	}
 	inline bool train(feature_type const* features, int const label){
-		vector<feature_type> values(features, features+feature_count);
-		vector<double> labels(1, static_cast<double>(label));
-		Instance* instance = new DenseInstance();
-		instance->setInstanceInformation(ii);
+		for(int i = 0; i < feature_count; ++i)
+			values[i] = features[i];
+		labels[0] = label;
 		instance->addLabels(labels);
 		instance->addValues(values);
 		ht->train(*instance);
 
-		delete instance;
 		return true;
 	}
 	inline int predict(feature_type const* features){
-		vector<feature_type> values(features, features+feature_count);
-		Instance* instance = new DenseInstance();
-		instance->setInstanceInformation(ii);
+		for(int i = 0; i < feature_count; ++i)
+			values[i] = features[i];
 		instance->addValues(values);
 		double* predictions = ht->getPrediction(*instance);
 		int hightest = 0;
 		for(int i = 0; i < label_count; ++i)
 			if(predictions[i] > predictions[hightest])
 				hightest = i;
-		delete instance;
 		return hightest;
 	}
 };
