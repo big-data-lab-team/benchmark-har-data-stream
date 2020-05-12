@@ -179,8 +179,10 @@ int main(int argc, char** argv){
 	Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
 	if(classifier != nullptr){
+		//while(classifier->err() > 0.0001)
 		int datapoint_count = process_file<FEATURES_COUNT, LABEL_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
 	}
+	delete classifier;
 	return 0;
 }
 
