@@ -5,6 +5,8 @@ import os
 import csv
 import random
 import statistics, re
+import pandas as pd
+import seaborn as sns
 from statistics import mean
 import matplotlib.pyplot as plt
 from random import shuffle
@@ -32,7 +34,7 @@ def latex():
 #Build the dataset
 def dataset_banos():
     output_directory = "/tmp/"
-    input_directory = "recofit/"
+    input_directory = "recofit/windowed/"
     filenames = ["subject_62.log"]
     ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
     filenames = ["subject_" + str(i) + ".log" for i in ids]
@@ -138,7 +140,7 @@ def calibration_list(commands):
                             # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + discount)
                             # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
 def final_list(commands):
-    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos", "recofit"]:
+    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos", "recofit", "drift"]:
         filename = "/tmp/" + dataset_name + ".log"
         for run_id in map(str,range(50)):
             seed = str(random.randint(0, 2**24))
@@ -166,21 +168,21 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
             model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
             commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
-            model_id = get_model_id("NaiveBaye," + filename)
+            model_id = get_model_id("NaiveBayes," + filename)
             commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
-            model_id = get_model_id("StreamDM NaiveBaye," + filename)
+            model_id = get_model_id("StreamDM NaiveBayes," + filename)
             commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
+            if dataset_name == "banos" or dataset_name == "drift":
+                model_id = get_model_id("FNN," + filename)
+                commands.append(["bin/" + dataset_name + "/mlp_3", filename, seed, model_id, run_id, "0.001", "3"])
+
 
 def run(output_filename, run_output_filename):
-    dataset_filenames = ["/tmp/processed_subject1_ideal_shuf.log"]
-    # dataset_filenames = ["sensor_dataset/windowed/processed_full_shuf.log"]
-    # dataset_filenames = ["dataset_1.log", "dataset_2.log", "dataset_3.log", "sensor_dataset/windowed/processed_full_shuf.log"]
-    dataset_filenames = ["sensor_dataset/windowed/processed_full_shuf.log"]
     output_file = open(output_filename, "w")
     run_output_file = open(run_output_filename, "w")
     commands = []
-    calibration_list(commands)
-    # final_list(commands)
+    # calibration_list(commands)
+    final_list(commands)
 
     shuffle(commands)
 
@@ -224,204 +226,206 @@ def run(output_filename, run_output_filename):
 
         print(str(i) + "/" + str(len(commands)))
 
-def process_output(output_filename, run_output_filename, model_filename):
+def read_models(filename):
     models = {}
-    model_file = open(model_filename, "r")
+    model_file = open(filename, "r")
     csv_structure = csv.reader(model_file)
-    #Read the model file
     for row in csv_structure:
-        color = hashStringToColor(row[1] + "".join(row[3:]))
-        models[row[0]] = {"name": row[1], "file": row[2], "color": color}
-        if row[1].find("Mondrian") >= 0:
-            models[row[0]]["lifetime"] = row[3]
-            models[row[0]]["base"] = row[4]
-            models[row[0]]["discount"] = row[5]
-            models[row[0]]["fullname"] = "Mondrian T" + row[1][row[1].find("Mondrian")+8:] + " " + row[3] + "-" + row[4] + "-" + row[5]
-        elif row[1] == "MCNN":
-            models[row[0]]["cluster_count"] = row[3]
-            models[row[0]]["error_threshold"] = row[4]
-            models[row[0]]["cleaning"] = row[5]
-            models[row[0]]["perf_threshold"] = row[6]
-            models[row[0]]["fullname"] = "MCNN " + row[3] + " (" + row[4] + ") + C" + row[5] + " - " + row[6]
-        elif row[1] == "StreamDM HoeffdingTree":
-            models[row[0]]["confidence"] = row[4]
-            models[row[0]]["grace_period"] = row[5]
-            models[row[0]]["adaptive"] = row[3]
-            if models[row[0]]["adaptive"] == "1":
-                models[row[0]]["fullname"] = "StreamDM HAT c" + row[3] + " (" + row[4] + ")"
-            else:
-                models[row[0]]["fullname"] = "StreamDM HT c" + row[3] + " (" + row[4] + ")"
-        elif row[1] == "MLP":
-            models[row[0]]["learning_rate"] = row[3]
-            models[row[0]]["layer_count"] = row[4]
-            models[row[0]]["hidden_size"] = row[5]
-            models[row[0]]["fullname"] = "MLP L" + row[3] + " (" + row[5] + ")"
-        else:
-            models[row[0]]["fullname"] = models[row[0]]["name"]
+      color = hashStringToColor(row[1] + "".join(row[3:]))
+      models[row[0]] = {"name": row[1], "file": row[2], "color": color}
+      if row[1].find("Mondrian") >= 0:
+          models[row[0]]["lifetime"] = row[3]
+          models[row[0]]["base"] = row[4]
+          models[row[0]]["discount"] = row[5]
+          models[row[0]]["fullname"] = "Mondrian T" + row[1][row[1].find("Mondrian")+8:] + " " + row[3] + "-" + row[4] + "-" + row[5]
+      elif row[1] == "MCNN":
+          models[row[0]]["cluster_count"] = row[3]
+          models[row[0]]["error_threshold"] = row[4]
+          models[row[0]]["cleaning"] = row[5]
+          models[row[0]]["perf_threshold"] = row[6]
+          models[row[0]]["fullname"] = "MCNN " + row[3] + " (" + row[4] + ") + C" + row[5] + " - " + row[6]
+      elif row[1] == "StreamDM HoeffdingTree":
+          models[row[0]]["confidence"] = row[4]
+          models[row[0]]["grace_period"] = row[5]
+          models[row[0]]["adaptive"] = row[3]
+          if models[row[0]]["adaptive"] == "1":
+              models[row[0]]["fullname"] = "StreamDM HAT c" + row[3] + " (" + row[4] + ")"
+          else:
+              models[row[0]]["fullname"] = "StreamDM HT c" + row[3] + " (" + row[4] + ")"
+      elif row[1] == "MLP":
+          models[row[0]]["learning_rate"] = row[3]
+          models[row[0]]["layer_count"] = row[4]
+          models[row[0]]["hidden_size"] = row[5]
+          models[row[0]]["fullname"] = "MLP L" + row[3] + " (" + row[5] + ")"
+      elif row[1] == "FNN":
+          # models[row[0]]["learning_rate"] = row[3]
+          # models[row[0]]["layer_count"] = row[4]
+          # models[row[0]]["hidden_size"] = row[5]
+          models[row[0]]["fullname"] = "FNN"
+      else:
+          models[row[0]]["fullname"] = models[row[0]]["name"]
+    return models
+
+def process_output(output_filename, run_output_filename, model_filename):
+    def add_names(row, models):
+        return models[str(int(row['model_id']))]['fullname']
+    def add_files(row, models):
+        return models[str(int(row['model_id']))]['file']
+    def add_color(row, models):
+        return models[str(int(row['model_id']))]['color']
+    def add_library(row, models):
+        if models[str(int(row['model_id']))]['fullname'].find('StreamDM') >= 0:
+            return 'StreamDM'
+        return 'OrpailleCC'
+    def add_algorithm(row, models):
+        if models[str(int(row['model_id']))]['fullname'].find('Naive') >= 0:
+            return 'NaiveBaye'
+        if models[str(int(row['model_id']))]['fullname'].find('Naive') >= 0:
+            return 'NaiveBaye'
+        if models[str(int(row['model_id']))]['fullname'].find('Mondrian') >= 0:
+            return 'Mondrian Forest'
+        if models[str(int(row['model_id']))]['fullname'].find('MCNN') >= 0:
+            return 'MCNN'
+        if models[str(int(row['model_id']))]['fullname'].find('MLP') >= 0:
+            return 'MLP'
+        if models[str(int(row['model_id']))]['fullname'].find('FNN') >= 0:
+            return 'FNN'
+        return 'Unknown'
 
 
-    results = {}
+    models = read_models(model_filename)
+    output = pd.read_csv(output_filename)
+    output_runs = pd.read_csv(run_output_filename)
+    output.columns = ['model_id', 'run_id', 'element_count', 'seed', 'accuracy', 'f1', 'memory']
+    output_runs.columns = ['model_id', 'run_id', 'time', 'energy', 'power']
+    print("Adding Fullname")
+    output['fullname'] = output.apply(lambda r: add_names(r, models), axis=1)
+    print("Adding File")
+    output['file'] = output.apply(lambda r: add_files(r, models), axis=1)
+    # print("Adding Color")
+    # output['color'] = output.apply(lambda r: add_color(r, models), axis=1)
+    # print("Adding Library")
+    # output['library'] = output.apply(lambda r: add_library(r, models), axis=1)
+    # print("Adding Algorithm")
+    # output['algorithm'] = output.apply(lambda r: add_algorithm(r, models), axis=1)
 
-    #Read the output file that contains output about the data processed.
-    output_file = open(output_filename, "r")
-    csv_structure = csv.reader(output_file)
-    for row in csv_structure:
-        name = models[row[0]]["fullname"]
-        filename = models[row[0]]["file"]
-        color = models[row[0]]["color"]
-        if name not in results:
-            results[name] = {filename : {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}, "power": []}}
-        elif filename not in results[name]:
-            results[name][filename] = {"color": color, "accuracy": {}, "energy": [], "time": [], "f1": {}, "memory": {}, "power": []}
+    print("Adding to output run")
+    output_runs['fullname'] = output_runs.apply(lambda r: add_names(r, models), axis=1)
+    output_runs['file'] = output_runs.apply(lambda r: add_files(r, models), axis=1)
+    output_runs['color'] = output_runs.apply(lambda r: add_color(r, models), axis=1)
+    output_runs['library'] = output_runs.apply(lambda r: add_library(r, models), axis=1)
+    output_runs['algorithm'] = output_runs.apply(lambda r: add_algorithm(r, models), axis=1)
+    return (output, output_runs, models)
 
-        #I know, it is awful :) Enjoy reading this code
-        for type_perf in [("accuracy", 5), ("f1", 4), ("memory", 6)]:
-            perf_name = type_perf[0]
-            perf_idx = type_perf[1]
-            if len(row[perf_idx]) > 0:
-                if row[1] not in results[name][filename][perf_name]:
-                    results[name][filename][perf_name][row[1]] = [[row[2], row[perf_idx]]]
-                else:
-                    results[name][filename][perf_name][row[1]].append([row[2], row[perf_idx]])
+def print_results(output, output_runs, models, output_directory="."):
+    def add_markers(x):
+        if x[0].find('FNN') >= 0:
+            return '^'
+        elif x[0].find('MCNN') >= 0:
+            return 'x'
+        elif x[0].find('Mondrian') >= 0:
+            return 's'
+        elif x[0].find('NaiveBayes') >= 0:
+            return 'o'
+        elif x[0].find('HT') >= 0:
+            return '*'
+        elif x[0].find('Empty') >= 0:
+            return 'X'
+        return ''
+    def add_style(x):
+        if x[0].find('StreamDM') >= 0:
+            return ':'
+        return '-'
 
-    #Read the run output file that contains data about the run itself.
-    run_output_file = open(run_output_filename, "r")
-    csv_structure = csv.reader(run_output_file)
-    for row in csv_structure:
-        name = models[row[0]]["fullname"]
-        filename = models[row[0]]["file"]
-        #The name should exist, otherwise that would mean there wasn't any other output for this (model,filename)
-        if row[3] != "":
-            results[name][filename]["energy"].append(float(row[3]))
-        if row[2] != "":
-            results[name][filename]["time"].append(float(row[2]))
-        if row[4] != "":
-            results[name][filename]["power"].append(float(row[4]))
+    keys = sorted(list(set([(models[key]['fullname'], models[key]['color']) for key in models])), key = lambda x: x[0])
+    print(len(keys))
+    names = [key[0] for key in keys]
+    colors = [key[1] for key in keys]
+    markers = [add_markers(key) for key in keys]
+    styles = [add_style(key) for key in keys]
+    print(names)
+    print(colors)
+    print(markers)
+    print(styles)
 
-    for model_name in results:
-        for filename in results[model_name]:
-            results[model_name][filename]["accuracy"] = [ results[model_name][filename]["accuracy"][key] for key in results[model_name][filename]["accuracy"]]
-            results[model_name][filename]["f1"] = [ results[model_name][filename]["f1"][key] for key in results[model_name][filename]["f1"]]
-            results[model_name][filename]["memory"] = [ results[model_name][filename]["memory"][key] for key in results[model_name][filename]["memory"]]
-
-    # results = {} #{model name: {filename: {accuracy: [AA], energy: [value for each run]}}}
-                 #[AA]: a list of accuracy for each run
-                 # AA : a list of accuracy, each element contains [number of data points, accuracy]
-
-    for model in results:
-        for filename in results[model]:
-            results[model][filename]["f1"] = aggregate_list_measurement(results[model][filename]["f1"])
-            results[model][filename]["accuracy"] = aggregate_list_measurement(results[model][filename]["accuracy"])
-            results[model][filename]["memory"] = aggregate_list_measurement(results[model][filename]["memory"])
-
-    return results
-
-def print_results(results, output_directory="."):
-    for filename in ["/tmp/dataset_3.log", "/tmp/dataset_2.log", "/tmp/dataset_1.log", "/tmp/processed_full_shuf.log"]:
-        names = sorted([model for model in results])
-        lines = {}
-        markers = {}
-        for name in names:
-            if name.find("MCNN") >= 0:
-                markers[name] = "s"
-                lines[name] = "-"
-            elif name.find("Mondrian") >= 0:
-                markers[name] = "*"
-                lines[name] = "-"
-            elif name.find("StreamDM") >= 0:
-                if name.find("Naive") >= 0:
-                    markers[name] = "o"
-                else:
-                    markers[name] = "x"
-                lines[name] = ":"
-            elif name.find("Naive") >= 0:
-                markers[name] = "o"
-                lines[name] = "-"
-            else:
-                markers[name] = ""
-                lines[name] = "-"
-        dataset_name = filename[filename.rfind("/")+1:filename.rfind(".")]
-        print(dataset_name)
-
+    for dataset_name in ['drift', 'banos', 'recofit', 'dataset_1', 'dataset_2', 'dataset_3']:
+        print('Dataset: ' + dataset_name)
+        print('\t- Energy')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        for model in names:
-            tmp = results[model][filename]["memory"]
-            x = [tmp[i][0] for i in range(len(tmp))]
-            y = [tmp[i][1] for i in range(len(tmp))]
-            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
-        plt.ylabel("KByte")
-        plt.xlabel("Element")
-        plt.title(dataset_name + " memory usage")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
-        # plt.show()
-        plt.clf()
-
-        fig = plt.figure(figsize=(23.38582, 16.53544))
-        for model in names:
-            tmp = results[model][filename]["f1"]
-            x = [tmp[i][0] for i in range(len(tmp))]
-            y = [tmp[i][1] for i in range(len(tmp))]
-            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
-        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.ylabel("F1")
-        plt.xlabel("Element")
-        plt.ylim(0,1)
-        plt.title(dataset_name + " F1 score")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
-        # plt.show()
-        plt.clf()
-
-        plt.figure(figsize=(23.38582, 16.53544))
-        for model in names:
-            tmp = results[model][filename]["accuracy"]
-            x = [tmp[i][0] for i in range(len(tmp))]
-            y = [tmp[i][1] for i in range(len(tmp))]
-            plt.plot(x, y, markers[model], ls=lines[model], label=model, color=results[model][filename]["color"], markevery=50)
-        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-        plt.ylabel("Accuracy")
-        plt.xlabel("Element")
-        plt.ylim(0,1)
-        plt.title(dataset_name + " accuracy")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
-        # plt.show()
-        plt.clf()
-
-        colors = [results[model][filename]["color"] for model in names]
-
-        plt.figure(figsize=(23.38582, 16.53544))
-        heights = [results[model][filename]["energy"] for model in names]
-        plt.boxplot(heights)
-        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
-        plt.ylabel("Joules")
-        plt.ylim(0,25)
+        sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
+        sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Energy")
+        plt.xticks(rotation=90)
+        plt.ylabel("Joules")
+        plt.xlabel("Algorithm")
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_energy" + ".png")
         plt.clf()
 
+        print('\t- Power')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        heights = [results[model][filename]["power"] for model in names]
-        plt.boxplot(heights)
-        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
-
-        plt.ylabel("Watt")
+        sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
+        sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Power")
+        plt.xticks(rotation=90)
+        plt.ylabel("Watt")
+        plt.xlabel("Algorithm")
         plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_power" + ".png")
+        plt.savefig(output_directory + "/" + dataset_name + "_watt" + ".png")
         plt.clf()
 
-        fig = plt.figure(figsize=(23.38582, 16.53544))
-        heights = [results[model][filename]["time"] for model in names]
-        plt.boxplot(heights)
-        plt.xticks([i+1 for i in range(len(names))], names, rotation=90)
-
-        plt.ylabel("Second")
+        print('\t- Time')
+        sns.boxplot(x="fullname", hue="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
+        sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Runtime")
+        plt.xticks(rotation=90)
+        plt.ylabel("Second")
+        plt.xlabel("Algorithm")
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_runtime" + ".png")
+        plt.clf()
+
+        daty = output[output.file.str.contains(dataset_name)]
+        daty = daty[['fullname', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['fullname', 'element_count']).mean().reset_index()
+
+
+        print('\t- F1')
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for name, color, marker, style in zip(names, colors, markers, styles):
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+        plt.title(dataset_name + " F1-score")
+        plt.ylim(0,1)
+        plt.ylabel("F1")
+        plt.xlabel("Element")
+        ax.legend()
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
+        plt.clf()
+
+
+        print('\t- Accuracy')
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for name, color, marker, style in zip(names, colors, markers, styles):
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+        plt.title(dataset_name + " Accuracy")
+        plt.ylim(0,1)
+        plt.ylabel("Accuracy")
+        plt.xlabel("Element")
+        ax.legend()
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
+        plt.clf()
+
+        print('\t- Memory')
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for name, color, marker, style in zip(names, colors, markers, styles):
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+        plt.title(dataset_name + " Memory")
+        plt.ylabel("KB")
+        plt.xlabel("Element")
+        ax.legend()
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
         plt.clf()
 
 def additional_computation(results):
@@ -560,8 +564,7 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        results = process_output("tmp/output", "tmp/output_runs", "tmp/models.csv")
-        # results = process_output("results/output", "results/output_runs", "results/models.csv")
-        # print_results(results)
-        additional_computation(results)
+        output, output_runs, models = process_output("result_3/output", "result_3/output_runs", "result_3/models.csv")
+        # print_results(output[output.element_count%50 == 0],  output_runs, models)
+        print_results(output, output_runs, models)
 
