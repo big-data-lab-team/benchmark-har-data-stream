@@ -48,10 +48,9 @@ class functions{
 	static double activation(double input){
 		return 1.0 / (1 + exp(-input));
 	}
-	static int derivative(double const x){
+	static double derivative(double const x){
 		return x * (1 - x);
 	}
-
 };
 
 
