@@ -140,9 +140,10 @@ def calibration_list(commands):
                             # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + discount)
                             # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
 def final_list(commands):
-    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos", "recofit", "drift"]:
+    # for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos", "recofit", "drift"]:
+    for dataset_name in ['banos']:
         filename = "/tmp/" + dataset_name + ".log"
-        for run_id in map(str,range(50)):
+        for run_id in map(str,range(1)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
             commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
@@ -192,37 +193,34 @@ def run(output_filename, run_output_filename):
 
     #Run every commands
     for i in range(len(commands)):
-        command = commands[i]
         #insert energy measurement
-        command.insert(0,"./AppPowerMeter")
+        command = ['sudo', 'perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
+        command.extend(commands[i])
         print(" ".join(command))
 
         #run and get the output
-        out = subprocess.check_output(command)
+        out = subprocess.check_output(command, stderr=subprocess.STDOUT)
 
         #read output line by line
+        joules = 0
+        seconds = 0
         for line in out.decode("utf-8").split("\n"):
             #Some lines are empty so we need to get rid of them
             if len(line) > 0:
                 #If the line starts with a number, it is already a csv line
                 #Otherwise, we need to check for power of timing
                 if line[0] not in {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}:
-                    if line.startswith("\tTotal Energy:\t"):
-                        joule_index = line.find(" J", 15)
-                        energy = line[15:joule_index]
-                        run_output_file.write(command[4] + "," + command[5] + ",," + energy + ",\n")
-                        #The line of power contains the linecount of -1
-                    if line.startswith("\tAverage Power:\t"):
-                        watt_index = line.find(" W", 16)
-                        watt = line[16:watt_index]
-                        run_output_file.write(command[4] + "," + command[5] + ",,," + watt + "\n")
-                    if line.startswith("\tTime:\t"):
-                        sec_index = line.find(" sec", 7)
-                        timy = line[7:sec_index]
-                        run_output_file.write(command[4] + "," + command[5] + "," + timy + ",,\n")
-                        #The line of power contains the linecount of -1
+                    line = line.strip()
+                    joule_index = line.find(' Joules')
+                    second_index = line.find(' seconds')
+                    if joule_index > 0:
+                        joules += float(line[0:joule_index].replace(',', '.'))
+                    if second_index > 0:
+                        seconds += float(line[0:second_index].replace(',', '.'))
                 else:
                     output_file.write(line + "\n")
+
+        run_output_file.write(commands[i][3] + ',' + commands[i][4] + ',' + str(seconds) + ',' + str(joules) + ',' + str(joules/seconds) + '\n')
 
         print(str(i) + "/" + str(len(commands)))
 
