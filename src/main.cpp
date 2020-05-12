@@ -142,7 +142,7 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 			}
 			classifier->train(features, label);
 			line_count += 1;
-			if(line_count%40 == 0){
+			if(line_count%50 == 0){
 				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
 				//rewind cursor
 				statm.seekg(0, ios::beg);
@@ -154,9 +154,9 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 				}
 				cout << endl;
 			}
-			else if(line_count%10 == 0){
-				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
-			}
+			//else if(line_count%50 == 0){
+				//cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
+			//}
 #ifdef BANOS
 		}
 #endif
