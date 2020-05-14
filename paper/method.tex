@@ -76,6 +76,28 @@ point was the most frequent label in the window.
 The resulting data points were shuffled
 across subjects.
 
+From the \banosdataset, we derived another dataset
+that involve a drift. After half of the data
+points, we shifted the activity labels.
+
+\subsubsection{\recofitdataset}
+The \recofitdataset dataset~\cite{recofit} is a
+human activity dataset obtained with 94
+participants. Similarly to the \banosdataset
+dataset, the activity labelled 0 indicates no
+specific activity.
+Since many of these activities are similar, we
+merged some of them together. 
+\MK{no paper on that, just Omid report.}
+
+We pre-processed the dataset similarly to the
+\banosdataset, using non-overlapping windows of
+one second, and only using the 3 acceleration axes
+of the 6 axis data. From these 3 axis, we computed
+features as the average and the standard deviation
+over the window. The label assigned to this data
+point was the most frequent label in the window.
+
 \subsubsection{MOA dataset}
 Massive Online Analysis~\cite{moa} (MOA) is a Java framework to compare
 data stream classifiers. In addition to classification algorithms, MOA provides many
