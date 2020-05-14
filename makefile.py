@@ -241,7 +241,12 @@ def read_models(filename):
           models[row[0]]["error_threshold"] = row[4]
           models[row[0]]["cleaning"] = row[5]
           models[row[0]]["perf_threshold"] = row[6]
-          models[row[0]]["fullname"] = "MCNN " + row[3] + " (" + row[4] + ") + C" + row[5] + " - " + row[6]
+          if row[5] == '1':
+              models[row[0]]["fullname"] = "MCNN Paper " + row[3] + " (" + row[4] + ") " + row[6]
+          elif row[5] == '2':
+              models[row[0]]["fullname"] = "MCNN Mixe " + row[3] + " (" + row[4] + ") " + row[6]
+          else:
+              models[row[0]]["fullname"] = "MCNN OrpailleCC " + row[3] + " (" + row[4] + ")"
       elif row[1] == "StreamDM HoeffdingTree":
           models[row[0]]["confidence"] = row[4]
           models[row[0]]["grace_period"] = row[5]
@@ -290,7 +295,6 @@ def process_output(output_filename, run_output_filename, model_filename):
             return 'FNN'
         return 'Unknown'
 
-
     models = read_models(model_filename)
     output = pd.read_csv(output_filename)
     output_runs = pd.read_csv(run_output_filename)
@@ -318,40 +322,74 @@ def process_output(output_filename, run_output_filename, model_filename):
 def print_results(output, output_runs, models, output_directory="."):
     def add_markers(x):
         if x[0].find('FNN') >= 0:
-            return '^'
-        elif x[0].find('MCNN') >= 0:
-            return 'x'
-        elif x[0].find('Mondrian') >= 0:
             return 's'
-        elif x[0].find('NaiveBayes') >= 0:
-            return 'o'
-        elif x[0].find('HT') >= 0:
+        elif x[0].find('MCNN') >= 0:
+            if models[x[1]]['cluster_count'] == '10':
+                return 's'
+            if models[x[1]]['cluster_count'] == '20':
+                return 'o'
+            if models[x[1]]['cluster_count'] == '33':
+                return '*'
+            if models[x[1]]['cluster_count'] == '40':
+                return 'x'
+            if models[x[1]]['cluster_count'] == '50':
+                return '^'
+        elif x[0].find('Mondrian T10') >= 0:
             return '*'
+        elif x[0].find('Mondrian T50') >= 0:
+            return 'x'
+        elif x[0].find('Mondrian T1') >= 0:
+            return 's'
+        elif x[0].find('Mondrian T5') >= 0:
+            return 'o'
+        elif x[0].find('NaiveBayes') >= 0:
+            return 's'
+        elif x[0].find('HT') >= 0:
+            return 's'
         elif x[0].find('Empty') >= 0:
-            return 'X'
+            return 's'
+        return ''
+    def add_colors(x):
+        if x[0].find('FNN') >= 0:
+            return '#9400D3'
+        elif x[0].find('MCNN') >= 0:
+            if models[x[1]]['cleaning'] == '0':
+                return '#5BE33D'
+            else:
+                return '#FF69B4'
+        elif x[0].find('Mondrian') >= 0:
+            return '#00BFFF'
+        elif x[0].find('NaiveBayes') >= 0:
+            return '#4169E1'
+        elif x[0].find('HT') >= 0:
+            return '#FF8C00'
+        elif x[0].find('Empty') >= 0:
+            return '#F20B13'
+        elif x[0].find('Previous') >= 0:
+            return '#FFB6C1'
         return ''
     def add_style(x):
         if x[0].find('StreamDM') >= 0:
             return ':'
         return '-'
 
-    keys = sorted(list(set([(models[key]['fullname'], models[key]['color']) for key in models])), key = lambda x: x[0])
+    keys = sorted(dict([(models[key]['fullname'], key) for key in models]).items(), key = lambda x: x[0])
     print(len(keys))
     names = [key[0] for key in keys]
-    colors = [key[1] for key in keys]
+    colors = [add_colors(key) for key in keys]
     markers = [add_markers(key) for key in keys]
     styles = [add_style(key) for key in keys]
     print(names)
     print(colors)
     print(markers)
     print(styles)
-
+    plt.rcParams.update({'font.size': 22})
     for dataset_name in ['drift', 'banos', 'recofit', 'dataset_1', 'dataset_2', 'dataset_3']:
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
-        sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, alpha=0.75)
+        sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
+        sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Energy")
         plt.xticks(rotation=90)
         plt.ylabel("Joules")
@@ -362,7 +400,7 @@ def print_results(output, output_runs, models, output_directory="."):
 
         print('\t- Power')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
+        sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], palette=colors, order=names, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
         sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Power")
         plt.xticks(rotation=90)
@@ -373,8 +411,8 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.clf()
 
         print('\t- Time')
-        sns.boxplot(x="fullname", hue="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, dodge=False)
-        sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, hue_order=names, alpha=0.75)
+        sns.boxplot(x="fullname", hue="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
+        sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         plt.title(dataset_name + " Runtime")
         plt.xticks(rotation=90)
         plt.ylabel("Second")
@@ -389,13 +427,14 @@ def print_results(output, output_runs, models, output_directory="."):
 
         print('\t- F1')
         fig = plt.figure(figsize=(23.38582, 16.53544))
+
         for name, color, marker, style in zip(names, colors, markers, styles):
-            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+        plt.legend(prop={"size":20})
         plt.title(dataset_name + " F1-score")
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
-        ax.legend()
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
         plt.clf()
@@ -404,12 +443,12 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- Accuracy')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+        plt.legend(prop={"size":20})
         plt.title(dataset_name + " Accuracy")
         plt.ylim(0,1)
         plt.ylabel("Accuracy")
         plt.xlabel("Element")
-        ax.legend()
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
@@ -417,11 +456,11 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, label=name)
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+        plt.legend(prop={"size":20})
         plt.title(dataset_name + " Memory")
         plt.ylabel("KB")
         plt.xlabel("Element")
-        ax.legend()
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
         plt.clf()
@@ -562,7 +601,7 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        output, output_runs, models = process_output("result_3/output", "result_3/output_runs", "result_3/models.csv")
+        output, output_runs, models = process_output("result_4/output", "result_4/output_runs", "result_4/models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
 
