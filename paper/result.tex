@@ -3,22 +3,56 @@ In this section, we present the final results. Additionnally to these results,
 we also provide tuning results that have guided our algorithm selection.
 
 \subsection{Banos results}
-Figure~\ref{fig:best-of-accuracy} show the accuracy on the Banos dataset.
+Figure show the accuracy on the Banos dataset.
 
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{figures/Banos_S1_shuf_Best_of.png}
-	\caption{Accuracy on the Banos dataset. Solid lines correspond to Mondrian classifiers. On the other hand, dashed and dotted lines represent MCNN algorithm.}
-	\label{fig:best-of-accuracy}
+	\includegraphics[width=\linewidth]{figures/results/banos_f1.png}
+	\caption{F1-score on the Banos dataset.}
 \end{figure}
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{figures/energy.png}
-	\caption{Energy consumed for each algorithm on the Banos dataset.}
+	\includegraphics[width=\linewidth]{figures/results/banos_watt.png}
+	\caption{Power needed for each algorithm on the Banos dataset.}
 \end{figure}
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{figures/memory.png}
+	\includegraphics[width=\linewidth]{figures/results/banos_runtime.png}
+	\caption{Runtime on the Banos dataset.}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/banos_memory.png}
 	\caption{Memory used by the algorithms on the Banos dataset.}
 \end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/drift_f1.png}
+	\caption{Impact of an artificial drift.}
+\end{figure}
 
+\subsection{Recofit results}
+Figure show the accuracy on the Recofit dataset.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/recofit_f1.png}
+	\caption{F1-score on the Recofit dataset.}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/recofit_watt.png}
+	\caption{Power needed for each algorithm on the Recofit dataset.}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/recofit_runtime.png}
+	\caption{Runtime on the Recofit dataset.}
+\end{figure}
+
+\subsection{Synthetic datasets results}
+Figure show the accuracy on the Recofit dataset.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/dataset_3_f1.png}
+	\caption{F1-score on the third synthetic dataset.}
+\end{figure}
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{figures/results/dataset_3_watt.png}
+	\caption{Power needed for each algorithm on the third synthetic dataset.}
+\end{figure}
 \subsection{Micro-Cluster Nearest Neighbor tuning}
 Figure~\ref{fig:mcnn-tuning-error} show the impact of the error threshold on different number of cluster.
 \begin{figure}[H]
