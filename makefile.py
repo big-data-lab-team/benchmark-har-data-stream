@@ -159,13 +159,13 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "4", "0", "10"])
             model_id = get_model_id("MCNN," + filename + ",33,10,0,10")
             commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "10", "0", "10"])
-            model_id = get_model_id("Mondrian1," + filename + ",0.8,0.1,1.0")
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1")
             commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
-            model_id = get_model_id("Mondrian5," + filename + ",0.8,0.0,1.0")
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.0,1.0,5")
             commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.8", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian10," + filename + ",0.6,0.0,1.0")
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,1.0,10")
             commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.6", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian50," + filename + ",0.6,0.0,0.1")
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,0.1,50")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
             model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
             commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
@@ -231,10 +231,11 @@ def read_models(filename):
     for row in csv_structure:
       color = hashStringToColor(row[1] + "".join(row[3:]))
       models[row[0]] = {"name": row[1], "file": row[2], "color": color}
-      if row[1].find("Mondrian") >= 0:
+      if row[1] == 'Mondrian':
           models[row[0]]["lifetime"] = row[3]
           models[row[0]]["base"] = row[4]
           models[row[0]]["discount"] = row[5]
+          models[row[0]]["tree_count"] = row[6]
           models[row[0]]["fullname"] = "Mondrian T" + row[1][row[1].find("Mondrian")+8:] + " " + row[3] + "-" + row[4] + "-" + row[5]
       elif row[1] == "MCNN":
           models[row[0]]["cluster_count"] = row[3]
@@ -242,7 +243,7 @@ def read_models(filename):
           models[row[0]]["cleaning"] = row[5]
           models[row[0]]["perf_threshold"] = row[6]
           if row[5] == '1':
-              models[row[0]]["fullname"] = "MCNN Paper " + row[3] + " (" + row[4] + ") " + row[6]
+              models[row[0]]["fullname"] = "MCNN Origin " + row[3] + " (" + row[4] + ") " + row[6]
           elif row[5] == '2':
               models[row[0]]["fullname"] = "MCNN Mixe " + row[3] + " (" + row[4] + ") " + row[6]
           else:
@@ -271,7 +272,21 @@ def read_models(filename):
 
 def process_output(output_filename, run_output_filename, model_filename):
     def add_names(row, models):
-        return models[str(int(row['model_id']))]['fullname']
+        key = str(int(row['model_id']))
+        name = models[key]['name']
+        if name == 'Mondrian':
+            return name + ' ' + models[key]['tree_count']
+        elif name == 'MCNN':
+            if models[key]['cleaning'] == '1':
+                return 'MCNN Origin ' + models[key]['cluster_count']
+            elif models[key]['cleaning'] == '2':
+                return 'MCNN Mixe ' + models[key]['cluster_count']
+            else:
+                return 'MCNN OrpailleCC ' + models[key]['cluster_count']
+        elif name == 'StreamDM HoeffdingTree':
+            return name
+        else:
+            return models[key]['fullname']
     def add_files(row, models):
         return models[str(int(row['model_id']))]['file']
     def add_color(row, models):
@@ -334,14 +349,15 @@ def print_results(output, output_runs, models, output_directory="."):
                 return 'x'
             if models[x[1]]['cluster_count'] == '50':
                 return '^'
-        elif x[0].find('Mondrian T10') >= 0:
-            return '*'
-        elif x[0].find('Mondrian T50') >= 0:
-            return 'x'
-        elif x[0].find('Mondrian T1') >= 0:
-            return 's'
-        elif x[0].find('Mondrian T5') >= 0:
-            return 'o'
+        elif x[0].find('Mondrian') >= 0:
+            if models[x[1]]['tree_count'] == '10':
+                return '*'
+            elif models[x[1]]['tree_count'] == '50':
+                return 'x'
+            elif models[x[1]]['tree_count'] == '1':
+                return 's'
+            elif models[x[1]]['tree_count'] == '5':
+                return 'o'
         elif x[0].find('NaiveBayes') >= 0:
             return 's'
         elif x[0].find('HT') >= 0:
@@ -360,11 +376,11 @@ def print_results(output, output_runs, models, output_directory="."):
         elif x[0].find('Mondrian') >= 0:
             return '#00BFFF'
         elif x[0].find('NaiveBayes') >= 0:
-            return '#4169E1'
-        elif x[0].find('HT') >= 0:
+            return '#F20B13'
+        elif x[0].find('HT') >= 0 or x[0].find('HoeffdingTree') >= 0:
             return '#FF8C00'
         elif x[0].find('Empty') >= 0:
-            return '#F20B13'
+            return '#000000'
         elif x[0].find('Previous') >= 0:
             return '#FFB6C1'
         return ''
@@ -372,8 +388,28 @@ def print_results(output, output_runs, models, output_directory="."):
         if x[0].find('StreamDM') >= 0:
             return ':'
         return '-'
+    def add_key(key):
+        name = models[key]['name']
+        if name == 'Mondrian':
+            return (name + ' ' + models[key]['tree_count'], key, (name, int(models[key]['tree_count'])))
+        elif name == 'MCNN':
+            if models[key]['cleaning'] == '1':
+                return ('MCNN Origin ' + models[key]['cluster_count'], key, ('MCNN Origin', int(models[key]['cluster_count'])))
+            elif models[key]['cleaning'] == '2':
+                return ('MCNN Mixe ' + models[key]['cluster_count'], key, ('MCNN Mixe', int(models[key]['cluster_count'])))
+            else:
+                return ('MCNN OrpailleCC ' + models[key]['cluster_count'], key, ('MCNN OrpailleCC', int(models[key]['cluster_count'])))
+        else:
+            return (name, key, (name, 0))
 
-    keys = sorted(dict([(models[key]['fullname'], key) for key in models]).items(), key = lambda x: x[0])
+    dataset_title = {'banos': 'Banos et al', 'recofit': 'Recofit', 'drift': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree'}
+    #(print name, key in models, tuple for sorting)
+    keys = [add_key(key) for key in models if models[key]['fullname'] != 'Previous']
+    #grounp the third and second value to use dict to do a unique
+    keys = dict([(key[0], (key[1], key[2])) for key in keys]).items()
+    #Unpack the value part to separate the key and the sorting tuple
+    keys = [(key[0], key[1][0], key[1][1]) for key in keys]
+    keys = sorted(keys, key = lambda x: x[2])
     print(len(keys))
     names = [key[0] for key in keys]
     colors = [add_colors(key) for key in keys]
@@ -388,9 +424,12 @@ def print_results(output, output_runs, models, output_directory="."):
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
-        sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
-        plt.title(dataset_name + " Energy")
+        ax = sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
+        ax.legend().remove()
+        ax = sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
+        ax.legend().remove()
+        plt.title(dataset_title[dataset_name] + " Energy")
+        ax.legend().remove()
         plt.xticks(rotation=90)
         plt.ylabel("Joules")
         plt.xlabel("Algorithm")
@@ -400,9 +439,12 @@ def print_results(output, output_runs, models, output_directory="."):
 
         print('\t- Power')
         fig = plt.figure(figsize=(23.38582, 16.53544))
-        sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], palette=colors, order=names, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
-        sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
-        plt.title(dataset_name + " Power")
+        ax = sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], palette=colors, order=names, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
+        ax.legend().remove()
+        ax = sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
+        ax.legend().remove()
+        plt.title(dataset_title[dataset_name] + " Power")
+        plt.ylim(95, 105)
         plt.xticks(rotation=90)
         plt.ylabel("Watt")
         plt.xlabel("Algorithm")
@@ -411,9 +453,12 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.clf()
 
         print('\t- Time')
-        sns.boxplot(x="fullname", hue="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
-        sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
-        plt.title(dataset_name + " Runtime")
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        ax = sns.boxplot(x="fullname", hue="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
+        ax.legend().remove()
+        ax = sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
+        ax.legend().remove()
+        plt.title(dataset_title[dataset_name] + " Runtime")
         plt.xticks(rotation=90)
         plt.ylabel("Second")
         plt.xlabel("Algorithm")
@@ -430,11 +475,22 @@ def print_results(output, output_runs, models, output_directory="."):
 
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        plt.legend(prop={"size":20})
-        plt.title(dataset_name + " F1-score")
+        plt.legend(prop={"size":20}, ncol=3)
+        plt.title(dataset_title[dataset_name] + " F1-score")
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
+
+        # plt.legend(handlelength=0, handletextpad=0, fontsize=14, bbox_to_anchor=(0.98, 0), loc="lower right", bbox_transform=plt.gcf().transFigure, ncol=4)
+        # plt.subplots_adjust(bottom=0.25)
+        # leg = plt.gca().get_legend()
+        # for i in range(len(sorted_regions)):
+            # leg.legendHandles[i].set_visible(False)
+        # plt.gca().xaxis.tick_top()
+        # plt.gca().xaxis.set_ticks_position('top')
+        # plt.gca().xaxis.set_label_position('top')
+        # plt.gca().xaxis.grid(True, alpha=0.3)
+
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
         plt.clf()
@@ -444,8 +500,8 @@ def print_results(output, output_runs, models, output_directory="."):
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        plt.legend(prop={"size":20})
-        plt.title(dataset_name + " Accuracy")
+        plt.legend(prop={"size":20}, ncol=3)
+        plt.title(dataset_title[dataset_name] + " Accuracy")
         plt.ylim(0,1)
         plt.ylabel("Accuracy")
         plt.xlabel("Element")
@@ -457,8 +513,8 @@ def print_results(output, output_runs, models, output_directory="."):
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        plt.legend(prop={"size":20})
-        plt.title(dataset_name + " Memory")
+        plt.legend(prop={"size":20}, ncol=3)
+        plt.title(dataset_title[dataset_name] + " Memory")
         plt.ylabel("KB")
         plt.xlabel("Element")
         plt.tight_layout()
@@ -604,4 +660,3 @@ if len(sys.argv) > 1:
         output, output_runs, models = process_output("result_4/output", "result_4/output_runs", "result_4/models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
-
