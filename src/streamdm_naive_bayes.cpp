@@ -42,7 +42,13 @@ class NaiveBayesClassifier{
 		for(int i = 0; i < label_count; ++i)
 			if(predictions[i] > predictions[hightest])
 				hightest = i;
+		delete predictions;
 		return hightest;
+	}
+	~NaiveBayesClassifier(){
+		delete learner;
+		delete ii;
+		delete instance;
 	}
 };
 NaiveBayesClassifier<double, LABEL_COUNT, FEATURES_COUNT>* get_classifier(int seed, int argc, char** argv){
