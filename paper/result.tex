@@ -3,15 +3,16 @@ In this section, we present the final results. Additionnally to these results,
 we also provide tuning results that have guided our algorithm selection.
 
 \subsection{F1}
-Figure~\ref{fig:f1} shows the f1-scores for four datasets: \banosdataset,
+Figure~\ref{fig:f1-banos},~\ref{fig:f1-recofit},~\ref{fig:f1-dataset_3},
+and~\ref{fig:f1-drift} shows the f1-scores for four datasets: \banosdataset,
 RandomTree, \recofitdataset, and \banosdataset with a drift in the middle.  We
 observe that on the long run, the Mondrian algorithm with 5 or 10 trees achieve
 the best f1-scores.  On most of the datasets (\banosdataset, \recofitdataset,
 RandomTree) the best Mondrian is followed by the NaiveBayes classifiers.  On
 \banosdataset, they both reach a f1-score between 0.5 and 0.6, while they
 barely reach 0.3 on \recofitdataset and RandomTree. On the other hand, with
-RandomRBF and the Hyperplane datasets, Mondrian reach f1-scores above 0.9.
-We also note that on the real datasets (\banosdataset and \recofitdataset), the
+RandomRBF and the Hyperplane datasets, Mondrian reach f1-scores above 0.9.  We
+also note that on the real datasets (\banosdataset and \recofitdataset), the
 NaiveBayes algorithm learns faster than the Mondrian. The Mondrian catches up
 after a few thousand elements. Even though it is difficult to notice on most of
 the datasets, we can see on \banosdataset that MCNN OrpailleCC leans faster
@@ -26,7 +27,7 @@ when the trees have not learn enough from the data. However, when the memory
 available is increased, using 50 trees achieve better f1-scores than using 10
 trees.
 
-On Figure~\ref{fig:f1}, we can see two type of MCNN: MCNN Origin and MCNN
+On Figure~\ref{fig:f1-banos}, we can see two type of MCNN: MCNN Origin and MCNN
 OrpailleCC. Both algorithm are implemented in the library OrpailleCC, however
 MCNN Origin strictly follow the algorithm described in~\cite{mc-nn} where as
 MCNN OrpailleCC tweak this algorithm to ensure a fixed memory footprint. The
@@ -36,9 +37,10 @@ micro-cluster when its participation falls below a threshold given by the user
 participation when the maximum number of micro-cluster is reached and we need
 to introduce a new one.
 
-Figure~\ref{fig:f1} shows that in all cases, MCNN-OrpailleCC achieves better
-performance than its MCNN-Origin counter-part. Additionnally, most of the time,
-any MCNN-OrpailleCC performs better than all MCNN-Origin.
+Figure~\ref{fig:f1-banos},~\ref{fig:f1-recofit},~\ref{fig:f1-dataset_3},
+and~\ref{fig:f1-drift} shows that in all cases, MCNN-OrpailleCC achieves
+better performance than its MCNN-Origin counter-part. Additionnally, most of
+the time, any MCNN-OrpailleCC performs better than all MCNN-Origin.
 
 Figure~\ref{fig:f1-drift} shows the F1-score when an artificial drift is
 applied on the \banosdataset. We observe that the f1-score of the Mondrian
@@ -64,14 +66,17 @@ datasets: \banosdataset and \recofitdataset.
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/banos_f1.png}
 	\caption{F1-score on the Banos dataset.}
+	\label{fig:f1-banos}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/recofit_f1.png}
 	\caption{F1-score on the Recofit dataset.}
+	\label{fig:f1-recofit}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/dataset_3_f1.png}
 	\caption{F1-score on the third synthetic dataset.}
+	\label{fig:f1-dataset_3}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/drift_f1.png}
@@ -80,7 +85,7 @@ datasets: \banosdataset and \recofitdataset.
 \end{figure}
 
 \subsection{Power}
-Figure~\ref{fig:power} show the power usage of each classifiers on three
+Figure~\ref{fig:power-banos},~\ref{fig:power-recofit}, and~\ref{fig:power-dataset_3} show the power usage of each classifiers on three
 datasets. We notice that the classifier choosen have very little impact on the
 power usage which remains at 100 watts. We note that the measurements are often
 split in two clusters separated by 1 watt.
@@ -91,19 +96,21 @@ be 100 watt and cannot go below.
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/banos_watt.png}
 	\caption{Power needed for each algorithm on the Banos dataset.}
-	\label{fig:power}
+	\label{fig:power-banos}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/recofit_watt.png}
 	\caption{Power needed for each algorithm on the Recofit dataset.}
+	\label{fig:power-recofit}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/dataset_3_watt.png}
-	\caption{Power needed for each algorithm on the third synthetic dataset.}
+	\caption{Power usage for each algorithm on the RandomTree dataset.}
+	\label{fig:power-dataset_3}
 \end{figure}
 
 \subsection{Runtime}
-Figure~\ref{fig:runtime} shows the runtime results on two datasets:
+Figure~\ref{fig:runtime-banos},~\ref{fig:runtime-recofit} shows the runtime results on two datasets:
 \banosdataset and \recofitdataset. We observe that the Mondrian algorithm is
 the slowest especially with high number of trees.
 It is then followed by the HoeffdingTree. Depending on the dataset, the
@@ -123,11 +130,13 @@ more cluster we use, the slower it gets.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/banos_runtime.png}
-	\caption{Runtime on the Banos dataset.}
+	\caption{Runtime on the \banosdataset dataset.}
+	\label{fig:runtime-banos}
 \end{figure}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/recofit_runtime.png}
-	\caption{Runtime on the Recofit dataset.}
+	\caption{Runtime on the \recofitdataset dataset.}
+	\label{fig:runtime-recofit}
 \end{figure}
 
 \subsection{Memory}
@@ -141,9 +150,9 @@ a memory constraint to make the space complexity constant.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{figures/results/banos_memory.png}
+	\label{fig:memory}
 	\caption{Memory used by the algorithms on the Banos dataset.}
 \end{figure}
-
 
 \subsection{Micro-Cluster Nearest Neighbor tuning}
 Figure~\ref{fig:mcnn-tuning-error} show the impact of the error threshold on different number of cluster.
