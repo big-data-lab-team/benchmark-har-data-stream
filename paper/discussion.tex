@@ -1,18 +1,34 @@
 \section{Discussion}
 %Mondrian has the greatest F1-scores, however, slow runtime
-From this study we observed that the Mondrian algorithm presents the best classification performances.
-However, we have also noticed that it is the slowest classifier.
+From this study we observed that the Mondrian algorithm presents the best
+classification performances.  However, we have also noticed that it is the
+slowest classifier.
+
+Concerning the high performance of the HoeffdingTree on
+Figure~\ref{fig:f1-dataset_3}, we would like to remind that the RendomTree
+dataset is a synthetic dataset generated using a tree structure. Therefore, we
+expected the tree-based classifiers to show better performances.  However, we
+noticed that from the two tree-based classifiers, only the HoeffdingTree
+achieved such performance.  We suspect this difference to be caused by the lack
+of split optimization in the Mondrian trees. Indeed, the Mondrian behavior is
+more related to a nearest neighboor because it tries to split the space in
+boxes of equal sizes rather than finding the best split. The good prediction is
+then obtained by combining multiple trees in a forest.
 
 %Link with litterature
 
 %All F1-scores remains low
-We notice that most of the f1-scores are low.
+We observed that most of the f1-scores are low with the real datasets.
 
 %Pk 1 capteur
+In this study, we focus on using one sensor rather than all the sensors
+available in the real datasets because it is more likely for a user to have one
+sensor. It is cheaper to buy or build one sensor, and it is faster to setup.
+
 %Pk 3 axes.
 
 %Puissance, pk pas de différence significative (platform)
-Section~\ref{sec:power} shows no power difference between classifier. This
+Section~\ref{sec:result-power} shows no power difference between classifier. This
 observation is explainable by two factors. The plateform used is too powerful
 and it was already working at minimal power. Indeed, to ensure no disturbance
 by a background process, we run the classifier on an isolated cluster node with
