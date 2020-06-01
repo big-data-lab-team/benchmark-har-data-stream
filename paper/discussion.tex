@@ -1,0 +1,40 @@
+\section{Discussion}
+%Mondrian has the greatest F1-scores, however, slow runtime
+From this study we observed that the Mondrian algorithm presents the best classification performances.
+However, we have also noticed that it is the slowest classifier.
+
+%Link with litterature
+
+%All F1-scores remains low
+We notice that most of the f1-scores are low.
+
+%Pk 1 capteur
+%Pk 3 axes.
+
+%Puissance, pk pas de différence significative (platform)
+Section~\ref{sec:power} shows no power difference between classifier. This
+observation is explainable by two factors. The plateform used is too powerful
+and it was already working at minimal power. Indeed, to ensure no disturbance
+by a background process, we run the classifier on an isolated cluster node with
+eight cores. Therefore, the power difference on one core is not noticable.
+
+Another reason is regarding the dataset size. Indeed, the slowest run is about
+10 seconds with 50 Mondrian trees on \recofitdataset dataset.  Such short
+execution does not leave the time for the CPU to switch P-states because it
+barely warms a core.
+
+% Mémoire contrainte, partir sur l'exploration : toute xp faite à mémoire constante, qu'est-ce qu'il se passe ac' + de mémoire.
+In section~\ref{sec:result-memory}, we differenciate bounded memory and
+constant space complexity because in the first case, a limited amount of memory
+may impact the classifier performances. On the other hand, a constant space
+complexity is a feature of a classifier and its performances are not expected
+to change no  matter the amount of memory available. The classifier is simply
+supposed to fail without the required amount of memory.
+
+
+%Conclusion : Improve mondrian runtime
+
+
+
+
+
