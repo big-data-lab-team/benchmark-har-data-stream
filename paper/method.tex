@@ -199,7 +199,7 @@ of a node closer to the prediction of its parent.
 Finally, the budget controls the tree depth.
 
 \paragraph{Naive Bayes~\cite{naive_bayes}}
-The Naive Bayes algorithm keeps a table of
+The naive Bayes algorithm keeps a table of
 counters for each feature's values and each label.
 During prediction, the algorithm assigns a
 score for each label depending on how the data
@@ -210,7 +210,7 @@ The implementation from StreamDM was used in this
 benchmark. It uses a Gaussian
 estimation for numeric attributes.
 
-In a Naïve Bayes classifier, the smoothing is the
+In a naïve Bayes classifier, the smoothing is the
 default counter given to an attribute value that
 have not been seen to avoid score of zeros.
 We do not use any smoothing since the datasets
