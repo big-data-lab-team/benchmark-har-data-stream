@@ -51,7 +51,6 @@ class HoeffdingTreeClassifier{
 		for(int i = 0; i < label_count; ++i)
 			if(predictions[i] > predictions[hightest])
 				hightest = i;
-		delete predictions;
 		return hightest;
 	}
 };
