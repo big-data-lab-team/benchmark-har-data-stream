@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream> 
+#include <string> 
 #include <sstream>
 #include <cmath>
 #include "utils.hpp"
@@ -133,6 +134,7 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 		if(label > 0){
 			label -= 1; //We removed the zero
 #endif
+#ifndef NN_TRAINING
 			int const prediction = classifier->predict(features);
 			if(seen_label[label]){
 				evaluator->count(prediction, label);
@@ -140,7 +142,9 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 			else{
 				seen_label[label] = true;
 			}
+#endif
 			classifier->train(features, label);
+#ifndef NN_TRAINING
 			line_count += 1;
 			if(line_count%50 == 0){
 				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
@@ -154,9 +158,10 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 				}
 				cout << endl;
 			}
-			//else if(line_count%50 == 0){
-				//cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
-			//}
+			else if(line_count%50 == 0){
+				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
+			}
+#endif
 #ifdef BANOS
 		}
 #endif
@@ -179,8 +184,10 @@ int main(int argc, char** argv){
 	Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
 	if(classifier != nullptr){
-		//while(classifier->err() > 0.0001)
-		int datapoint_count = process_file<FEATURES_COUNT, LABEL_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
+#ifdef NN_TRAINING
+		while(classifier->err() > 0.000001)
+#endif
+			int datapoint_count = process_file<FEATURES_COUNT, LABEL_COUNT, functions>(model_id, run_id, seed, filename, classifier, &evaluator);
 	}
 	delete classifier;
 	return 0;

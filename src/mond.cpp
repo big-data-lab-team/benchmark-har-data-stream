@@ -1,8 +1,6 @@
 #include <mondrian.hpp>
 
 
-#define SIZE 600000
-
 MondrianForest<double, functions, TREE_COUNT, FEATURES_COUNT, LABEL_COUNT, SIZE>* get_classifier(int seed, int argc, char** argv){
 	if(argc < 3){
 		cout << "usage: <lifetime> <base_measure> <discount_factor>" << endl;
