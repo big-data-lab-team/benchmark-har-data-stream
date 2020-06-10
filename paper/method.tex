@@ -4,48 +4,49 @@ either StreamDM-Cpp~\cite{StreamDM-CPP} or
 OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a
 C++ implementation of StreamDM~\cite{StreamDM}, a
 software to mine big data streams using Spark
-Streaming. StreamDM-Cpp is faster than
-StreamDM on small scale, most likely because of
-the overhead induced by Spark. However, StreamDM-Cpp makes heavy
+Streaming \TG{isn't the official name Apache Spark Streaming? You should also add a URL.}. StreamDM-Cpp is usually faster than
+StreamDM on small datasets, due to
+the overhead induced by Spark, but it makes heavy
 use of the C standard library, in particular the vector and
-list structures that may not be available on embedded systems
-with limited OS functions \TG{This could be explained in intro rather than here.}.
+list structures, which may not be available on embedded systems
+ \TG{This should be explained in intro rather than here.}.
 
 OrpailleCC is a
-collection of data stream algorithms developed to
-be deployed on embedded devices. The key
+collection of data stream algorithms developed for embedded devices. The key
 functions, such as random number generation or memory allocation, are
-parametrizable through the class template and can thus be customized 
+parametrizable through class templates and can thus be customized 
 on a given execution platform.
 OrpailleCC is not limited to classification
 algorithms, it implements other data stream
 algorithms such as the Cuckoo filter~\cite{cuckoo}
 or a multi-dimensional extension of the
-Lightweight Temporal Compression~\cite{multi-ltc}.
+Lightweight Temporal Compression~\cite{multi-ltc}. We extended it with 
+a few classifiers for the purpose of this benchmark.
 
-This benchmark includes six popular algorithms.  The Mondrian
+This benchmark includes six popular classification algorithms.  The Mondrian
 forest~\cite{mondrian2014} builds decision trees independently of class labels,
-which are only used during classification. Mondrian forests are useful in
+and only assign class labels to tree leaves\TG{reworded this but it's still a bit ambiguous}. Mondrian forests are useful in
 situations where labels are delayed, as described
 in~\cite{stream_learning_review}.  The Micro-Cluster Nearest
-Neighbors~\cite{mc-nn} is a compressed version of the K-nearest neighbor~(KNN).
-It claims to be more efficient than its vanilla counterpart on human activity
-recognition. Since a previous study~\cite{Janidarmian_2017} showed that a
-K-nearest neighbor~(KNN) would achieve the best classification performance on
-human activity recognition with data acquired by wearable sensors, we decided
-to include this alternative to the study.  The Naïve Bayes~\cite{naive_bayes}
-and the Hoeffding Tree~\cite{VFDT} are two common algorithms in classification
-and data stream classification.  Finally, Neural Network classifiers have
+Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
+neighbor~(KNN) that was shown to be more efficient for human activity
+recognition \TG{reference? efficient $\rightarrow$ accurate?}. We included
+it since the work in~\cite{Janidarmian_2017} showed that KNN was the
+best-performing classifier for human activity recognition from wearable
+sensors.  The Naïve Bayes~\cite{naive_bayes} classifier
+and the Hoeffding Tree~\cite{VFDT} are two common data stream classifiers \TG{Add a sentence to explain the main idea or feature or Hoeffding tree}.
+Finally, Neural Network classifiers have
 become popular by achieving human-like performance in many fields such as image
-recognition or game playing. For this study, we decided to explore the use of
-Multi-Layer Perceptron with one hidden layer, as adopted in~\cite{omid_2019}.
-This paper tested the Multi-Layer Perceptron on a low-power platform to
-recognize fitness activity and it achieved an
-average F1-score of $0.95$. They used one hidden
-layer with the sigmoid activation except for the
-output which uses the softmax.
+recognition or game playing. We used a
+Multi-Layer Perceptron with one hidden layer, as described in~\cite{omid_2019} for the recognition 
+of fitness activities on a low-power platform.
 
-The remainder of this section describes the datasets, classifiers,
+
+\TG{This is a bit too detailed here: ``with a reported F1-score of $0.95$. They used one hidden
+layer with the sigmoid activation except for the
+output which uses the softmax."}
+
+The remainder of this section details the datasets, classifiers,
 evaluation metrics and parameters used in our benchmark.
 
 \subsection{Datasets}
@@ -62,27 +63,27 @@ equipped with 9 sensors. Each sensor samples a 3D
 acceleration, gyroscope, and magnetic field, as well as 
 the orientation in a quaternion format, producing a total of 13 values.
 Sensors are
-sampled at 50 Hz and each sample is associated
+sampled at 50~Hz, and each sample is associated
 with one of 33 activities. In
 addition to the 33 activities, an extra activity
 labelled 0 indicates no specific activity.
 
-We pre-processed the \banosdataset using
+We pre-processed the \banosdataset dataset using
 non-overlapping windows of one second (50
 samples), and using only the 3 acceleration axes of the
 right forearm sensor. From each axis, features were computed as the
 average and the standard deviation over the window. The label assigned to this data
 point was the most frequent label in the window.
 The resulting data points were shuffled
-across subjects.
+across subjects. \TG{minor comment: this paragraph switches from active to passive voice.}
 
-From the \banosdataset, we derived another dataset
-that involve a drift. After half of the data
-points, we shifted the activity labels.
+In addition, we constructed another dataset from \banosdataset, in which we
+simulated a concept drift by shuffling the activity labels in the
+second half of the data stream. \TG{add one sentence to explain why this is useful}
 
 \subsubsection{\recofitdataset}
 The \recofitdataset dataset~\cite{recofit} is a
-human activity dataset obtained with 94
+human activity dataset containing 94
 participants. Similarly to the \banosdataset
 dataset, the activity labelled 0 indicates no
 specific activity.
@@ -93,7 +94,7 @@ povided in~\cite{behzad2019}.
 We pre-processed the dataset similarly to the
 \banosdataset, using non-overlapping windows of
 one second, and only using the 3 acceleration axes
-of the 6 axis data. From these 3 axis, we computed
+of the 6 axis data. From these 3 axes, we computed
 features as the average and the standard deviation
 over the window. The label assigned to this data
 point was the most frequent label in the window.
@@ -102,20 +103,27 @@ point was the most frequent label in the window.
 Massive Online Analysis~\cite{moa} (MOA) is a Java framework to compare
 data stream classifiers. In addition to classification algorithms, MOA provides many
 tools to read and generate datasets.
-We used these three commands to
-generate three synthetic datasets\footnote{MOA commands available
-\href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
+We generated three synthetic datasets\footnote{MOA commands available \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
 a hyperplane, a RandomRBF, and a RandomTree
-dataset. We generated 20,000 data points
+dataset \TG{juste pour mon info: tu sembles regenerer les datasets a chaque run, utilises-tu la meme graine a chaque fois?}. We generated 20,000 data points
  for each of these synthetic datasets.
-The hyperplane and the RandomRBF have both three features and two classes, however, the RandomRBF has a slight imbalance toward one class.
-The RandomTree dataset is the hardest of the three. It has six attributes and
+The hyperplane and the RandomRBF both have three features and two classes, however, the RandomRBF has a slight imbalance toward one class.
+The RandomTree dataset is the hardest of the three, with six attributes and
 ten classes. Since the data points are generated with a tree structure, we
 expect the decision trees to show better performances than the other
 classifiers.
 \TG{You should put this dataset in the paper repo, and \banosdataset too if the license allows}
 
-\subsection{Algorithm and Implementation}
+\subsection{Algorithms and Implementation}
+
+\TG{nitpick: you should order the algorithms as they were presented in the intro of section II}
+
+\TG{Don't use $\backslash$paragraph for chunks of text with more than 1 paragraph.
+}
+
+\TG{It's a bit weird to have a title followed by a title: maybe add a sentence to explain that 
+you will briefly explain the algorithms, review their parameters, and describe their implementation in OrpailleCC?}
+
 \paragraph{Hoeffding Tree~\cite{VFDT}}
 %\begin{itemize}
 	%\item Reserved size with a given size.
@@ -130,31 +138,29 @@ Similar to a decision tree, the Hoeffding tree recursively splits the space to m
 metric function, often the
 information gain or the Gini index. However,
 instead of using the entire dataset, the Hoeffding
-tree relies on the Hoeffding bound to estimate
-when a leaf should be split. When a prediction is required on a
+tree relies on the Hoeffding bound, \TG{a measure of xxx}, to estimate
+when a leaf should be split. To classify a
 data point, this data point is sorted to a leaf,
-then the training data points in that leaf are
-used to classify. The most common way is to apply a
-majority vote or a Naïve Bayes.
+and a label is predicted by aggregating the labels of the training data points in that leaf, usually through
+majority voting or Naïve Bayes classification.
 
-This classifier is implemented in StreamDM.
+We used this classifier as implemented in StreamDM \TG{StreamDMCpp?}.
 
-This algorithm is common in data stream
+The Hoeffding Tree is common in data stream
 classification, however, it suffers from one main
 disadvantage: once a split is decided, it cannot
 be re-considered which makes this algorithm weak
-to concept drift.
+to concept drifts.
 
 \paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(MCNN) is a
-variant of k-nearest neighbor were data points are
-aggregated into clusters.  During training, the
-algorithm merges a new data point to its closest
+variant of k-nearest neighbor where data points are
+aggregated into clusters to reduce storage requirements.  During training, the
+algorithm merges a new data point to the closest
 cluster that shares the same label. If the closest
 cluster does not share the same label as the data
 point, this closest cluster and the closest
-cluster with the same label as the data point
-receive an error. When a cluster have received too
+cluster with the same label are assigned an error. When a cluster receives too
 many errors, it is split. During classification,
 MCNN returns the label of the closest cluster.
 Regularly, the algorithm also assigns a
@@ -162,26 +168,30 @@ participation score to each cluster and when this
 score gets below a threshold, the cluster is
 removed. Given that the maximum number of clusters
 is fixed, this mechanism helps to make space for
-new clusters in the future.  
+new clusters in the future, and possibly to adjust to concept drifts.  
 
-We implemented MCNN in OrpailleCC. To save computation time, we decided to remove the
-participation threshold mechanism and to remove the
-cluster with the lowest participation
-when space is needed. 
+We implemented two versions of MCNN in OrpailleCC, which differ in the way
+they remove clusters during training. The first version (MCNN Original
+\TG{could you update the name in the figure too?jour}) is similar to the
+mechanism described in~\cite{mc-nn}, based on participation scores.
+Instead, the second version (MCNN OrpailleCC) removes the cluster with the
+lowest participation only when space is needed \TG{which is when?}. \TG{I
+updated this paragraph, pleaase check.}
 
-The MCNN algorithm can be tuned using two
+The MCNN algorithm has two
 parameters: the maximum number of clusters and the
-error threshold after which a cluster is split.
+error threshold after which a cluster is split. \TG{you didn't talk about hyperparameters for hoeffding trees, make sure your descriptions are consistent.}
 
+\TG{somewhere you should explain that your implementations work with a fixed amount of memory, maybe in the presentation of OrpailleCC at the beginning of the section.}
 
 \paragraph{Mondrian Forest~\cite{mondrian2014}}
 Each tree in a Mondrian forest recursively
-splits the space, as a regular decision tree.
-However, the feature to split and the value of the
+splits the space, similar to a regular decision tree.
+However, the feature used in the split and the value of the
 split are decided randomly. The probability to select a feature is 
 proportional to its normalized range. The value for the split is
-uniformly selected in the range of the feature. When asked to predict, a node
-combine its own label observation and its parent prediction.
+uniformly selected in the range of the feature. During prediction, a node
+combines its own label observation \TG{what is a node ``observation''?} with its parent prediction.
 
 In OrpailleCC, the size allocated for the forest
 is set at the beginning and it is shared by all
@@ -210,16 +220,18 @@ The implementation from StreamDM was used in this
 benchmark. It uses a Gaussian
 estimation for numeric attributes.
 
-In a naïve Bayes classifier, the smoothing is the
+In a naïve Bayes classifier, the smoothing parameter is the
 default counter given to an attribute value that
-have not been seen to avoid score of zeros.
-We do not use any smoothing since the datasets
-we are focusing on only contain numeric
+has not been seen. It is meant to avoid scores of zeros.
+We do not use any smoothing since our datasets
+only contain numeric
 attributes. Therefore, as long as there is one data
 point to train with, there will be a Gaussian
 estimation for each attribute.
 
 \paragraph{k-Nearest Neighbors}
+\TG{did you use kNN at all? They don't seem to be in the results.}
+
 The k-Nearest Neighbors~(kNN) is a classification
 algorithm that uses the k nearest data points from
 the training set to classify.  An adaption of this
@@ -278,70 +290,72 @@ during backpropagation.
 \paragraph{Hyperparameters Tuning}
 Hyperparameters were tuned using the first
 subject from the \banosdataset dataset.  The data from
-this subject received the same transformation as
-the \banosdataset (window size of one second,
+this subject was pre-processed as the rest of
+the \banosdataset dataset (window size of one second,
 average and standard deviation on the three
 acceleration axis of the right forearm sensor,
-$\cdots$). We tested multiple values for the
+$\ldots$). We tested multiple values for the
 parameters.  We did
 not explore all the parameters at once, but
 instead a small combination of them each at a
-time.
+time. \TG{that's a bit vague. Did you do grid search?}
 
 \subsection{Evaluation}
-We used the prequential error to evaluate the algorithms. Thus, we tested
-algorithms with each new data point before training with it. Note that when a
-new label is encountered, we do not test the algorithm with the data point, we
-solely train it. We did not apply a fading factor on the metric. We aggregated
-metrics from multiple runs with the average.
+We used the prequential error to evaluate the algorithms \TG{it's a bit weird to have this as a first statement in this section as it only 
+applies to classification performance. I'd move it to the section on classification performance.}, that is, we tested
+algorithms with each new data point before training with it. When a
+new label is encountered, we do \TG{fix switch between present and past} not test the algorithm with the data point, we
+only train it. We did not used any fading factor in the prequential error, and we averaged
+values from multiple runs \TG{what are runs? repetition with different random seeds? in different orders?}.
 
-We measured the F1-score, the accuracy, and the memory footprint periodically
-rather than after each data point. It aleviates the computing load without
-changing the final results.
-We collected the energy metric at the end of each run, alongside the power metric.
+We computed the F1-score, the accuracy, and the memory footprint periodically
+rather than after each data point, to reduce the computing load of the experiment.
+We collected energy consumption at the end of each run, alongside average power.
+
+\TG{just a matter of style, but I feel like your subsections are short enough to just be paragraphs}
 
 %Time to process one element.
 %Explain the concept drift recovery time.
 \subsubsection{Classification Performance}
 We used the accuracy and the F1-score to measure the classification
 performances of the classifiers. These two metrics were computed every ten
-elements to avoid overloading the run with this computation. We did not apply
-any fading factor that could attenuate errors from the beginning.
+elements to avoid overloading the run with this computation \TG{so you
+measure the prequential error (TP, FP, TN, FN for each class) after each
+element but you compute the F1 score only every 10 elements, right? I think the prequential error should be described in this paragraph, to make it clearer.}. We
+did not apply any fading factor that could attenuate errors from the
+beginning.
 
 We computed the
-F1-score\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{Code
-of the F1-score}.} in a one-versus-all fashion for each class, then we took the
-average.  When a class has not been encountered yet, its F1-score is ignored.
+F1-score in a one-versus-all fashion for each class, averaged across all classes
+(macro-average \TG{do you confirm?}, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).  When a class has not been encountered yet, its F1-score is ignored.
 Similarly to the accuracy, we did not apply a fading factor.
 
 \subsubsection{Memory}
-We measured the memory footprint by reading the file "/proc/self/statm". This measure is
-taken every 40 data points to avoid spending too much time reading the file.
+We measured the memory footprint by reading file \texttt{/proc/self/statm} every 40 data points.
 
 \subsubsection{Energy}
-We measured the energy consumption using rapl
-tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}.  We used the
+We measured the total energy and average power consumed by classification
+algorithms using the
 AppPowerMeter\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/makefile.py\#L122}{Code
-is the use of AppPowerMeter here}.} that measures the energy used by the
-computer while an application is running then output the amount of Joules used
-is output at the end of the run alongside the average power in Watts.
-
-We measured the energy consumed by each classifier
-multiple times in a minimal environment. We also added an empty
-classifier that did not classify anything and always
-returned zero, to serve as nominal energy consumption.
+available here}.} tool from rapl
+tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}. We measured
+the energy consumed by each classifier multiple times in a minimal
+environment. To provide a baseline energy consumption, we also added an
+empty classifier that always predicted class 0.
 
 \subsection{Experimental Conditions}
-Our experimental conditions are implemented in a Python script that defines
+We automated our experiments with a Python script that defines
 classifiers and their parameters, randomizes all the runs, and plots the
 resulting data. The datasets and output results are stored in memory
-through a memfs filesystem mounted on "/tmp". We proceed in this manner to
-minimize the impact of I/O on classification time.
+through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
 
-When collecting the data, we averaged metrics for multiple runs of the same
-classifier (same classifier, same parameters, and same file). The energy
-consumption is the average energy consumption of all runs. Regarding the
+We averaged metrics for multiple runs of the same
+classifier (same classifier, same parameters, and same file \TG{you mean same dataset?}). The energy
+consumption is the average energy consumption of all runs \TG{you mean same classifier, all datasets, all parameters? If so, say it.}. Regarding the
 classification performance (F1-score, accuracy), we averaged measurements
-accross repetition.
+across repetitions \TG{are these repetitions the same as runs that are averaged at the beginning of section II.C? If so, 
+I would remove the mentioning of averaging there, and only put it here.}.
+
+\TG{You should describe the evaluation platform (characteristics of cluster node)}
 
 % vim: tw=50 ts=2
