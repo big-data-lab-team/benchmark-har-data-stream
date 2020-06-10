@@ -33,14 +33,14 @@ def latex():
 
 #Build the dataset
 def dataset_banos():
-    output_directory = "recofit/windowed_6/"
-    input_directory = "recofit/"
-    ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
-    filenames = ["subject_" + str(i) + ".log" for i in ids]
-    # output_directory = "sensor_dataset/windowed_6_axis/"
-    # input_directory = "sensor_dataset/sensor_dataset/"
-    # ids = [i for i in range(1, 18)]
-    # filenames = ["subject" + str(i) + "_ideal.log" for i in ids]
+    # output_directory = "recofit/windowed_6/"
+    # input_directory = "recofit/"
+    # ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
+    # filenames = ["subject_" + str(i) + ".log" for i in ids]
+    output_directory = "sensor_dataset/windowed_histogram_3/"
+    input_directory = "sensor_dataset/sensor_dataset/"
+    ids = [i for i in range(1, 18)]
+    filenames = ["subject" + str(i) + "_ideal.log" for i in ids]
     for filename in filenames:
         try:
             in_f = open(input_directory + filename,"r")
@@ -48,20 +48,23 @@ def dataset_banos():
                                 "processed_" + \
                                 os.path.basename(filename)
             out_f = open(output_filename,"w")
-            process_file(in_f, out_f, 50)
+            process_file(in_f, out_f, 50, True)
             print(filename)
         except IOError:
             print("Could not open file: " + filename)
     return
 
-def process_file(in_f, out_f, window_size):
+def process_file(in_f, out_f, window_size, histogram=False):
     window = []
     a = 0
     for line in in_f:
         window.append(line.split("\t"))
         if len(window) >= window_size:
             a = a+1
-            features = extract_features(window)
+            if histogram:
+                features = extract_histogram(window)
+            else:
+                features = extract_features(window)
             window = []
             out_f.write("\t".join(features) + "\n")
 
@@ -73,6 +76,27 @@ def extract_features(window):
     for i in range(2, 8):
         features.append(mean(window_transposed[i]))
         features.append(stdev(window_transposed[i]))
+    #Extract the most frequent label in the window and use it as the label for the data point.
+    features.append(max(set(window_transposed[-1]), key = window_transposed[-1].count))
+    return [str(i) for i in features]
+
+def extract_histogram(window):
+    bin_count = 20
+    bin_range = 32 #±16
+    bin_step = bin_range / bin_count
+    starting_index = 2
+    window_transposed = [[float(i) if i != "" else 0.0 for i in x] for x in zip(*window)]
+
+    features = []
+    for i in range(2, 8):
+        bins = [0 for j in range(bin_count)]
+        shift = [x + (bin_range/2) for x in window_transposed[i] if x >= -(bin_range/2) and x < (bin_range/2)]
+        loutre = [int((x - (x%bin_step))/bin_step) for x in shift]
+        for j in loutre:
+            bins[j] += 1
+        bins = [x/len(window) for x in bins]
+
+        features.extend(bins)
     #Extract the most frequent label in the window and use it as the label for the data point.
     features.append(max(set(window_transposed[-1]), key = window_transposed[-1].count))
     return [str(i) for i in features]
@@ -127,7 +151,7 @@ def calibration_list(commands):
                             # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
 def final_list(commands):
     # for dataset_name in ['banos']:
-    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift", "banos_6", "recofit_6"]:
+    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6"]:
         filename = "/tmp/" + dataset_name + ".log"
         for run_id in map(str,range(1)):
             seed = str(random.randint(0, 2**24))
@@ -155,13 +179,13 @@ def final_list(commands):
             model_id = get_model_id("MCNN," + filename + ",33,10,1,10")
             commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "10", "1", "10"])
 
-            model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1")
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.8,0.0,1.0,5")
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.0,1.0,5,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.8", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,1.0,10")
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,1.0,10,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.6", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,0.1,50")
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,0.1,50,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
             model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
             commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
@@ -170,10 +194,22 @@ def final_list(commands):
             model_id = get_model_id("StreamDM NaiveBayes," + filename)
             commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
-            if dataset_name == "banos" or dataset_name == "drift":
-                model_id = get_model_id("FNN," + filename)
-                commands.append(["bin/" + dataset_name + "/mlp_3", filename, seed, model_id, run_id, "0.001", "3"])
+            if dataset_name == 'banos_6' or dataset_name == 'recofit_6':
+                model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1200000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t1_double', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1200000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t5_double', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,1200000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t10_double', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1200000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t50_double', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
 
+    for dataset_name in ["banos_3_histogram", "banos_6_histogram"]:
+        filename = "/tmp/" + dataset_name + ".log"
+        for run_id in map(str,range(1)):
+            seed = str(random.randint(0, 2**24))
+            model_id = get_model_id("FNN," + filename + ",0.1,30")
+            commands.append(["bin/" + dataset_name + "/mlp_3", filename, seed, model_id, run_id, "0.1", "weights_" + dataset_name, "30"])
 
 def run(output_filename, run_output_filename):
     output_file = open(output_filename, "w")
@@ -233,6 +269,7 @@ def read_models(filename):
           models[row[0]]["base"] = row[4]
           models[row[0]]["discount"] = row[5]
           models[row[0]]["tree_count"] = row[6]
+          models[row[0]]["memory_size"] = row[7]
           models[row[0]]["fullname"] = "Mondrian T" + row[1][row[1].find("Mondrian")+8:] + " " + row[3] + "-" + row[4] + "-" + row[5]
       elif row[1] == "MCNN":
           models[row[0]]["cluster_count"] = row[3]
@@ -272,7 +309,10 @@ def process_output(output_filename, run_output_filename, model_filename):
         key = str(int(row['model_id']))
         name = models[key]['name']
         if name == 'Mondrian':
-            return name + ' ' + models[key]['tree_count']
+            if models[key]['memory_size'] == '600000':
+                return name + ' ' + models[key]['tree_count']
+            else:
+                return name + ' ' + models[key]['tree_count'] + ' (double)'
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return 'MCNN Origin ' + models[key]['cluster_count']
@@ -365,7 +405,10 @@ def print_results(output, output_runs, models, output_directory="."):
             else:
                 return '#FF69B4'
         elif x[0].find('Mondrian') >= 0:
-            return '#00BFFF'
+            if models[x[1]]['memory_size'] == '600000':
+                return '#00BFFF'
+            else:
+                return '#0048FF'
         elif x[0].find('NaiveBayes') >= 0:
             return '#F20B13'
         elif x[0].find('HT') >= 0 or x[0].find('HoeffdingTree') >= 0:
@@ -382,7 +425,10 @@ def print_results(output, output_runs, models, output_directory="."):
     def add_key(key):
         name = models[key]['name']
         if name == 'Mondrian':
-            return (name + ' ' + models[key]['tree_count'], key, (name, int(models[key]['tree_count'])))
+            if models[key]['memory_size'] == '600000':
+                return (name + ' ' + models[key]['tree_count'], key, (name, int(models[key]['tree_count'])))
+            else:
+                return (name + ' ' + models[key]['tree_count'] + ' (double)', key, (name + ' (double)', int(models[key]['tree_count'])))
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return ('MCNN Origin ' + models[key]['cluster_count'], key, ('MCNN Origin', int(models[key]['cluster_count'])))
@@ -393,7 +439,7 @@ def print_results(output, output_runs, models, output_directory="."):
         else:
             return (name, key, (name, 0))
 
-    dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis'}
+    dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis'}
     #(print name, key in models, tuple for sorting)
     keys = [add_key(key) for key in models if models[key]['fullname'] != 'Previous']
     #grounp the third and second value to use dict to do a unique
@@ -411,7 +457,7 @@ def print_results(output, output_runs, models, output_directory="."):
     print(markers)
     print(styles)
     plt.rcParams.update({'font.size': 22})
-    list_datastets = ['drift', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'banos_6', 'recofit_6']
+    list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'banos_6', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
@@ -467,7 +513,7 @@ def print_results(output, output_runs, models, output_directory="."):
 
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        if dataset_name == 'banos_3':
+        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
         plt.title(dataset_title[dataset_name] + " F1-score")
         plt.ylim(0,1)
@@ -482,7 +528,7 @@ def print_results(output, output_runs, models, output_directory="."):
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        if dataset_name == 'banos_3':
+        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
         plt.title(dataset_title[dataset_name] + " Accuracy")
         plt.ylim(0,1)
@@ -496,7 +542,7 @@ def print_results(output, output_runs, models, output_directory="."):
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        if dataset_name == 'banos_3':
+        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
         plt.title(dataset_title[dataset_name] + " Memory")
         plt.ylabel("KB")
@@ -504,7 +550,6 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
         plt.clf()
-
 
 def additional_computation(results):
     print("Done")
@@ -631,6 +676,7 @@ def aggregate_list_measurement(measurements):
     tmp = [[x, mean(x_save[x]), stdev(x_save[x]), min(x_save[x]), max(x_save[x])] for x in keys]
     return tmp
 
+
 if len(sys.argv) > 1:
     if sys.argv[1] == "compile":
         compile()
@@ -642,7 +688,8 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        directory = "results_7/"
+        directory = "testy_res/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
+
