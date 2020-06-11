@@ -57,25 +57,25 @@ evaluation metrics and parameters used in our benchmark.
 %Sensors cover the body.
 %Type of data (ideal or self)
 %17 subject.
-The \banosdataset dataset~\cite{Banos_2014} is a human
-activity dataset with 17 participants
+The \banosdataset dataset~\cite{Banos_2014} is a
+human activity dataset with 17 participants
 equipped with 9 sensors. Each sensor samples a 3D
-acceleration, gyroscope, and magnetic field, as well as 
-the orientation in a quaternion format, producing a total of 13 values.
-Sensors are
+acceleration, gyroscope, and magnetic field, as
+well as the orientation in a quaternion format,
+producing a total of 13 values.  Sensors are
 sampled at 50~Hz, and each sample is associated
-with one of 33 activities. In
-addition to the 33 activities, an extra activity
-labelled 0 indicates no specific activity.
+with one of 33 activities. In addition to the 33
+activities, an extra activity labelled 0 indicates
+no specific activity.
 
 We pre-processed the \banosdataset dataset using
 non-overlapping windows of one second (50
-samples), and using only the 3 acceleration axes of the
-right forearm sensor. From each axis, features were computed as the
-average and the standard deviation over the window. The label assigned to this data
-point was the most frequent label in the window.
-The resulting data points were shuffled
-across subjects. \TG{minor comment: this paragraph switches from active to passive voice.}
+samples), and using only the 6 acceleration axes
+of the right forearm sensor. We computed features
+as the average and the standard deviation over the
+window for each axis. We assigned the most
+frequent label to the window.  The resulting data
+points were shuffled across subjects.
 
 In addition, we constructed another dataset from \banosdataset, in which we
 simulated a concept drift by shuffling the activity labels in the
@@ -93,8 +93,8 @@ povided in~\cite{behzad2019}.
 
 We pre-processed the dataset similarly to the
 \banosdataset, using non-overlapping windows of
-one second, and only using the 3 acceleration axes
-of the 6 axis data. From these 3 axes, we computed
+one second, and only using the 6 acceleration axes
+of the 6 axis data. From these 6 axes, we computed
 features as the average and the standard deviation
 over the window. The label assigned to this data
 point was the most frequent label in the window.
@@ -105,7 +105,9 @@ data stream classifiers. In addition to classification algorithms, MOA provides 
 tools to read and generate datasets.
 We generated three synthetic datasets\footnote{MOA commands available \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
 a hyperplane, a RandomRBF, and a RandomTree
-dataset \TG{juste pour mon info: tu sembles regenerer les datasets a chaque run, utilises-tu la meme graine a chaque fois?}. We generated 20,000 data points
+dataset \TG{juste pour mon info: tu sembles
+regenerer les datasets a chaque run, utilises-tu
+la meme graine a chaque fois?}. We generated 200,000 data points
  for each of these synthetic datasets.
 The hyperplane and the RandomRBF both have three features and two classes, however, the RandomRBF has a slight imbalance toward one class.
 The RandomTree dataset is the hardest of the three, with six attributes and
@@ -120,9 +122,9 @@ classifiers.
 
 \TG{Don't use $\backslash$paragraph for chunks of text with more than 1 paragraph.
 }
-
-\TG{It's a bit weird to have a title followed by a title: maybe add a sentence to explain that 
-you will briefly explain the algorithms, review their parameters, and describe their implementation in OrpailleCC?}
+In this Section, we will describe algorithms uses
+in this study as well as their hyperparameters. If
+needed we will add implementation description.
 
 \paragraph{Hoeffding Tree~\cite{VFDT}}
 %\begin{itemize}
@@ -170,12 +172,19 @@ removed. Given that the maximum number of clusters
 is fixed, this mechanism helps to make space for
 new clusters in the future, and possibly to adjust to concept drifts.  
 
-We implemented two versions of MCNN in OrpailleCC, which differ in the way
-they remove clusters during training. The first version (MCNN Original
-\TG{could you update the name in the figure too?jour}) is similar to the
-mechanism described in~\cite{mc-nn}, based on participation scores.
-Instead, the second version (MCNN OrpailleCC) removes the cluster with the
-lowest participation only when space is needed \TG{which is when?}. \TG{I
+We implemented two versions of MCNN in OrpailleCC,
+which differ in the way they remove clusters
+during training. The first version (MCNN Origin)
+is similar to the mechanism described
+in~\cite{mc-nn}, based on participation scores.
+Instead, the second version (MCNN OrpailleCC)
+removes the cluster with the lowest participation
+only when space is needed.  A cluster slot is
+needed when an old cluster is split and there are
+no more slot available because the number of
+active cluster already reached the maximum defined
+by the user.
+\TG{I
 updated this paragraph, pleaase check.}
 
 The MCNN algorithm has two
@@ -279,6 +288,15 @@ that is, a network where perceptrons are organized in
 layers and all output
 values from perceptrons of layer $n-1$ serve as
 input values for perceptrons of layer $n$. 
+We used a 3-layers network with 120 inputs, 30
+perceptron in the hidden layer, and 33 output
+perceptrons.
+In this study, we used histogram features
+from~\cite{omid_2019} instead of the ones
+presented in Section~\ref{sec:method-dataset}
+because the Lulti-Layer Perceptron would performed
+poorly with the features. The histogram features
+produce 20 bins per axis.
 
 This neural network can be tuned by changing the
 number of layers and the size of each layer.
@@ -286,6 +304,7 @@ Additionally, the activation function and the
 learning ratio can be changed. The learning ratio
 indicates by how much the weights should change
 during backpropagation.
+
 
 \paragraph{Hyperparameters Tuning}
 Hyperparameters were tuned using the first
@@ -295,10 +314,24 @@ the \banosdataset dataset (window size of one second,
 average and standard deviation on the three
 acceleration axis of the right forearm sensor,
 $\ldots$). We tested multiple values for the
-parameters.  We did
-not explore all the parameters at once, but
-instead a small combination of them each at a
-time. \TG{that's a bit vague. Did you do grid search?}
+parameters.
+
+Except for the Multi-Layer Perceptron, the
+classifiers start the prequential phase with no
+knowledge from the first subject. Only the
+hyperparameters were selected to maximize the
+F1-score.
+
+On the other hand, we have noticed that the
+Multi-Layer Perceptron is useless without a
+pretraining of many epochs. Otherwise, it cannot
+learn fast enough and it does not do better than a
+random classifier. Therefore, we decided to
+pre-train the Multi-Layer Perceptron and re-use
+the weights as a starting point for the
+prequential phase. This implies that the
+Multi-Layer Perceptron starts the prequential
+phase with knowledge from the data.
 
 \subsection{Evaluation}
 We used the prequential error to evaluate the algorithms \TG{it's a bit weird to have this as a first statement in this section as it only 
@@ -318,7 +351,8 @@ We collected energy consumption at the end of each run, alongside average power.
 %Explain the concept drift recovery time.
 \subsubsection{Classification Performance}
 We used the accuracy and the F1-score to measure the classification
-performances of the classifiers. These two metrics were computed every ten
+performances of the classifiers. These two metrics
+were computed every 50
 elements to avoid overloading the run with this computation \TG{so you
 measure the prequential error (TP, FP, TN, FN for each class) after each
 element but you compute the F1 score only every 10 elements, right? I think the prequential error should be described in this paragraph, to make it clearer.}. We
@@ -331,7 +365,11 @@ F1-score in a one-versus-all fashion for each class, averaged across all classes
 Similarly to the accuracy, we did not apply a fading factor.
 
 \subsubsection{Memory}
-We measured the memory footprint by reading file \texttt{/proc/self/statm} every 40 data points.
+We measured the memory footprint by reading file
+\texttt{/proc/self/statm} every 50 data points.
+
+%\MK{Explain the runtime somewhere and how it is
+%computed.}
 
 \subsubsection{Energy}
 We measured the total energy and average power consumed by classification
@@ -350,12 +388,16 @@ resulting data. The datasets and output results are stored in memory
 through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
 
 We averaged metrics for multiple runs of the same
-classifier (same classifier, same parameters, and same file \TG{you mean same dataset?}). The energy
+classifier (same classifier, same parameters, and
+same dataset). The energy
 consumption is the average energy consumption of all runs \TG{you mean same classifier, all datasets, all parameters? If so, say it.}. Regarding the
 classification performance (F1-score, accuracy), we averaged measurements
 across repetitions \TG{are these repetitions the same as runs that are averaged at the beginning of section II.C? If so, 
 I would remove the mentioning of averaging there, and only put it here.}.
 
 \TG{You should describe the evaluation platform (characteristics of cluster node)}
+The experiment was done  with a single core of a
+cluster node. The node was two Intel(R) Xeon(R)
+Gold 6130 CPU and a main memory of 250G.
 
 % vim: tw=50 ts=2

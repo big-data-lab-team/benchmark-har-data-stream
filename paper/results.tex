@@ -1,39 +1,38 @@
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/banos_3_f1.png}
+		\includegraphics[width=\linewidth]{figures/results/banos_6_f1.png}
 		\caption{\banosdataset}
 		\label{fig:f1-banos}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_3_f1.png}
+		\includegraphics[width=\linewidth]{figures/results/recofit_6_f1.png}
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}\\
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_1_f1.png}
-		\caption{Hyperplane}
+		\caption{Hyperplane (MOA)}
 		\label{fig:f1-dataset_1}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_2_f1.png}
-		\caption{RandomRBF}
+		\caption{RandomRBF (MOA)}
 		\label{fig:f1-dataset_2}
 	\end{subfigure}\\
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_3_f1.png}
-		\caption{RandomTree}
+		\caption{RandomTree (MOA)}
 		\label{fig:f1-dataset_3}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/drift_f1.png}
-		\caption{Drift}
+		\includegraphics[width=\linewidth]{figures/results/drift_3_f1.png}
+		\caption{\banosdataset (with Drift)}
 		\label{fig:f1-drift}
 	\end{subfigure}
 	\caption{F1-scores for the six datasets. \TG{remove titles on top of figures, they are redundant with captions}
-	\TG{I would call ``Drift'' ``Banos et al (with drift)'' and put it in (b). I'd rename Hyperplane and the other MOA datasets to Hyperplane (MOA), etc }
 	\TG{Hoeffding Tree is a bit difficult to see because it doesn't have a marker and the colour is a bit pale}
 	\TG{You should explain what the MCNN and Mondrian params are, I think just adding ``trees'' (ex: ``10 trees'' and ``clusters'' (ex: ``10 clusters'' in the legend would be enough))}}
 	\label{fig:f1}
@@ -45,71 +44,72 @@ This section presents the results of our benchmark and the corresponding
 hyperparameter tunning experiments.
 
 \subsection{F1-score}
+Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
+six datasets.  Naïve Bayes and the Hoeffding Tree outperforme the other
+classifiers on the two real datasets (\banosdataset and \recofitdataset).  On
+the other hand, the Mondrian Forest with 5 or 10 trees achieves the best
+performances on 2 synthetic datasets.  Also, the Mondrian Forest is the third
+classifier on the two real datasets.  Finally, the Hoeffding Tree outperform
+all other classifiers on the RandomTree dataset, where it is followed by the
+Mondrian Forest.
 
-
-Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the six datasets. 
- Mondrian Forests \TG{shall we call them ``Mondrian Forest'' consistently throughout the paper? 
-Currently they are also called ``Mondrian Trees'' or just ``Mondrian''} with 5 or 10 trees achieve the best
-asymptotical F1-score for 4/6 datasets, while the Hoeffding Tree is the best-performing classifier for 2/6 datasets.
+\TG{shall we call them ``Mondrian Forest'' consistently throughout the paper? 
+Currently they are also called ``Mondrian Trees'' or just ``Mondrian''}
 
 F1-score values vary greatly across the datasets.  While the highest
 observed F1-score is above 0.95 on the Hyperplane and RandomRBF datasets,
-it barely reaches 0.6 for the \banosdataset dataset, and it remains under
-0.3 on the \recofitdataset and RandomTree datasets. This trend is
+it barely reaches 0.65 for the \banosdataset dataset, and it remains under
+0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
 
-The StreamDM HoeffdingTree algorithm remains close to the StreamDM Naive Bayes \TG{Not really for all datasets, a finer description is required here.}.
-It happens because the HoeffdingTree
-uses a naïve Bayes in the leaves. However, we notice that the two start
-diverging because the HoeffdingTree improves by reshaping its tree structure.
-This is caused by either a sufficient amount of element or by a drift.
+The StreamDM Hoeffding Tree algorithm achieves better performance than the
+Naïve Bayes except for the \banosdataset dataset.  Both to them start close
+together because the Hoeffding Tree uses a Naïve Bayes in its leaves.  However,
+they start diverging because the HoeffdingTree improves by reshaping its tree
+structure.  This is caused by a sufficient amount of element and the difference
+is more noticable when a concept drift occurs.
 
-In Figure~\ref{fig:f1-banos}, there are two types of MCNN: MCNN-Origin and
-MCNN-OrpailleCC.  Both algorithm are implemented in the library OrpailleCC,
-however, MCNN-Origin strictly follows the algorithm described in~\cite{mc-nn}
-whereas MCNN-OrpailleCC tweaks this algorithm to ensure a fixed memory
-footprint. The difference appears on how micro-clusters are removed.
-MCNN-Origin removes a micro-cluster when its participation falls below a
-threshold given by the user while MCNN-OrpailleCC removes the micro-cluster with
-the least participation when the maximum number of micro-cluster is reached and
-a new micro-cluster has to be introduced. \TG{Remove this paragraph, this is methods.}
+On all datasets, MCNN OrpailleCC achieves better performances than MCNN
+Original. Additionally, on the datasets RandomRBF and RandomTree, the lowest
+MCNN-OrpailleCC performs better than the highest MCNN-Origin \TG{not sure I
+understand this sentence. Maybe add a brief explanation instead, ``presumably
+due to \ldots''}.
 
-In all cases, MCNN OrpailleCC achieves
-better performance than MCNN Original. Additionally, most of
-the time, any MCNN-OrpailleCC performs better than all MCNN-Origin \TG{not sure I understand this sentence. Maybe add a brief explanation instead, ``presumably due to \ldots''}.
+On the real datasets (\banosdataset and \recofitdataset), the MCNN OrpailleCC
+classifier appears to be learning faster than the Mondrian Forest, although
+Mondrian Forests catch up after a few thousand elements. 
 
-On the real datasets (\banosdataset and \recofitdataset), the
-Naive Bayes classifier appears to be learning faster than the Mondrian Forest, although Mondrian Forests catch up
-after a few thousand elements. Even though it is difficult to notice on most of
-the datasets, we can see on \banosdataset that MCNN OrpailleCC leans faster
-than the naïve Bayes when there are less than a thousand elements \TG{not really obvious, and I would move that to the comparison between Original and Orpaille in the previous paragraph}.
+Surprisingly, a Mondrian Forest with 50 trees performs worse than with 5 or 10
+trees. This is due to the fact that our Mondrian Forest implementation forces a
+fixed memory footprint, which limits tree growth when the allocated memory is
+full. Because 50 trees fill the memory faster than 10 or 5 trees, the
+classifier adaptation is blocked faster, when the trees have not learned enough
+from the data.
 
-Surprisingly, a Mondrian Forest with 50 trees performs worse than with
-5 or 10 trees. This is due to the fact that our
-Mondrian Forest implementation forces a fixed memory footprint, which limits tree growth
-when the allocated memory is full. Because 50 trees fill the
-memory faster than 10 or 5 trees, the classifier adaptation is blocked faster,
-when the trees have not learned enough from the data. However, when the memory
-available is increased, using 50 trees achieves better F1-scores than using 10
-trees \TG{we can't seem to see this in the figure, I think we should remove this last comment.}.
+Figure~\ref{fig:f1-banos} and Figure~\ref{fig:f1-recofit} show the F1-score
+difference between. The Mondrian classifier in the dark blue plot uses twice as
+much memory as the on cyan plot. 
 
 The Hoeffding Tree appears to be the most robust to concept drifts
 (Figure~\ref{fig:f1-drift}), while the Mondrian Forests and Naive Bayes
-classifier are the most impacted. MCNN classifiers sare marginally impacted.
-The low resilience of Mondrian Forests to concept drifts can be attributed
-to two factors. First, Mondrian Forests cannot change the parts of the tree that
-already exist even though it can reshape the tree \TG{unclear, reformulate}. Second, when the
-memory limit is reached, Mondrian Forests are not able to grow or reshape their structure anymore.
-\TG{The memory constraint needs to be better explained in the methods as this is a critical concept here. See comments in Section II.}
+classifier are the most impacted. MCNN classifiers are marginally impacted.
+The low resilience of Mondrian Forests to concept drifts can be attributed to
+two factors. First, Mondrian Forests cannot update existing nodes, only add new ones.
+Second, when the memory limit is reached, Mondrian Forests are not able to grow
+or reshape their structure anymore.
 
-Finally, we notice that the StreamDM and Orpaille CC implementations of Naive Bayes remain close on the two real
-datasets: \banosdataset and \recofitdataset \TG{how about the other ones though?}. This suggests that the two
-implementations are similar, but SreamDM implements additional mechanisms \TG{this is too vague}.
+Figure~\ref{fig:f1-banos} shows that the F1-score of the Multi-Layer Perceptron
+is around 0.3. Therefore, it remains better than MCNN Origin but it is quite
+low compare to other classifiers with the same dataset.
+
+Finally, we notice that the StreamDM and OrpailleCC implementations of Naive
+Bayes remain close on the two real datasets: \banosdataset and \recofitdataset.
+This suggests that the two implementations are not similar, but SreamDM
+implements additional mechanisms \TG{this is too vague}.
 
 \TG{Paragraphs should be added to comment on :
 \begin{itemize}
 	\item neural networks
-	\item HoeffdingTree on the random tree dataset
 \end{itemize}}
 
 
@@ -126,7 +126,7 @@ implementations are similar, but SreamDM implements additional mechanisms \TG{th
 		\label{fig:power-recofit}
 	\end{subfigure}\\
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/drift_watt.png}
+		\includegraphics[width=\linewidth]{figures/results/drift_3_watt.png}
 		\caption{\banosdataset with drift.}
 		\label{fig:power-drift}
 	\end{subfigure}
@@ -142,7 +142,9 @@ implementations are similar, but SreamDM implements additional mechanisms \TG{th
 \subsection{Power}
 \label{sec:result-power}
 Figure~\ref{fig:power} shows the power usage of each classifier on four
-datasets \TG{mention why the 6 datasets aren't reported}. All classifiers exhibit comparable power consumptions, close to 102~W.
+datasets \TG{mention why the 6 datasets aren't reported}. Since all classifiers
+exhibit comparable power consumptions, close to 102~W, we decided to show only
+four of them.
 
 
 \subsection{Runtime}
@@ -165,13 +167,13 @@ fair even though they are implemented differently.}.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/banos_3_runtime.png}
+		\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
 		\caption{\banosdataset}
 		\label{fig:runtime-banos}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_3_runtime.png}
+		\includegraphics[width=\linewidth]{figures/results/recofit_6_runtime.png}
 		\caption{\recofitdataset}
 		\label{fig:runtime-recofit}
 	\end{subfigure}
@@ -226,7 +228,7 @@ all error thresholds perform equally.
 		 \includegraphics[width=\linewidth]{figures/Banos_S1_shuf_MCNN_10_error_check.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
-	\caption{Impact of the error threshold on MCNN performance (first subject of \banosdataset dataset). \TG{It's a bit weird to use accuracy here while F1 score was used before. 
+	\caption{Hyperparameters tuning of MCNN with first subject of \banosdataset dataset. \TG{It's a bit weird to use accuracy here while F1 score was used before. 
 	Couldn't you just use F1 score here too?}}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
@@ -271,7 +273,7 @@ performance; the best-performing value is 0.1.
 		 \caption{Impact of the discount factor with 10 trees, a budget of $1.0$, and a base count of $0.1$. \TG{put this graph on the same 0-1 scale as the two other ones.}}
 		 \label{fig:mondrian-discount}
 	 \end{subfigure}
-		\caption{Mondrian tuning results.}
+		\caption{Hyperparameters tuning for Mondrian with first subject of \banosdataset dataset.}
 		\label{fig:mondrian-tuning}
 \end{figure}
 
