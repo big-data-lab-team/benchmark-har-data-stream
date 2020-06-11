@@ -29,7 +29,7 @@ and only assign class labels to tree leaves\TG{reworded this but it's still a bi
 situations where labels are delayed, as described
 in~\cite{stream_learning_review}.  The Micro-Cluster Nearest
 Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
-neighbor~(KNN) that was shown to be more efficient for human activity
+neighbor~(KNN) that was shown to be more accurate for human activity
 recognition \TG{reference? efficient $\rightarrow$ accurate?}. We included
 it since the work in~\cite{Janidarmian_2017} showed that KNN was the
 best-performing classifier for human activity recognition from wearable
@@ -145,9 +145,8 @@ when a leaf should be split. To classify a
 data point, this data point is sorted to a leaf,
 and a label is predicted by aggregating the labels of the training data points in that leaf, usually through
 majority voting or Naïve Bayes classification.
-
-We used this classifier as implemented in StreamDM \TG{StreamDMCpp?}.
-
+We used this classifier as implemented in
+StreamDM-Cpp.
 The Hoeffding Tree is common in data stream
 classification, however, it suffers from one main
 disadvantage: once a split is decided, it cannot
@@ -180,7 +179,7 @@ in~\cite{mc-nn}, based on participation scores.
 Instead, the second version (MCNN OrpailleCC)
 removes the cluster with the lowest participation
 only when space is needed.  A cluster slot is
-needed when an old cluster is split and there are
+needed when an existing cluster is split and there are
 no more slot available because the number of
 active cluster already reached the maximum defined
 by the user.
