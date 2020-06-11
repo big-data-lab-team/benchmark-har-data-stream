@@ -412,7 +412,7 @@ def print_results(output, output_runs, models, output_directory="."):
         elif x[0].find('NaiveBayes') >= 0:
             return '#F20B13'
         elif x[0].find('HT') >= 0 or x[0].find('HoeffdingTree') >= 0:
-            return '#FF8C00'
+            return '#FF8A00'
         elif x[0].find('Empty') >= 0:
             return '#000000'
         elif x[0].find('Previous') >= 0:
@@ -466,8 +466,6 @@ def print_results(output, output_runs, models, output_directory="."):
         ax.legend().remove()
         ax = sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         ax.legend().remove()
-        plt.title(dataset_title[dataset_name] + " Energy")
-        ax.legend().remove()
         plt.xticks(rotation=90)
         plt.ylabel("Joules")
         plt.xlabel("Algorithm")
@@ -481,7 +479,6 @@ def print_results(output, output_runs, models, output_directory="."):
         ax.legend().remove()
         ax = sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         ax.legend().remove()
-        plt.title(dataset_title[dataset_name] + " Power")
         plt.ylim(95, 105)
         plt.xticks(rotation=90)
         plt.ylabel("Watt")
@@ -496,7 +493,6 @@ def print_results(output, output_runs, models, output_directory="."):
         ax.legend().remove()
         ax = sns.swarmplot(x="fullname", y="time", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
         ax.legend().remove()
-        plt.title(dataset_title[dataset_name] + " Runtime")
         plt.xticks(rotation=90)
         plt.ylabel("Second")
         plt.xlabel("Algorithm")
@@ -515,7 +511,6 @@ def print_results(output, output_runs, models, output_directory="."):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
-        plt.title(dataset_title[dataset_name] + " F1-score")
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
@@ -530,7 +525,6 @@ def print_results(output, output_runs, models, output_directory="."):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
-        plt.title(dataset_title[dataset_name] + " Accuracy")
         plt.ylim(0,1)
         plt.ylabel("Accuracy")
         plt.xlabel("Element")
@@ -544,7 +538,6 @@ def print_results(output, output_runs, models, output_directory="."):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
-        plt.title(dataset_title[dataset_name] + " Memory")
         plt.ylabel("KB")
         plt.xlabel("Element")
         plt.tight_layout()
