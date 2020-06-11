@@ -391,7 +391,7 @@ def print_results(output, output_runs, models, output_directory="."):
                 return 'o'
         elif x[0].find('NaiveBayes') >= 0:
             return 's'
-        elif x[0].find('HT') >= 0:
+        elif x[0].find('HT') >= 0 or x[0].find('Hoeffding') >= 0:
             return 's'
         elif x[0].find('Empty') >= 0:
             return 's'
@@ -681,7 +681,7 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        directory = "testy_res/"
+        directory = "results_8/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
