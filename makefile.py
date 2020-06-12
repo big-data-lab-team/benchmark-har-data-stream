@@ -149,6 +149,66 @@ def calibration_list(commands):
                         # for tree_count in [1, 5, 20, 10, 50]:
                             # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + discount)
                             # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
+def memory_list(commands):
+    # for dataset_name in ['banos']:
+    for dataset_name in ['banos_6', 'recofit_6']:
+        filename = "/tmp/" + dataset_name + ".log"
+        for run_id in map(str,range(1)):
+            seed = str(random.randint(0, 2**24))
+            model_id = get_model_id("Empty," + filename)
+            commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
+
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.8,0.0,1.0,5,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.8", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,1.0,10,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.6", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,0.1,50,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
+            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
+            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
+            model_id = get_model_id("NaiveBayes," + filename)
+            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
+            model_id = get_model_id("StreamDM NaiveBayes," + filename)
+            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
+
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_double', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_double', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_double', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_double', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
+
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1800000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_triple', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1800000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_triple', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,1800000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_triple', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1800000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_triple', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
+
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,2400000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_quadruple', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,2400000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_quadruple', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,2400000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_quadruple', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,2400000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_quadruple', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
+
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_quintuple', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_quintuple', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_quintuple', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
+
 def final_list(commands):
     # for dataset_name in ['banos']:
     for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6"]:
@@ -310,16 +370,16 @@ def process_output(output_filename, run_output_filename, model_filename):
         name = models[key]['name']
         if name == 'Mondrian':
             if models[key]['memory_size'] == '600000':
-                return name + ' ' + models[key]['tree_count']
+                return name + ' ' + models[key]['tree_count'] + ' tree(s)'
             else:
-                return name + ' ' + models[key]['tree_count'] + ' (double)'
+                return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x2)'
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
-                return 'MCNN Origin ' + models[key]['cluster_count']
+                return 'MCNN Origin ' + models[key]['cluster_count'] + ' clusters'
             elif models[key]['cleaning'] == '2':
-                return 'MCNN Mixe ' + models[key]['cluster_count']
+                return 'MCNN Mixe ' + models[key]['cluster_count'] + ' clusters'
             else:
-                return 'MCNN OrpailleCC ' + models[key]['cluster_count']
+                return 'MCNN OrpailleCC ' + models[key]['cluster_count'] + ' clusters'
         elif name == 'StreamDM HoeffdingTree':
             return name
         else:
@@ -426,16 +486,16 @@ def print_results(output, output_runs, models, output_directory="."):
         name = models[key]['name']
         if name == 'Mondrian':
             if models[key]['memory_size'] == '600000':
-                return (name + ' ' + models[key]['tree_count'], key, (name, int(models[key]['tree_count'])))
+                return (name + ' ' + models[key]['tree_count'] + ' tree(s)', key, (name, int(models[key]['tree_count'])))
             else:
-                return (name + ' ' + models[key]['tree_count'] + ' (double)', key, (name + ' (double)', int(models[key]['tree_count'])))
+                return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x2)', key, (name + ' (RAM x2)', int(models[key]['tree_count'])))
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
-                return ('MCNN Origin ' + models[key]['cluster_count'], key, ('MCNN Origin', int(models[key]['cluster_count'])))
+                return ('MCNN Origin ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Origin', int(models[key]['cluster_count'])))
             elif models[key]['cleaning'] == '2':
-                return ('MCNN Mixe ' + models[key]['cluster_count'], key, ('MCNN Mixe', int(models[key]['cluster_count'])))
+                return ('MCNN Mixe ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Mixe', int(models[key]['cluster_count'])))
             else:
-                return ('MCNN OrpailleCC ' + models[key]['cluster_count'], key, ('MCNN OrpailleCC', int(models[key]['cluster_count'])))
+                return ('MCNN OrpailleCC ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN OrpailleCC', int(models[key]['cluster_count'])))
         else:
             return (name, key, (name, 0))
 
@@ -501,6 +561,7 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.clf()
 
         daty = output[output.file.str.contains(dataset_name)]
+        daty_std = daty[['fullname', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['fullname', 'element_count']).std().reset_index()
         daty = daty[['fullname', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['fullname', 'element_count']).mean().reset_index()
 
 
@@ -516,6 +577,23 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.xlabel("Element")
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
+        plt.clf()
+
+        print('\t- F1 stdv')
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for name, color, marker, style in zip(names, colors, markers, styles):
+            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 10 tree(s) (RAM x2)', 'Mondrian 5 tree(s) (RAM x2)']:
+                y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
+                y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
+                plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+                plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.2)
+        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
+            plt.legend(prop={"size":20}, ncol=3)
+        plt.ylim(0,1)
+        plt.ylabel("F1")
+        plt.xlabel("Element")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/" + dataset_name + "_f1_std" + ".png")
         plt.clf()
 
 
@@ -535,7 +613,12 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['memory'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+            print('name ' + name + ' - ' + str(len(daty[daty.fullname == name]['memory'])) + ' v ' + str(len(daty[daty.fullname == 'Empty']['memory'])))
+            print(daty[daty.fullname == name]['memory'])
+            print(daty[daty.fullname == 'Empty']['memory'])
+            if len(daty[daty.fullname == name]['memory']) == len(daty[daty.fullname == 'Empty']['memory']):
+                y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], daty[daty.fullname == 'Empty']['memory'])]
+                plt.plot(daty[daty.fullname == name]['element_count'], y, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             plt.legend(prop={"size":20}, ncol=3)
         plt.ylabel("KB")
