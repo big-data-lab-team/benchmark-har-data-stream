@@ -23,9 +23,9 @@ or a multi-dimensional extension of the
 Lightweight Temporal Compression~\cite{multi-ltc}. We extended it with 
 a few classifiers for the purpose of this benchmark.
 
-This benchmark includes six popular classification algorithms.  The Mondrian
-forest~\cite{mondrian2014} builds decision trees independently of class labels,
-and only assign class labels to tree leaves\TG{reworded this but it's still a bit ambiguous}. Mondrian forests are useful in
+This benchmark includes six popular classification
+algorithms.  The \mondrianforest~\cite{mondrian2014} builds decision trees independently of class labels,
+and only assign class labels to tree leaves\TG{reworded this but it's still a bit ambiguous}. \mondrianforest are useful in
 situations where labels are delayed, as described
 in~\cite{stream_learning_review}.  The Micro-Cluster Nearest
 Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
@@ -33,8 +33,8 @@ neighbor~(KNN) that was shown to be more accurate for human activity
 recognition \TG{reference? efficient $\rightarrow$ accurate?}. We included
 it since the work in~\cite{Janidarmian_2017} showed that KNN was the
 best-performing classifier for human activity recognition from wearable
-sensors.  The Naïve Bayes~\cite{naive_bayes} classifier
-and the Hoeffding Tree~\cite{VFDT} are two common data stream classifiers \TG{Add a sentence to explain the main idea or feature or Hoeffding tree}.
+sensors.  The \naivebayes~\cite{naive_bayes} classifier
+and the \hoeffdingtree~\cite{VFDT} are two common data stream classifiers \TG{Add a sentence to explain the main idea or feature or Hoeffding tree}.
 Finally, Neural Network classifiers have
 become popular by achieving human-like performance in many fields such as image
 recognition or game playing. We used a
@@ -126,7 +126,7 @@ In this Section, we will describe algorithms uses
 in this study as well as their hyperparameters. If
 needed we will add implementation description.
 
-\paragraph{Hoeffding Tree~\cite{VFDT}}
+\paragraph{\hoeffdingtree~\cite{VFDT}}
 %\begin{itemize}
 	%\item Reserved size with a given size.
 	%\item Binary tree.
@@ -136,25 +136,24 @@ needed we will add implementation description.
 	%\item Majority vote at the leaves.
 	%\item All floating point values are double and all counters are int.
 %\end{itemize}
-Similar to a decision tree, the Hoeffding tree recursively splits the space to maximize a
+Similar to a decision tree, the \hoeffdingtree recursively splits the space to maximize a
 metric function, often the
 information gain or the Gini index. However,
-instead of using the entire dataset, the Hoeffding
-tree relies on the Hoeffding bound, \TG{a measure of xxx}, to estimate
+instead of using the entire dataset, the \hoeffdingtree relies on the Hoeffding bound, \TG{a measure of xxx}, to estimate
 when a leaf should be split. To classify a
 data point, this data point is sorted to a leaf,
 and a label is predicted by aggregating the labels of the training data points in that leaf, usually through
-majority voting or Naïve Bayes classification.
+majority voting or \naivebayes classification.
 We used this classifier as implemented in
 StreamDM-Cpp.
-The Hoeffding Tree is common in data stream
+The \hoeffdingtree is common in data stream
 classification, however, it suffers from one main
 disadvantage: once a split is decided, it cannot
 be re-considered which makes this algorithm weak
 to concept drifts.
 
 \paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
-The Micro Cluster Nearest Neighbor~(MCNN) is a
+The Micro Cluster Nearest Neighbor~(\mcnn) is a
 variant of k-nearest neighbor where data points are
 aggregated into clusters to reduce storage requirements.  During training, the
 algorithm merges a new data point to the closest
@@ -163,7 +162,7 @@ cluster does not share the same label as the data
 point, this closest cluster and the closest
 cluster with the same label are assigned an error. When a cluster receives too
 many errors, it is split. During classification,
-MCNN returns the label of the closest cluster.
+\mcnn returns the label of the closest cluster.
 Regularly, the algorithm also assigns a
 participation score to each cluster and when this
 score gets below a threshold, the cluster is
@@ -171,12 +170,12 @@ removed. Given that the maximum number of clusters
 is fixed, this mechanism helps to make space for
 new clusters in the future, and possibly to adjust to concept drifts.  
 
-We implemented two versions of MCNN in OrpailleCC,
+We implemented two versions of \mcnn in OrpailleCC,
 which differ in the way they remove clusters
-during training. The first version (MCNN Origin)
+during training. The first version (\mcnn Origin)
 is similar to the mechanism described
 in~\cite{mc-nn}, based on participation scores.
-Instead, the second version (MCNN OrpailleCC)
+Instead, the second version (\mcnn OrpailleCC)
 removes the cluster with the lowest participation
 only when space is needed.  A cluster slot is
 needed when an existing cluster is split and there are
@@ -186,14 +185,14 @@ by the user.
 \TG{I
 updated this paragraph, pleaase check.}
 
-The MCNN algorithm has two
+The \mcnn algorithm has two
 parameters: the maximum number of clusters and the
 error threshold after which a cluster is split. \TG{you didn't talk about hyperparameters for hoeffding trees, make sure your descriptions are consistent.}
 
 \TG{somewhere you should explain that your implementations work with a fixed amount of memory, maybe in the presentation of OrpailleCC at the beginning of the section.}
 
-\paragraph{Mondrian Forest~\cite{mondrian2014}}
-Each tree in a Mondrian forest recursively
+\paragraph{\mondrianforest~\cite{mondrian2014}}
+Each tree in a \mondrianforest recursively
 splits the space, similar to a regular decision tree.
 However, the feature used in the split and the value of the
 split are decided randomly. The probability to select a feature is 
@@ -216,8 +215,8 @@ discount factor closer to one makes the prediction
 of a node closer to the prediction of its parent.
 Finally, the budget controls the tree depth.
 
-\paragraph{Naive Bayes~\cite{naive_bayes}}
-The naive Bayes algorithm keeps a table of
+\paragraph{\naivebayes~\cite{naive_bayes}}
+The \naivebayes algorithm keeps a table of
 counters for each feature's values and each label.
 During prediction, the algorithm assigns a
 score for each label depending on how the data
@@ -228,7 +227,7 @@ The implementation from StreamDM was used in this
 benchmark. It uses a Gaussian
 estimation for numeric attributes.
 
-In a naïve Bayes classifier, the smoothing parameter is the
+In a \naivebayes classifier, the smoothing parameter is the
 default counter given to an attribute value that
 has not been seen. It is meant to avoid scores of zeros.
 We do not use any smoothing since our datasets

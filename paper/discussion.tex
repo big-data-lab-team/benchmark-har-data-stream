@@ -2,16 +2,15 @@
 \TG{make sure concept drifts are discussed}
 
 %Mondrian has the greatest F1-scores, however, slow runtime
-From this study, we observed that the Hoeffding Tree algorithm presents the
-best classification performances followed by the Naïve Bayes and the Mondrian
-Forest.  However, these performances come with a cost.  The naïve Bayes does
-not adapt to the drift, the Mondrian Forest is the slowest classifier with a
-high variance. And the Hoeffding Tree has a growing memory footprint.
+From this study, we observed that the \hoeffdingtree algorithm presents the
+best classification performances followed by the \naivebayes and the \mondrianforest.  However, these performances come with a cost.  The \naivebayes does
+not adapt to the drift, the \mondrianforest is the slowest classifier with a
+high variance. And the \hoeffdingtree has a growing memory footprint.
 
 %All F1-scores remains low
 We also observed that most of the f1-scores are low with the RandomTree dataset and
 the real datasets (\banosdataset, \recofitdataset). On the other hand, the most
-performant classifier (Mondrian, HoeffdingTree, and naïve Bayes) have high
+performant classifier (\mondrianforest, \hoeffdingtree, and \naivebayes) have high
 F1-scores with the datasets Hyperplane and RandomRBF. The main difference we
 observed between these datasets is the lower complexity of the last two.
 Indeed, the Hyperplane and RandomRBF datasets have two classes with three
@@ -19,7 +18,7 @@ attributes while the others have at least ten classes. The two real datasets
 have 33 and 41 classes. Therefore, we should focus to adapt these classifiers
 to work with a high number of classes.
 
-The next step to adapt these classifiers, Mondrian in particular, to real-life
+The next step to adapt these classifiers, \mondrianforest in particular, to real-life
 situations would be to reduce their runtime, make them less dependent on the
 memory available, and to make them more efficient with a high number of
 classes. Additionally, running a classifier on a sensor to minimize data
@@ -54,24 +53,24 @@ around this lack of memory: stop growing or making space for new data structures
 On the other hand, a constant space complexity is a feature of a classifier and
 its performances are not expected to change no  matter the amount of memory
 available. The classifier is simply supposed to fail without the required
-amount of memory. From the algorithm involved in this study, Mondrian forest
-has a bounded memory policy while naïve Bayes is a classifier with a constant
+amount of memory. From the algorithm involved in this study, \mondrianforest
+has a bounded memory policy while \naivebayes is a classifier with a constant
 space complexity.
 
 With that being said, this memory-bound may explain the poor performance of the
-Mondrian Forest with 50 trees compare to the one with 5 or 10 trees. Indeed, we
+\mondrianforest with 50 trees compare to the one with 5 or 10 trees. Indeed, we
 have noticed that 50 trees fill the allocated memory after a few elements,
 thus, preventing the classifier to adapt. Additionally, when the available
 memory is further reduced, we noticed that using 1 tree offer better
 performances than 5 or 10. 
 
-Concerning the high performance of the HoeffdingTree on
+Concerning the high performance of the \hoeffdingtree on
 Figure~\ref{fig:f1-dataset_3}, we would like to remind that the RandomTree
 dataset is a synthetic dataset generated using a tree structure. Therefore, we
 expected the tree-based classifiers to show better performances.  However, we
-noticed that from the two tree-based classifiers, only the HoeffdingTree
+noticed that from the two tree-based classifiers, only the \hoeffdingtree
 achieved such performance.  We suspect this difference to be caused by the lack
-of split optimization in the Mondrian trees. Indeed, the Mondrian behavior is
+of split optimization in the Mondrian trees. Indeed, the \mondrianforest behavior is
 more related to a nearest neighboor because it tries to split the space in
 boxes of equal sizes rather than finding the best split. The good prediction is
 then obtained by combining multiple trees in a forest.
@@ -85,8 +84,7 @@ subject, but also the windows are overlapping and wider than the ones we used.
 Therefore, we expect the Multi-Layer Perceptron to have already encountered
 most of the datapoints from the testing set. When instead of using only the
 first subject of the \banosdataset dataset we used a sample of 10\% of it, we
-managed to reach an F1-score of slightly above 0.6, which is close to the Naïve
-Bayes.
+managed to reach an F1-score of slightly above 0.6, which is close to the \naivebayes.
 
 Note that the pre-training of the Multi-Layer Perceptron is a bit different
 from the other classifiers. Indeed, the hyperparameters tuning of the other
