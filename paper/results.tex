@@ -45,13 +45,13 @@ hyperparameter tunning experiments.
 
 \subsection{F1-score}
 Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
-six datasets.  Naïve Bayes and the Hoeffding Tree outperforme the other
+six datasets.  \naivebayes and the \hoeffdingtree outperforme the other
 classifiers on the two real datasets (\banosdataset and \recofitdataset).  On
-the other hand, the Mondrian Forest with 5 or 10 trees achieves the best
-performances on 2 synthetic datasets.  Also, the Mondrian Forest is the third
-classifier on the two real datasets.  Finally, the Hoeffding Tree outperform
+the other hand, the \mondrianforest with 5 or 10 trees achieves the best
+performances on 2 synthetic datasets.  Also, the \mondrianforest is the third
+classifier on the two real datasets.  Finally, the \hoeffdingtree outperform
 all other classifiers on the RandomTree dataset, where it is followed by the
-Mondrian Forest.
+\mondrianforest.
 
 \TG{shall we call them ``Mondrian Forest'' consistently throughout the paper? 
 Currently they are also called ``Mondrian Trees'' or just ``Mondrian''}
@@ -62,48 +62,47 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
 
-The StreamDM Hoeffding Tree algorithm achieves better performance than the
-Naïve Bayes except for the \banosdataset dataset.  Both to them start close
-together because the Hoeffding Tree uses a Naïve Bayes in its leaves.  However,
-they start diverging because the HoeffdingTree improves by reshaping its tree
+The StreamDM \hoeffdingtree algorithm achieves better performance than the
+\naivebayes except for the \banosdataset dataset.  Both to them start close
+together because the \hoeffdingtree uses a \naivebayes in its leaves.  However,
+they start diverging because the \hoeffdingtree improves by reshaping its tree
 structure.  This is caused by a sufficient amount of element and the difference
 is more noticable when a concept drift occurs.
 
-On all datasets, MCNN OrpailleCC achieves better performances than MCNN
+On all datasets, \mcnn OrpailleCC achieves better performances than \mcnn
 Original. Additionally, on the datasets RandomRBF and RandomTree, the lowest
-MCNN-OrpailleCC performs better than the highest MCNN-Origin \TG{not sure I
+\mcnn OrpailleCC performs better than the highest \mcnn Origin \TG{not sure I
 understand this sentence. Maybe add a brief explanation instead, ``presumably
 due to \ldots''}.
 
-On the real datasets (\banosdataset and \recofitdataset), the MCNN OrpailleCC
-classifier appears to be learning faster than the Mondrian Forest, although
-Mondrian Forests catch up after a few thousand elements. 
+On the real datasets (\banosdataset and \recofitdataset), the \mcnn OrpailleCC
+classifier appears to be learning faster than the \mondrianforest, although
+\mondrianforest catch up after a few thousand elements. 
 
-Surprisingly, a Mondrian Forest with 50 trees performs worse than with 5 or 10
-trees. This is due to the fact that our Mondrian Forest implementation forces a
+Surprisingly, a \mondrianforest with 50 trees performs worse than with 5 or 10
+trees. This is due to the fact that our \mondrianforest implementation forces a
 fixed memory footprint, which limits tree growth when the allocated memory is
 full. Because 50 trees fill the memory faster than 10 or 5 trees, the
 classifier adaptation is blocked faster, when the trees have not learned enough
 from the data.
 
 Figure~\ref{fig:f1-banos} and Figure~\ref{fig:f1-recofit} show the F1-score
-difference between. The Mondrian classifier in the dark blue plot uses twice as
+difference between. The \mondrianforest in the dark blue plot uses twice as
 much memory as the on cyan plot. 
 
-The Hoeffding Tree appears to be the most robust to concept drifts
-(Figure~\ref{fig:f1-drift}), while the Mondrian Forests and Naive Bayes
-classifier are the most impacted. MCNN classifiers are marginally impacted.
-The low resilience of Mondrian Forests to concept drifts can be attributed to
-two factors. First, Mondrian Forests cannot update existing nodes, only add new ones.
-Second, when the memory limit is reached, Mondrian Forests are not able to grow
+The \hoeffdingtree appears to be the most robust to concept drifts
+(Figure~\ref{fig:f1-drift}), while the \mondrianforest and \naivebayes
+classifier are the most impacted. \mcnn classifiers are marginally impacted.
+The low resilience of \mondrianforest to concept drifts can be attributed to
+two factors. First, \mondrianforest cannot update existing nodes, only add new ones.
+Second, when the memory limit is reached, \mondrianforest are not able to grow
 or reshape their structure anymore.
 
 Figure~\ref{fig:f1-banos} shows that the F1-score of the Multi-Layer Perceptron
-is around 0.3. Therefore, it remains better than MCNN Origin but it is quite
+is around 0.3. Therefore, it remains better than \mcnn Origin but it is quite
 low compare to other classifiers with the same dataset.
 
-Finally, we notice that the StreamDM and OrpailleCC implementations of Naive
-Bayes remain close on the two real datasets: \banosdataset and \recofitdataset.
+Finally, we notice that the StreamDM and OrpailleCC implementations of \naivebayes remain close on the two real datasets: \banosdataset and \recofitdataset.
 This suggests that the two implementations are not similar, but SreamDM
 implements additional mechanisms \TG{this is too vague}.
 
@@ -150,17 +149,16 @@ four of them.
 \subsection{Runtime}
 Figure~\ref{fig:runtime} shows the runtime of classifiers for the two real
 datasets \TG{you haven't explained in the methods how runtime was
-measured}. Mondrian Forests are the slowest classifier, in particular for
-50 trees. The second slowest classifier is the Hoeffding Tree, which
-compares with the 1-tree Mondrian Forest. The HoeffdingTree is followed by
-the two Naive Bayes implementations, which is not surprising since Naive
-Bayes classifiers are used in the leaves of the Hoeffding Tree. The MCNN
+measured}. \mondrianforest are the slowest classifier, in particular for
+50 trees. The second slowest classifier is the \hoeffdingtree, which
+compares with the 1-tree \mondrianforest. The \hoeffdingtree is followed by
+the two \naivebayes implementations, which is not surprising since \naivebayes classifiers are used in the leaves of the \hoeffdingtree. The \mcnn
 classifiers are the fastest ones, with a runtime very close to the empty
-classifier. There is still a slight difference between the MCNNs. The more
+classifier. There is still a slight difference between the \mcnns. The more
 cluster we use, the slower it gets \TG{at this scale it is barely
 noticeable, I would ommit this comment.}.
 
-We observe that naïve Bayes from StreamDM is slightly faster than the one
+We observe that \naivebayes from StreamDM is slightly faster than the one
 from OrpailleCC \TG{I think they are quite comparable in fact. You should
 explain that this makes the comparison between hoeffding tree and mondrian
 fair even though they are implemented differently.}.
@@ -186,11 +184,11 @@ fair even though they are implemented differently.}.
 Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
 \banosdataset dataset.  Memory footprint is similar across all datasets, due to the fact that most algorithms
 follow a bounded memory policy or have a constant space complexity. The only
-exception is the Hoeffding Tree \TG{check that spelling and capitalization
-of Hoeffding Tree is consistent throughout document} that constantly
+exception is the \hoeffdingtree \TG{check that spelling and capitalization
+of \hoeffdingtree is consistent throughout document} that constantly
 selects new splits depending on 
-new data points. The Mondrian Forest would have had the same behavior if it
-would allocate memory as element goes by. However, the Mondrian implementation
+new data points. The \mondrianforest would have had the same behavior if it
+would allocate memory as element goes by. However, the \mondrianforest implementation
 of OrpailleCC allocates memory when the classifier is instantiated and does not
 use more \TG{Last two sentences should be improved, this can be written in a more compact way.}.
 
@@ -204,10 +202,10 @@ use more \TG{Last two sentences should be improved, this can be written in a mor
 \subsection{Micro-Cluster Nearest Neighbor Hyperparameters}
 
 Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
-in the MCNN classifiers. The higher the number of clusters, the better are
+in the \mcnn classifiers. The higher the number of clusters, the better are
 the performance \TG{ok but the number of clusters isn't a hyper parameter,
 this should be moved to the description of F1 score results}. The error
-threshold of MCNN has little impact on the classification performance. For
+threshold of \mcnn has little impact on the classification performance. For
 20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
 that a cluster may do 2 or 4 errors before being split. For 10 clusters,
 all error thresholds perform equally.
@@ -228,14 +226,14 @@ all error thresholds perform equally.
 		 \includegraphics[width=\linewidth]{figures/Banos_S1_shuf_MCNN_10_error_check.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
-	\caption{Hyperparameters tuning of MCNN with first subject of \banosdataset dataset. \TG{It's a bit weird to use accuracy here while F1 score was used before. 
+	\caption{Hyperparameters tuning of \mcnn with first subject of \banosdataset dataset. \TG{It's a bit weird to use accuracy here while F1 score was used before. 
 	Couldn't you just use F1 score here too?}}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
 
-\subsection{Mondrian Forest Hyperparameters}
+\subsection{\mondrianforest Hyperparameters}
 
-Figure~\ref{fig:mondrian-tuning} shows the impact of the Mondrian Forest hyperparameters on
+Figure~\ref{fig:mondrian-tuning} shows the impact of the \mondrianforest hyperparameters on
 the classification performance. Occasionally, dashed lines are used to
 emphasize the minimum and the maximum \TG{That's a comment for the caption. Why ``occasionally'' and not always?}.
 
