@@ -53,9 +53,6 @@ classifier on the two real datasets.  Finally, the \hoeffdingtree outperform
 all other classifiers on the RandomTree dataset, where it is followed by the
 \mondrianforest.
 
-\TG{shall we call them ``Mondrian Forest'' consistently throughout the paper? 
-Currently they are also called ``Mondrian Trees'' or just ``Mondrian''}
-
 F1-score values vary greatly across the datasets.  While the highest
 observed F1-score is above 0.95 on the Hyperplane and RandomRBF datasets,
 it barely reaches 0.65 for the \banosdataset dataset, and it remains under
@@ -87,8 +84,10 @@ classifier adaptation is blocked faster, when the trees have not learned enough
 from the data.
 
 Figure~\ref{fig:f1-banos} and Figure~\ref{fig:f1-recofit} show the F1-score
-difference between. The \mondrianforest in the dark blue plot uses twice as
-much memory as the on cyan plot. 
+difference between two \mondrianforest. The \mondrianforest in the dark blue
+plot uses twice as much memory as the on cyan plot. We notice that using more
+memory induce a F1-score difference greater than 0.1 except when only one tree
+is used. In which case the improvement caused by the memory is less than 0.05.
 
 The \hoeffdingtree appears to be the most robust to concept drifts
 (Figure~\ref{fig:f1-drift}), while the \mondrianforest and \naivebayes
@@ -98,13 +97,30 @@ two factors. First, \mondrianforest cannot update existing nodes, only add new o
 Second, when the memory limit is reached, \mondrianforest are not able to grow
 or reshape their structure anymore.
 
+\begin{figure}
+		\includegraphics[width=\linewidth]{figures/results/banos_6_f1_std.png}
+		\caption{F1-score variance on \banosdataset dataset. Some classifiers
+		have been removed to make the Figure clearer (\mcnn Origin,
+		\hoeffdingtree, some of the \mcnn OrpailleCC)}
+		\label{fig:f1-variance}
+\end{figure}
+
+Figure~\ref{fig:f1-variance} shows the F1-score variance for the classifiers.
+Only \mondrianforest has variance since it is the only one involving
+randomness. On Figure~\ref{fig:f1-variance} we notice that \mondrianforest
+variance decreases with the number of tree. The higher the tree count, the
+lower the variance. Finally, we notice that the \mondrianforest variance with
+double memory covers the \naivebayes lines. Therefore, some \mondrianforest run
+achieves better F1-score than the \naivebayes.
+
 Figure~\ref{fig:f1-banos} shows that the F1-score of the Multi-Layer Perceptron
 is around 0.3. Therefore, it remains better than \mcnn Origin but it is quite
 low compare to other classifiers with the same dataset.
 
-Finally, we notice that the StreamDM and OrpailleCC implementations of \naivebayes remain close on the two real datasets: \banosdataset and \recofitdataset.
-This suggests that the two implementations are not similar, but SreamDM
-implements additional mechanisms \TG{this is too vague}.
+Finally, we notice that the StreamDM and OrpailleCC implementations of
+\naivebayes remain close on the two real datasets: \banosdataset and
+\recofitdataset.  This suggests that the two implementations are not similar,
+but SreamDM implements additional mechanisms \TG{this is too vague}.
 
 \TG{Paragraphs should be added to comment on :
 \begin{itemize}
