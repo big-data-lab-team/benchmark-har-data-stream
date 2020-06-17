@@ -1,50 +1,60 @@
 \section{Method}
-We evaluated 6 classifiers implemented in
-either StreamDM-Cpp~\cite{StreamDM-CPP} or
+We evaluated 6 classifiers implemented in either
+StreamDM-Cpp~\cite{StreamDM-CPP} or
 OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a
 C++ implementation of StreamDM~\cite{StreamDM}, a
-software to mine big data streams using Spark
-Streaming \TG{isn't the official name Apache Spark Streaming? You should also add a URL.}. StreamDM-Cpp is usually faster than
-StreamDM on small datasets, due to
-the overhead induced by Spark, but it makes heavy
-use of the C standard library, in particular the vector and
-list structures, which may not be available on embedded systems
- \TG{This should be explained in intro rather than here.}.
+software to mine big data streams using
+\href{https://spark.apache.org/streaming/}{Apache
+Spark Streaming}. StreamDM-Cpp is usually faster
+than StreamDM on small datasets, due to the
+overhead induced by Spark, but it makes heavy use
+of the C standard library, in particular the
+vector and list structures, which may not be
+available on embedded systems \TG{This should be
+explained in intro rather than here.}.
 
-OrpailleCC is a
-collection of data stream algorithms developed for embedded devices. The key
-functions, such as random number generation or memory allocation, are
-parametrizable through class templates and can thus be customized 
-on a given execution platform.
-OrpailleCC is not limited to classification
-algorithms, it implements other data stream
-algorithms such as the Cuckoo filter~\cite{cuckoo}
-or a multi-dimensional extension of the
-Lightweight Temporal Compression~\cite{multi-ltc}. We extended it with 
-a few classifiers for the purpose of this benchmark.
+OrpailleCC is a collection of data stream
+algorithms developed for embedded devices. The key
+functions, such as random number generation or
+memory allocation, are parametrizable through
+class templates and can thus be customized on a
+given execution platform.  OrpailleCC is not
+limited to classification algorithms, it
+implements other data stream algorithms such as
+the Cuckoo filter~\cite{cuckoo} or a
+multi-dimensional extension of the Lightweight
+Temporal Compression~\cite{multi-ltc}. We extended
+it with a few classifiers for the purpose of this
+benchmark.
 
 This benchmark includes six popular classification
-algorithms.  The \mondrianforest~\cite{mondrian2014} builds decision trees independently of class labels,
-and only assign class labels to tree leaves\TG{reworded this but it's still a bit ambiguous}. \mondrianforest are useful in
-situations where labels are delayed, as described
-in~\cite{stream_learning_review}.  The Micro-Cluster Nearest
+algorithms.  The
+\mondrianforest~\cite{mondrian2014} builds
+decision trees without immediat need of labels
+which is useful in situations where labels are
+delayed, as described
+in~\cite{stream_learning_review}\TG{reworded this
+but it's still a bit ambiguous}.  The
+Micro-Cluster Nearest
 Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
 neighbor~(KNN) that was shown to be more accurate for human activity
-recognition \TG{reference? efficient $\rightarrow$ accurate?}. We included
+recognition \TG{reference?}. We included
 it since the work in~\cite{Janidarmian_2017} showed that KNN was the
 best-performing classifier for human activity recognition from wearable
-sensors.  The \naivebayes~\cite{naive_bayes} classifier
-and the \hoeffdingtree~\cite{VFDT} are two common data stream classifiers \TG{Add a sentence to explain the main idea or feature or Hoeffding tree}.
+sensors.  The \naivebayes~\cite{naive_bayes}
+classifier that builds a table of feature
+occurence used to estimate score of a class
+likelyhood.
+The \hoeffdingtree~\cite{VFDT} that builds a
+decision tree using the Hoeffding Bound to
+estimate when the best split is found. 
 Finally, Neural Network classifiers have
 become popular by achieving human-like performance in many fields such as image
 recognition or game playing. We used a
-Multi-Layer Perceptron with one hidden layer, as described in~\cite{omid_2019} for the recognition 
+\FNN with one hidden layer, as described in~\cite{omid_2019} for the recognition 
 of fitness activities on a low-power platform.
 
 
-\TG{This is a bit too detailed here: ``with a reported F1-score of $0.95$. They used one hidden
-layer with the sigmoid activation except for the
-output which uses the softmax."}
 
 The remainder of this section details the datasets, classifiers,
 evaluation metrics and parameters used in our benchmark.
@@ -78,8 +88,11 @@ frequent label to the window.  The resulting data
 points were shuffled across subjects.
 
 In addition, we constructed another dataset from \banosdataset, in which we
-simulated a concept drift by shuffling the activity labels in the
-second half of the data stream. \TG{add one sentence to explain why this is useful}
+simulated a concept drift by shifting the activity labels in the
+second half of the data stream. This is useful to
+observe any behavioral change induce by the
+concept drift such as an increase in power
+consumption.
 
 \subsubsection{\recofitdataset}
 The \recofitdataset dataset~\cite{recofit} is a
@@ -117,88 +130,20 @@ classifiers.
 \TG{You should put this dataset in the paper repo, and \banosdataset too if the license allows}
 
 \subsection{Algorithms and Implementation}
-
-\TG{nitpick: you should order the algorithms as they were presented in the intro of section II}
-
-\TG{Don't use $\backslash$paragraph for chunks of text with more than 1 paragraph.
-}
 In this Section, we will describe algorithms uses
 in this study as well as their hyperparameters. If
 needed we will add implementation description.
 
-\paragraph{\hoeffdingtree~\cite{VFDT}}
-%\begin{itemize}
-	%\item Reserved size with a given size.
-	%\item Binary tree.
-	%\item Focus on real numbers features.
-	%\item The number of split considered by features is given by the user.
-	%\item Split are determined by forming a boxes and spliting these boxes.
-	%\item Majority vote at the leaves.
-	%\item All floating point values are double and all counters are int.
-%\end{itemize}
-Similar to a decision tree, the \hoeffdingtree recursively splits the space to maximize a
-metric function, often the
-information gain or the Gini index. However,
-instead of using the entire dataset, the \hoeffdingtree relies on the Hoeffding bound, \TG{a measure of xxx}, to estimate
-when a leaf should be split. To classify a
-data point, this data point is sorted to a leaf,
-and a label is predicted by aggregating the labels of the training data points in that leaf, usually through
-majority voting or \naivebayes classification.
-We used this classifier as implemented in
-StreamDM-Cpp.
-The \hoeffdingtree is common in data stream
-classification, however, it suffers from one main
-disadvantage: once a split is decided, it cannot
-be re-considered which makes this algorithm weak
-to concept drifts.
-
-\paragraph{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
-The Micro Cluster Nearest Neighbor~(\mcnn) is a
-variant of k-nearest neighbor where data points are
-aggregated into clusters to reduce storage requirements.  During training, the
-algorithm merges a new data point to the closest
-cluster that shares the same label. If the closest
-cluster does not share the same label as the data
-point, this closest cluster and the closest
-cluster with the same label are assigned an error. When a cluster receives too
-many errors, it is split. During classification,
-\mcnn returns the label of the closest cluster.
-Regularly, the algorithm also assigns a
-participation score to each cluster and when this
-score gets below a threshold, the cluster is
-removed. Given that the maximum number of clusters
-is fixed, this mechanism helps to make space for
-new clusters in the future, and possibly to adjust to concept drifts.  
-
-We implemented two versions of \mcnn in OrpailleCC,
-which differ in the way they remove clusters
-during training. The first version (\mcnn Origin)
-is similar to the mechanism described
-in~\cite{mc-nn}, based on participation scores.
-Instead, the second version (\mcnn OrpailleCC)
-removes the cluster with the lowest participation
-only when space is needed.  A cluster slot is
-needed when an existing cluster is split and there are
-no more slot available because the number of
-active cluster already reached the maximum defined
-by the user.
-\TG{I
-updated this paragraph, pleaase check.}
-
-The \mcnn algorithm has two
-parameters: the maximum number of clusters and the
-error threshold after which a cluster is split. \TG{you didn't talk about hyperparameters for hoeffding trees, make sure your descriptions are consistent.}
-
-\TG{somewhere you should explain that your implementations work with a fixed amount of memory, maybe in the presentation of OrpailleCC at the beginning of the section.}
-
-\paragraph{\mondrianforest~\cite{mondrian2014}}
-Each tree in a \mondrianforest recursively
-splits the space, similar to a regular decision tree.
-However, the feature used in the split and the value of the
-split are decided randomly. The probability to select a feature is 
-proportional to its normalized range. The value for the split is
-uniformly selected in the range of the feature. During prediction, a node
-combines its own label observation \TG{what is a node ``observation''?} with its parent prediction.
+\subsubsection{\mondrianforest~\cite{mondrian2014}}
+Each tree in a \mondrianforest recursively splits
+the space, similar to a regular decision tree.
+However, the feature used in the split and the
+value of the split are decided randomly. The
+probability to select a feature is proportional to
+its normalized range. The value for the split is
+uniformly selected in the range of the feature.
+During prediction, a node combines its observed
+label count with its parent prediction.
 
 In OrpailleCC, the size allocated for the forest
 is set at the beginning and it is shared by all
@@ -215,28 +160,91 @@ discount factor closer to one makes the prediction
 of a node closer to the prediction of its parent.
 Finally, the budget controls the tree depth.
 
-\paragraph{\naivebayes~\cite{naive_bayes}}
-The \naivebayes algorithm keeps a table of
-counters for each feature's values and each label.
-During prediction, the algorithm assigns a
-score for each label depending on how the data
-point to predict compares to the values observed
-during the training phase.
+Table~\ref{table:hyperparameter-mondrian} shows
+the hyperparameters used for each tree count.
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|| r | c | c | c ||} 
+			\hline
+			Tree count &  base count & discount & budget \\ [0.5ex] 
+			\hline\hline
+			1 & 0.1 & 1.0 & 0.8 \\
+			5 & 0.0 & 1.0 & 0.8 \\
+			10 & 0.0 & 1.0 & 0.6 \\
+			50 & 0.0 & 0.1 & 0.6 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Hyperparameter used for \mondrianforest.}
+		\label{table:hyperparameter-mondrian}
+\end{figure}
 
-The implementation from StreamDM was used in this
-benchmark. It uses a Gaussian
-estimation for numeric attributes.
 
-In a \naivebayes classifier, the smoothing parameter is the
-default counter given to an attribute value that
-has not been seen. It is meant to avoid scores of zeros.
-We do not use any smoothing since our datasets
-only contain numeric
-attributes. Therefore, as long as there is one data
-point to train with, there will be a Gaussian
-estimation for each attribute.
+\subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
+The Micro Cluster Nearest Neighbor~(\mcnn) is a
+variant of k-nearest neighbor where data points
+are aggregated into clusters to reduce storage
+requirements.  During training, the algorithm
+merges a new data point to the closest cluster
+that shares the same label. If the closest cluster
+does not share the same label as the data point,
+this closest cluster and the closest cluster with
+the same label are assigned an error. When a
+cluster receives too many errors, it is split.
+During classification, \mcnn returns the label of
+the closest cluster.  Regularly, the algorithm
+also assigns a participation score to each cluster
+and when this score gets below a threshold, the
+cluster is removed. Given that the maximum number
+of clusters is fixed, this mechanism helps to make
+space for new clusters in the future, and possibly
+to adjust to concept drifts.  
+The space and time complexity of \mcnn are
+constant since the maximum number of cluster does
+not change.
 
-\paragraph{k-Nearest Neighbors}
+We implemented two versions of \mcnn in
+OrpailleCC, which differ in the way they remove
+clusters during training. The first version (\mcnn
+Origin) is similar to the mechanism described
+in~\cite{mc-nn}, based on participation scores.
+Instead, the second version (\mcnn OrpailleCC)
+removes the cluster with the lowest participation
+only when space is needed.  A cluster slot is
+needed when an existing cluster is split and there
+are no more slot available because the number of
+active cluster already reached the maximum defined
+by the user.
+
+The \mcnn OrpailleCC implementation uses one
+parameters, the error threshold after which a
+cluster is split.  The \mcnn Origin has two
+parameters: the error threshold and the
+participation threshold. The participation
+threshold is the limit below which a cluster is
+removed.
+
+Table~\ref{table:hyperparameter-mcnn} shows
+the hyperparameters used for each cluster count.
+\begin{figure}
+		\begin{center}
+			\begin{tabular}{|| r | c ||} 
+				\hline
+				Cluster count &  error threshold \\ [0.5ex] 
+				\hline\hline
+				10 & 16 \\
+				20 & 4 \\
+				33 & 10 \\
+				40 & 4 \\
+				50 & 2 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\caption{Hyperparameter used for \mcnn.}
+		\label{table:hyperparameter-mcnn}
+\end{figure}
+
+\subsubsection{k-Nearest Neighbors}
 \TG{did you use kNN at all? They don't seem to be in the results.}
 
 The k-Nearest Neighbors~(kNN) is a classification
@@ -264,7 +272,69 @@ parameter k. It can also be tuned by changing the
 distance function. Finally, it can be optimized by
 adapting the window size.
 
-\paragraph{Neural Network}
+\subsubsection{\naivebayes~\cite{naive_bayes}}
+The \naivebayes algorithm keeps a table of
+counters for each feature's values and each label.
+During prediction, the algorithm assigns a
+score for each label depending on how the data
+point to predict compares to the values observed
+during the training phase.
+
+The implementation from StreamDM was used in this
+benchmark. It uses a Gaussian
+estimation for numeric attributes.
+
+In a \naivebayes classifier, the smoothing parameter is the
+default counter given to an attribute value that
+has not been seen. It is meant to avoid scores of zeros.
+We do not use any smoothing since our datasets
+only contain numeric
+attributes. Therefore, as long as there is one data
+point to train with, there will be a Gaussian
+estimation for each attribute.
+
+\subsubsection{\hoeffdingtree~\cite{VFDT}}
+%\begin{itemize}
+	%\item Reserved size with a given size.
+	%\item Binary tree.
+	%\item Focus on real numbers features.
+	%\item The number of split considered by features is given by the user.
+	%\item Split are determined by forming a boxes and spliting these boxes.
+	%\item Majority vote at the leaves.
+	%\item All floating point values are double and all counters are int.
+%\end{itemize}
+Similar to a decision tree, the \hoeffdingtree
+recursively splits the space to maximize a metric
+function, often the information gain or the Gini
+index. However, instead of using the entire
+dataset, the \hoeffdingtree relies on the
+Hoeffding bound, a measure of the score deviation
+of the splits, to estimate when a leaf should be
+split. To classify a data point, this data point
+is sorted to a leaf, and a label is predicted by
+aggregating the labels of the training data points
+in that leaf, usually through majority voting or
+\naivebayes classification.  We used this
+classifier as implemented in StreamDM-Cpp.  The
+\hoeffdingtree is common in data stream
+classification, however, it suffers from one main
+disadvantage: once a split is decided, it cannot
+be re-considered which makes this algorithm weak
+to concept drifts.
+
+The \hoeffdingtree have multiple parameters: the
+confidence level, the grace period, and the leaf
+learner. The confidence level is probability of
+the Hoeffding bound to make a wrong estimation of
+the deviation. The grace period is the number of
+data point to see before considering to split a
+leaf. The leaf learner is the method used in the
+leaf to predict the label.  In this study we used
+a confidence level of $0.01$ with a grace period
+of 10 data points and \naivebayes as leaf
+learners.
+
+\subsubsection{\FNN}
 %We need a citation there
 A neural network is a combination of artificial
 neurons also known as perceptrons. Each
@@ -281,7 +351,7 @@ backpropagation process to adjust the weights of
 the input values.  A neural network combines
 multiple perceptrons by connecting perceptron outputs
 to inputs of other perceptrons.  In
-this benchmark, we used a Multi-Layer Perceptron, 
+this benchmark, we used a \FNN, 
 that is, a network where perceptrons are organized in
 layers and all output
 values from perceptrons of layer $n-1$ serve as
@@ -289,6 +359,7 @@ input values for perceptrons of layer $n$.
 We used a 3-layers network with 120 inputs, 30
 perceptron in the hidden layer, and 33 output
 perceptrons.
+
 In this study, we used histogram features
 from~\cite{omid_2019} instead of the ones
 presented in Section~\ref{sec:method-dataset}
@@ -304,7 +375,7 @@ indicates by how much the weights should change
 during backpropagation.
 
 
-\paragraph{Hyperparameters Tuning}
+\subsubsection{Hyperparameters Tuning}
 Hyperparameters were tuned using the first
 subject from the \banosdataset dataset.  The data from
 this subject was pre-processed as the rest of
@@ -314,70 +385,73 @@ acceleration axis of the right forearm sensor,
 $\ldots$). We tested multiple values for the
 parameters.
 
-Except for the Multi-Layer Perceptron, the
+Except for the \FNN, the
 classifiers start the prequential phase with no
 knowledge from the first subject. Only the
 hyperparameters were selected to maximize the
 F1-score.
 
 On the other hand, we have noticed that the
-Multi-Layer Perceptron is useless without a
+\FNN is useless without a
 pretraining of many epochs. Otherwise, it cannot
 learn fast enough and it does not do better than a
 random classifier. Therefore, we decided to
-pre-train the Multi-Layer Perceptron and re-use
+pre-train the \FNN and re-use
 the weights as a starting point for the
 prequential phase. This implies that the
-Multi-Layer Perceptron starts the prequential
+\FNN starts the prequential
 phase with knowledge from the data.
 
 \subsection{Evaluation}
-We used the prequential error to evaluate the algorithms \TG{it's a bit weird to have this as a first statement in this section as it only 
-applies to classification performance. I'd move it to the section on classification performance.}, that is, we tested
-algorithms with each new data point before training with it. When a
-new label is encountered, we do \TG{fix switch between present and past} not test the algorithm with the data point, we
-only train it. We did not used any fading factor in the prequential error, and we averaged
-values from multiple runs \TG{what are runs? repetition with different random seeds? in different orders?}.
-
-We computed the F1-score, the accuracy, and the memory footprint periodically
-rather than after each data point, to reduce the computing load of the experiment.
-We collected energy consumption at the end of each run, alongside average power.
-
-\TG{just a matter of style, but I feel like your subsections are short enough to just be paragraphs}
+We computed four metrics: the F1-score, the memory
+footprint, the runtime, and the power usage.
+The F1-score, the accuracy, and the memory
+footprint were computed periodically during the
+execution of a classifier. On the other hand, the
+power consumption and the runtime were collected
+at the end of each execution.
 
 %Time to process one element.
 %Explain the concept drift recovery time.
-\subsubsection{Classification Performance}
-We used the accuracy and the F1-score to measure the classification
-performances of the classifiers. These two metrics
-were computed every 50
+\paragraph{Classification Performance}
+We used the prequential error to evaluate the
+algorithms, that is, we tested algorithms with
+each new data point before training with it.  We
+monitored the accuracy and the F1-score to measure
+the classification performances of the
+classifiers. These two metrics were computed every
+50
 elements to avoid overloading the run with this computation \TG{so you
 measure the prequential error (TP, FP, TN, FN for each class) after each
-element but you compute the F1 score only every 10 elements, right? I think the prequential error should be described in this paragraph, to make it clearer.}. We
+element but you compute the F1 score only every 10 elements, right?}. We
 did not apply any fading factor that could attenuate errors from the
 beginning.
-
 We computed the
 F1-score in a one-versus-all fashion for each class, averaged across all classes
-(macro-average \TG{do you confirm?}, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).  When a class has not been encountered yet, its F1-score is ignored.
+(macro-average, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).  When a class has not been encountered yet, its F1-score is ignored.
 Similarly to the accuracy, we did not apply a fading factor.
 
-\subsubsection{Memory}
+\paragraph{Memory}
 We measured the memory footprint by reading file
 \texttt{/proc/self/statm} every 50 data points.
+
+\paragraph{Runtime}
+The runtime of a classifier is the time needed for
+the classifier to process the dataset. It is
+measured at the end of an execution using the
+\textit{perf}
+command.
 
 %\MK{Explain the runtime somewhere and how it is
 %computed.}
 
-\subsubsection{Energy}
-We measured the total energy and average power consumed by classification
-algorithms using the
-AppPowerMeter\footnote{\href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/makefile.py\#L122}{Code
-available here}.} tool from rapl
-tools\footnote{\url{https://github.com/kentcz/rapl-tools.git}}. We measured
-the energy consumed by each classifier multiple times in a minimal
-environment. To provide a baseline energy consumption, we also added an
-empty classifier that always predicted class 0.
+\paragraph{Power} We measured the average power
+consumed by classification algorithms using the
+\textit{perf} command. We measured the power used by each
+classifier multiple times in a minimal
+environment. To provide a baseline power usage, we
+also added an empty classifier that always
+predicted class 0.
 
 \subsection{Experimental Conditions}
 We automated our experiments with a Python script that defines
@@ -388,12 +462,12 @@ through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O
 We averaged metrics for multiple runs of the same
 classifier (same classifier, same parameters, and
 same dataset). The energy
-consumption is the average energy consumption of all runs \TG{you mean same classifier, all datasets, all parameters? If so, say it.}. Regarding the
+consumption is the average energy consumption of
+the classifier. Regarding the
 classification performance (F1-score, accuracy), we averaged measurements
 across repetitions \TG{are these repetitions the same as runs that are averaged at the beginning of section II.C? If so, 
 I would remove the mentioning of averaging there, and only put it here.}.
 
-\TG{You should describe the evaluation platform (characteristics of cluster node)}
 The experiment was done  with a single core of a
 cluster node. The node was two Intel(R) Xeon(R)
 Gold 6130 CPU and a main memory of 250G.
