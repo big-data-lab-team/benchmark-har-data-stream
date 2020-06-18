@@ -1,6 +1,4 @@
 \section{Discussion}
-\TG{make sure concept drifts are discussed}
-
 %Mondrian has the greatest F1-scores, however, slow runtime
 From this study, we observed that the \hoeffdingtree algorithm presents the
 best classification performances followed by the \naivebayes and the
@@ -100,15 +98,15 @@ already seen part of the dataset. We proceed that way because it takes many
 epochs for the weights to adjust correctly so if the weights were randomly
 initialized for the testing phase, the \FNN would answer randomly.
 
-We deviate from the method for the \FNN classifier because neural networks have
+We deviated from the method for the \FNN classifier because neural networks have
 shown a wide range of classification abilities depending on how they are used.
-Therefore we tried to follow~\cite{omid_2019} which exibit high classification
+Therefore, we tried to follow~\cite{omid_2019} which exhibits high classification
 performance.
 
 We have shown in Figure~\ref{fig:f1-drift} that only two classifiers
-(\hoeffdingtree, \mcnn) adapt to a concept drift. However, we also observed
-that this drift does not impact either the power consumption, nor the runtime.
+(\hoeffdingtree, \mcnn) adapt to concept drift. However, we also observed
+that this drift impacts neither the power consumption nor the runtime.
 The memory footprint of the \hoeffdingtree is left unchanged by the drift.
-We suspect that with a large enough amount of memory, the \mondrianforest would
+We suspect that with an amount of memory large enough, the \mondrianforest would
 be able to adapt to the drift. Nevertheless, the drift occurs way after the
 available memory is full.
