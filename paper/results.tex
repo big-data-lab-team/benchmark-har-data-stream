@@ -32,14 +32,11 @@
 		\caption{\banosdataset (with Drift)}
 		\label{fig:f1-drift}
 	\end{subfigure}
-	\caption{F1-scores for the six datasets. 
-	\TG{Hoeffding Tree is a bit difficult to see because it doesn't have a marker and the colour is a bit pale}
-	\TG{You should explain what the MCNN and Mondrian params are, I think just adding ``trees'' (ex: ``10 trees'' and ``clusters'' (ex: ``10 clusters'' in the legend would be enough))}}
+	\caption{F1-scores for the six datasets.}
 	\label{fig:f1}
 \end{figure*}
 
 \section{Results}
-
 This section presents the results of our benchmark and the corresponding
 hyperparameter tunning experiments.
 
@@ -107,13 +104,14 @@ or reshape their structure anymore.
 
 Figure~\ref{fig:f1-variance} shows the F1-score variance for the classifiers.
 Only \mondrianforest has variance since it is the only one involving
-randomness. On Figure~\ref{fig:f1-variance} we notice that \mondrianforest
-variance decreases with the number of tree. The higher the tree count, the
-lower the variance. Finally, we notice that the \mondrianforest variance with
-double memory covers the \naivebayes lines. Therefore, some \mondrianforest run
+randomness. Hence, we removed so classifier from the Figure to make it clearer.
+On Figure~\ref{fig:f1-variance} we notice that \mondrianforest variance
+decreases with the number of tree. The higher the tree count, the lower the
+variance. Finally, we notice that the \mondrianforest variance with double
+memory covers the \naivebayes lines. Therefore, some \mondrianforest run
 achieves better F1-score than the \naivebayes.
 
-Figure~\ref{fig:f1-banos} shows that the F1-score of the Multi-Layer Perceptron
+Figure~\ref{fig:f1-banos} shows that the F1-score of the \FNN
 is around 0.3. Therefore, it remains better than \mcnn Origin but it is quite
 low compare to other classifiers with the same dataset.
 
@@ -121,12 +119,6 @@ Finally, we notice that the StreamDM and OrpailleCC implementations of
 \naivebayes remain close on the two real datasets: \banosdataset and
 \recofitdataset.  This suggests that the two implementations are not similar,
 but SreamDM implements additional mechanisms \TG{this is too vague}.
-
-\TG{Paragraphs should be added to comment on :
-\begin{itemize}
-	\item neural networks
-\end{itemize}}
-
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -157,22 +149,20 @@ but SreamDM implements additional mechanisms \TG{this is too vague}.
 \subsection{Power}
 \label{sec:result-power}
 Figure~\ref{fig:power} shows the power usage of each classifier on four
-datasets \TG{mention why the 6 datasets aren't reported}. Since all classifiers
+datasets. Since all classifiers
 exhibit comparable power consumptions, close to 102~W, we decided to show only
 four of them.
 
 
 \subsection{Runtime}
 Figure~\ref{fig:runtime} shows the runtime of classifiers for the two real
-datasets \TG{you haven't explained in the methods how runtime was
-measured}. \mondrianforest are the slowest classifier, in particular for
-50 trees. The second slowest classifier is the \hoeffdingtree, which
-compares with the 1-tree \mondrianforest. The \hoeffdingtree is followed by
-the two \naivebayes implementations, which is not surprising since \naivebayes classifiers are used in the leaves of the \hoeffdingtree. The \mcnn
-classifiers are the fastest ones, with a runtime very close to the empty
-classifier. There is still a slight difference between the \mcnns. The more
-cluster we use, the slower it gets \TG{at this scale it is barely
-noticeable, I would ommit this comment.}.
+datasets.
+\mondrianforest are the slowest classifier, in particular for 50 trees. The
+second slowest classifier is the \hoeffdingtree, which compares with the 1-tree
+\mondrianforest. The \hoeffdingtree is followed by the two \naivebayes
+implementations, which is not surprising since \naivebayes classifiers are used
+in the leaves of the \hoeffdingtree. The \mcnn classifiers are the fastest
+ones, with a runtime very close to the empty classifier.
 
 We observe that \naivebayes from StreamDM is slightly faster than the one
 from OrpailleCC \TG{I think they are quite comparable in fact. You should
@@ -191,26 +181,31 @@ fair even though they are implemented differently.}.
 		\caption{\recofitdataset}
 		\label{fig:runtime-recofit}
 	\end{subfigure}
-	\caption{Runtime with the two real datasets. \TG{y-axis should be ``Dataset processing time (seconds)''}}
+	\caption{Runtime with the two real datasets.}
 	\label{fig:runtime}
 \end{figure*}
 
 \subsection{Memory}
 \label{sec:result-memory}
 Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
-\banosdataset dataset.  Memory footprint is similar across all datasets, due to the fact that most algorithms
-follow a bounded memory policy or have a constant space complexity. The only
-exception is the \hoeffdingtree \TG{check that spelling and capitalization
-of \hoeffdingtree is consistent throughout document} that constantly
-selects new splits depending on 
-new data points. The \mondrianforest would have had the same behavior if it
-would allocate memory as element goes by. However, the \mondrianforest implementation
-of OrpailleCC allocates memory when the classifier is instantiated and does not
-use more \TG{Last two sentences should be improved, this can be written in a more compact way.}.
+\banosdataset dataset. Because we focus on the classifiers footprint, the
+figure only shows the memory difference between the classifiers and an empty
+classifier. 
+
+Memory footprint is similar across all datasets, due to the fact that most
+algorithms follow a bounded memory policy or have a constant space complexity.
+The only exception is the \hoeffdingtree that constantly selects new splits
+depending on new data points. The \mondrianforest have the same behavior but
+OrpailleCC implementation include a memory bound which make its memory
+footprint constant.
+\TG{Last two sentences should be improved, this can be written in a more compact way.}.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
-	\caption{Memory used by the algorithms on the Banos dataset. \TG{increase font size in all graphs, to make it only slightly smaller than font size in caption}}
+	\caption{Memory footprint of the classifiers compared to an empty
+	classifier on the Banos dataset. The memory footprint of the empty
+	classifier is slightly above 3.4~MB.\TG{increase font size in all graphs,
+	to make it only slightly smaller than font size in caption}}
 	\label{fig:memory}
 \end{figure}
 
@@ -218,9 +213,7 @@ use more \TG{Last two sentences should be improved, this can be written in a mor
 \subsection{Micro-Cluster Nearest Neighbor Hyperparameters}
 
 Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
-in the \mcnn classifiers. The higher the number of clusters, the better are
-the performance \TG{ok but the number of clusters isn't a hyper parameter,
-this should be moved to the description of F1 score results}. The error
+in the \mcnn classifiers with different cluster count. The error
 threshold of \mcnn has little impact on the classification performance. For
 20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
 that a cluster may do 2 or 4 errors before being split. For 10 clusters,
@@ -255,14 +248,12 @@ emphasize the minimum and the maximum \TG{That's a comment for the caption. Why 
 
 The base count hyperparameter (Figure~\ref{fig:mondrian-base-count}) has a
 very substantial impact on classification performance; the smallest value
-(\TG{add value here}) results in the best performance. On the contrary, the
+(0.005) results in the best performance. On the contrary, the
 budget hyperparameter (Figure~\ref{fig:mondrian-budget}) only has a
 moderate impact on classification; the best value is slightly below
 1.0. Finally, the discount hyperparameter
 (Figure~\ref{fig:mondrian-discount}) has a negligible impact on the
 performance; the best-performing value is 0.1.
-
-\TG{Add the selected values of hyperparameters somewhere before, maybe in sub-figure captions in F1 scores.}
 
 \begin{figure}
 	 \centering
