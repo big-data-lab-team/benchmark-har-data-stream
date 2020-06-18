@@ -3,9 +3,11 @@
 
 %Mondrian has the greatest F1-scores, however, slow runtime
 From this study, we observed that the \hoeffdingtree algorithm presents the
-best classification performances followed by the \naivebayes and the \mondrianforest.  However, these performances come with a cost.  The \naivebayes does
-not adapt to the drift, the \mondrianforest is the slowest classifier with a
-high variance. And the \hoeffdingtree has a growing memory footprint.
+best classification performances followed by the \naivebayes and the
+\mondrianforest.  However, these performances come with a cost.  The
+\naivebayes does not adapt to the drift, the \mondrianforest is the slowest
+classifier with a high variance. And the \hoeffdingtree has a growing memory
+footprint.
 
 %All F1-scores remains low
 We also observed that most of the f1-scores are low with the RandomTree dataset and
@@ -49,7 +51,7 @@ barely warms a core.
 In section~\ref{sec:result-memory}, we differentiated bounded memory and
 constant space complexity. In the first case, a limited amount of memory
 may impact the classifier performances because the classifier has to find a way
-around this lack of memory: stop growing or making space for new data structures.
+around this lack of memory: stop growing or making space for new data.
 On the other hand, a constant space complexity is a feature of a classifier and
 its performances are not expected to change no  matter the amount of memory
 available. The classifier is simply supposed to fail without the required
@@ -57,13 +59,16 @@ amount of memory. From the algorithm involved in this study, \mondrianforest
 has a bounded memory policy while \naivebayes is a classifier with a constant
 space complexity.
 
-With that being said, this memory-bound may explain the poor performance of the
+With that being said, this memory-bound explains the poor performance of the
 \mondrianforest with 50 trees compare to the one with 5 or 10 trees. Indeed, we
 have noticed that 50 trees fill the allocated memory after a few elements,
-thus, preventing the classifier to adapt. Additionally, when the available
-memory is further reduced, we noticed that using 1 tree offer better
-performances than 5 or 10. 
+thus, preventing the classifier to adapt.  
 
+Note that we selected the memory bound does not match all situations. Indeed,
+depending on the connected object the memory limit can range from few KB to GB.
+In this study, the \mondrianforest and the \FNN are both limited to 600~KB.
+
+%Hoeffding Tree insane performance on RandomTree
 Concerning the high performance of the \hoeffdingtree on
 Figure~\ref{fig:f1-dataset_3}, we would like to remind that the RandomTree
 dataset is a synthetic dataset generated using a tree structure. Therefore, we
@@ -75,22 +80,35 @@ more related to a nearest neighboor because it tries to split the space in
 boxes of equal sizes rather than finding the best split. The good prediction is
 then obtained by combining multiple trees in a forest.
 
-Figure~\ref{fig:f1-banos} has shown that the Multi-Layer Perceptron has a low
-F1-score compare to other classifiers. This also contradicts the results
-depicted in~\cite{omid_2019} Multi-Layer Perceptron achieves more than 95\% 
-accuracy. The main difference between this study and~\cite{omid_2019} comes
+Figure~\ref{fig:f1-banos} has shown that the \FNN has a low
+F1-score compare to other classifiers. It contradicts the results
+depicted in~\cite{omid_2019} where \FNN achieves more than 95\% 
+accuracy. The main difference between~\cite{omid_2019} and this study comes
 from the training set. Not only the training set includes examples from every
-subject, but also the windows are overlapping and wider than the ones we used.
-Therefore, we expect the Multi-Layer Perceptron to have already encountered
+subjects, but also the windows are overlapping and wider than the ones we used.
+Therefore, we expect the \FNN to have already encountered
 most of the datapoints from the testing set. When instead of using only the
 first subject of the \banosdataset dataset we used a sample of 10\% of it, we
-managed to reach an F1-score of slightly above 0.6, which is close to the \naivebayes.
+managed to reach an F1-score slightly above 0.6, which is close to the \naivebayes.
 
-Note that the pre-training of the Multi-Layer Perceptron is a bit different
-from the other classifiers. Indeed, the hyperparameters tuning of the other
-classifiers implies that they start the testing phase with no prior knowledge
-of the dataset even about the element seen in the tuning phase. On the other
-hand, the Multi-Layer Perceptron starts with its weights already set,
-therefore we can say that it has already seen part of the dataset. We proceed
-that way because it takes many epochs for the weights to adjust correctly and
-for the testing phase, the Multi-Layer Perceptron would answer randomly.
+Note that the pre-training of the \FNN is a bit different from the other
+classifiers. Indeed, the hyperparameters tuning of the other classifiers
+implies that they start the testing phase with no prior knowledge of the
+dataset even about the element seen in the tuning phase. On the other hand, the
+\FNN starts with its weights already set, therefore we can say that it has
+already seen part of the dataset. We proceed that way because it takes many
+epochs for the weights to adjust correctly so if the weights were randomly
+initialized for the testing phase, the \FNN would answer randomly.
+
+We deviate from the method for the \FNN classifier because neural networks have
+shown a wide range of classification abilities depending on how they are used.
+Therefore we tried to follow~\cite{omid_2019} which exibit high classification
+performance.
+
+We have shown in Figure~\ref{fig:f1-drift} that only two classifiers
+(\hoeffdingtree, \mcnn) adapt to a concept drift. However, we also observed
+that this drift does not impact either the power consumption, nor the runtime.
+The memory footprint of the \hoeffdingtree is left unchanged by the drift.
+We suspect that with a large enough amount of memory, the \mondrianforest would
+be able to adapt to the drift. Nevertheless, the drift occurs way after the
+available memory is full.
