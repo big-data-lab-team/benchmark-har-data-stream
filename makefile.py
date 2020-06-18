@@ -507,7 +507,6 @@ def print_results(output, output_runs, models, output_directory="."):
     #Unpack the value part to separate the key and the sorting tuple
     keys = [(key[0], key[1][0], key[1][1]) for key in keys]
     keys = sorted(keys, key = lambda x: x[2])
-    print(len(keys))
     names = [key[0] for key in keys]
     colors = [add_colors(key) for key in keys]
     markers = [add_markers(key) for key in keys]
@@ -571,7 +570,7 @@ def print_results(output, output_runs, models, output_directory="."):
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":26}, ncol=3)
+            plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
@@ -588,7 +587,7 @@ def print_results(output, output_runs, models, output_directory="."):
                 plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
                 plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.2)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":26}, ncol=3)
+            plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
@@ -602,7 +601,7 @@ def print_results(output, output_runs, models, output_directory="."):
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['accuracy'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":26}, ncol=3)
+            plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
         plt.ylabel("Accuracy")
         plt.xlabel("Element")
@@ -617,7 +616,7 @@ def print_results(output, output_runs, models, output_directory="."):
                 y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], daty[daty.fullname == 'Empty']['memory'])]
                 plt.plot(daty[daty.fullname == name]['element_count'], y, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":26}, ncol=3)
+            plt.legend(prop={"size":25}, ncol=3)
         plt.ylabel("KB")
         plt.xlabel("Element")
         plt.tight_layout()
