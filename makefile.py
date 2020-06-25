@@ -151,12 +151,18 @@ def calibration_list(commands):
                             # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
 def memory_list(commands):
     # for dataset_name in ['banos']:
-    for dataset_name in ['banos_6', 'recofit_6']:
+    for dataset_name in ['drift_6', 'banos_6', 'recofit_6']:
         filename = "/tmp/" + dataset_name + ".log"
-        for run_id in map(str,range(1)):
+        for run_id in map(str,range(10)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
             commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
+            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
+            model_id = get_model_id("NaiveBayes," + filename)
+            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
+            model_id = get_model_id("StreamDM NaiveBayes," + filename)
+            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
             model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
@@ -276,7 +282,8 @@ def run(output_filename, run_output_filename):
     run_output_file = open(run_output_filename, "w")
     commands = []
     # calibration_list(commands)
-    final_list(commands)
+    # final_list(commands)
+    memory_list(commands)
 
     shuffle(commands)
 
@@ -372,7 +379,7 @@ def process_output(output_filename, run_output_filename, model_filename):
             if models[key]['memory_size'] == '600000':
                 return name + ' ' + models[key]['tree_count'] + ' tree(s)'
             else:
-                return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x2)'
+                return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + str(int(models[key]['memory_size']) / 600000) + ')'
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return 'MCNN Origin ' + models[key]['cluster_count'] + ' clusters'
@@ -467,8 +474,14 @@ def print_results(output, output_runs, models, output_directory="."):
         elif x[0].find('Mondrian') >= 0:
             if models[x[1]]['memory_size'] == '600000':
                 return '#00BFFF'
-            else:
+            if models[x[1]]['memory_size'] == '1200000':
                 return '#0048FF'
+            if models[x[1]]['memory_size'] == '1800000':
+                return '#FF69B4'
+            if models[x[1]]['memory_size'] == '2400000':
+                return '#5BE33D'
+            if models[x[1]]['memory_size'] == '3000000':
+                return '#9400D3'
         elif x[0].find('NaiveBayes') >= 0:
             return '#F20B13'
         elif x[0].find('HT') >= 0 or x[0].find('HoeffdingTree') >= 0:
@@ -488,7 +501,8 @@ def print_results(output, output_runs, models, output_directory="."):
             if models[key]['memory_size'] == '600000':
                 return (name + ' ' + models[key]['tree_count'] + ' tree(s)', key, (name, int(models[key]['tree_count'])))
             else:
-                return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x2)', key, (name + ' (RAM x2)', int(models[key]['tree_count'])))
+                ram_count = str(int(models[key]['memory_size']) / 600000)
+                return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + ram_count + ')', key, (name + ' (RAM x' + ram_count + ')', int(models[key]['tree_count'])))
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return ('MCNN Origin ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Origin', int(models[key]['cluster_count'])))
@@ -499,7 +513,7 @@ def print_results(output, output_runs, models, output_directory="."):
         else:
             return (name, key, (name, 0))
 
-    dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis'}
+    dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis', 'drift_6' : 'Banos et al 6 axis (Drift)'}
     #(print name, key in models, tuple for sorting)
     keys = [add_key(key) for key in models if models[key]['fullname'] != 'Previous']
     #grounp the third and second value to use dict to do a unique
@@ -517,6 +531,7 @@ def print_results(output, output_runs, models, output_directory="."):
     print(styles)
     plt.rcParams.update({'font.size': 26})
     list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'banos_6', 'recofit_6']
+    list_datastets = ['drift_6', 'banos_6', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
@@ -760,7 +775,7 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        directory = "results_8/"
+        directory = "memory_results/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
