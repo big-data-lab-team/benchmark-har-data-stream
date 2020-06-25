@@ -10,9 +10,20 @@ performances as well as the resource usage (energy
 and memory).
 
 \begin{itemize}
+		\item Introduce the IoT.
+		\item Describe the IoT with an example.
+		\item Human Activity Recognition.
+		\item Describe the pipeline of IoT.
 		\item Low-level environment, wearable device
 		\item Embedded with OS functions unavailable
-		\item Human Activity Recognition.
+		\item Describe the issues related to this
+				pipeline.
+		\item (Privacy, Battery, maintenance).
+		\item Explain our strategie to deploy
+				classifier on sensors and things.
+		\item IoT == data streams.
+		\item We study the feasibility of such
+				approach with this benchmark.
 		\item Expend "regarding the situation" to talk about IoT.
 		\item concept drift.
 		\item descibre the goal of the data stream
@@ -23,13 +34,70 @@ and memory).
 				library in streamdm. And why it's a
 				problem.
 \end{itemize}
-%Introduce the internet of thing.
-%Description of the IoT
+The Internet of
+Things is a concept in which a wide variety
+of objects are connected to the Internet to
+provide new services.  The
+type of objects that can be connected could be a
+watch\footnote{\url{https://www.apple.com/watch/}}
+as well as a street light~\cite{smart-lamp-2011}
+or a basic sensor. A sensor is a very small device
+designed to detect events in its environment such
+as temperature, humidity, or acceleration.  The
+sensor is said wearable when it is incorporated
+into clothing or worn as an implant. These objects often
+embed a wireless communication system like wifi
+or Bluetooth.  Finally, they can be
+connected to Internet directly, with their own IP
+address, or indirectly, through another connected
+object such as a phone.
+
 %Example of use
-%Describe the pipeline
-%Explain the drawback of this pipeline
-%Privacy issue
-%Battery issue
+Connected objects can be used in various
+situations.  For instance, a network of street
+lights can be designed to keep a high feeling of
+security while minimizing energy consumption.  On
+the other hand, wearable sensors that gather data
+about human activity, as described
+in~\cite{recofit}, can be leveraged to improve
+athletes performances and health. 
+As a concrete example, the Motsai company develops
+the Neblina, a wearable device as small as a coin
+that incorporates nine motion sensors with 64KB
+of main
+memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
+This wearable sensor is designed to track and
+analyze human motion.
+
+The current pipelines that process data from
+connected appliances are centralized, as
+illustrated in~\cite{recofit}.  Data are produced
+on a device, then transmitted to a centralized
+cloud or a laptop where they are stored and turned
+into a proper dataset. Then, the dataset is used
+to extract useful information in an offline
+manner.  The extraction is qualified as offline
+because it starts once all data are collected. For
+instance, when training a Machine Learning model,
+the data are gather then carefully curated to select
+the best features. Then the model is trained and
+tested on the data set.
+
+To tackle these privacy and battery issues,
+algorithms with small memory footprint were
+developed to mine information directly on the
+devices rather than in a centralized cloud.  These
+algorithms were inspired of Big Data, in
+particular, from data stream algorithms because it
+is common for these fields to handle more data
+than available resources can accommodate.
+Designing such method allow transmitting only the
+relevant data to the cluster. The survey
+in~\cite{kejariwal2015} reviews the problems faced
+by connected devices.
+
+
+
 %NOTE: Keep the next three lines :D.
 %\cite{sensor-energy-consumption} (conclusion, second paragraph) communication uses more energy.
 %\cite{leach} and \cite{sensor-energy-model}(page 3, first column, check equations and values)
@@ -39,11 +107,6 @@ and memory).
 
 %Outline of the report
 
-%How do we repatriate the data when it has been
-%produce on a sensor on the far end of a sensor
-%network? How do we do it efficiently?
-
-%How to we mine those data? Which framework?
 \subsection{Related Work}
 %Implemented in R modules
 %List des classifier, quel sont les résultat
