@@ -38,14 +38,14 @@ but it's still a bit ambiguous}.  The
 Micro-Cluster Nearest
 Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
 neighbor~(KNN) that was shown to be more accurate for human activity
-recognition \TG{reference?}. We included
+recognition \TG{reference?}; we included
 it since the work in~\cite{Janidarmian_2017} showed that KNN was the
 best-performing classifier for human activity recognition from wearable
 sensors.  The \naivebayes~\cite{naive_bayes}
-classifier that builds a table of feature
-occurence used to estimate score of a class
-likelyhood.
-The \hoeffdingtree~\cite{VFDT} that builds a
+classifier builds a table of feature
+occurrence to estimate class
+likelihoods.
+The \hoeffdingtree~\cite{VFDT} builds a
 decision tree using the Hoeffding Bound to
 estimate when the best split is found. 
 Finally, Neural Network classifiers have
@@ -69,7 +69,7 @@ evaluation metrics and parameters used in our benchmark.
 %17 subject.
 The \banosdataset dataset~\cite{Banos_2014} is a
 human activity dataset with 17 participants
-equipped with 9 sensors. Each sensor samples a 3D
+and 9 sensors per participant. Each sensor samples a 3D
 acceleration, gyroscope, and magnetic field, as
 well as the orientation in a quaternion format,
 producing a total of 13 values.  Sensors are
@@ -81,16 +81,15 @@ no specific activity.
 We pre-processed the \banosdataset dataset using
 non-overlapping windows of one second (50
 samples), and using only the 6 acceleration axes
-of the right forearm sensor. We computed features
-as the average and the standard deviation over the
-window for each axis. We assigned the most
+of the right forearm sensor. We computed the average and the standard deviation over the
+window as features for each axis. We assigned the most
 frequent label to the window.  The resulting data
-points were shuffled across subjects.
+points were shuffled uniformly.
 
 In addition, we constructed another dataset from \banosdataset, in which we
 simulated a concept drift by shifting the activity labels in the
 second half of the data stream. This is useful to
-observe any behavioral change induce by the
+observe any behavioral change induced by the
 concept drift such as an increase in power
 consumption.
 
@@ -102,15 +101,14 @@ dataset, the activity labelled 0 indicates no
 specific activity.
 Since many of these activities are similar, we
 merged some of them together based on the table
-povided in~\cite{behzad2019}. 
+in~\cite{behzad2019}. 
 
 We pre-processed the dataset similarly to the
-\banosdataset, using non-overlapping windows of
+\banosdataset one, using non-overlapping windows of
 one second, and only using the 6 acceleration axes
-of the 6 axis data. From these 6 axes, we computed
-features as the average and the standard deviation
-over the window. The label assigned to this data
-point was the most frequent label in the window.
+of the 6 axis data. From these 6 axes, we used the average and the standard deviation
+over the window as features. We assigned the most
+frequent label to the window.
 
 \subsubsection{MOA dataset}
 Massive Online Analysis~\cite{moa} (MOA) is a Java framework to compare
@@ -130,15 +128,14 @@ classifiers.
 \TG{You should put this dataset in the paper repo, and \banosdataset too if the license allows}
 
 \subsection{Algorithms and Implementation}
-In this Section, we will describe algorithms uses
-in this study as well as their hyperparameters. If
-needed we will add implementation description.
+In this section, we describe the algorithms used in the benchmark, their
+hyperparameters, and relevant implementation details. 
 
 \subsubsection{\mondrianforest~\cite{mondrian2014}}
 Each tree in a \mondrianforest recursively splits
-the space, similar to a regular decision tree.
+the feature space, similar to a regular decision tree.
 However, the feature used in the split and the
-value of the split are decided randomly. The
+value of the split are picked randomly. The
 probability to select a feature is proportional to
 its normalized range. The value for the split is
 uniformly selected in the range of the feature.
@@ -161,12 +158,12 @@ of a node closer to the prediction of its parent.
 Finally, the budget controls the tree depth.
 
 Table~\ref{table:hyperparameter-mondrian} shows
-the hyperparameters used for each tree count.
+the hyperparameters used for each number of trees.
 \begin{figure}
 	\begin{center}
 		\begin{tabular}{|| r | c | c | c ||} 
 			\hline
-			Tree count &  base count & discount & budget \\ [0.5ex] 
+			Number of trees &  Base count & Discount & Budget \\ [0.5ex] 
 			\hline\hline
 			1 & 0.1 & 1.0 & 0.8 \\
 			5 & 0.0 & 1.0 & 0.8 \\
@@ -175,14 +172,14 @@ the hyperparameters used for each tree count.
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Hyperparameter used for \mondrianforest.}
+	\caption{Hyperparameters used for \mondrianforest.}
 		\label{table:hyperparameter-mondrian}
 \end{figure}
 
 
 \subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(\mcnn) is a
-variant of k-nearest neighbor where data points
+variant of k-nearest neighbors where data points
 are aggregated into clusters to reduce storage
 requirements.  During training, the algorithm
 merges a new data point to the closest cluster
@@ -216,8 +213,8 @@ are no more slot available because the number of
 active cluster already reached the maximum defined
 by the user.
 
-The \mcnn OrpailleCC implementation uses one
-parameters, the error threshold after which a
+The \mcnn OrpailleCC implementation has one
+parameter, the error threshold after which a
 cluster is split.  The \mcnn Origin has two
 parameters: the error threshold and the
 participation threshold. The participation
@@ -225,12 +222,12 @@ threshold is the limit below which a cluster is
 removed.
 
 Table~\ref{table:hyperparameter-mcnn} shows
-the hyperparameters used for each cluster count.
+the hyperparameters used for each number of clusters.
 \begin{figure}
 		\begin{center}
 			\begin{tabular}{|| r | c ||} 
 				\hline
-				Cluster count &  error threshold \\ [0.5ex] 
+				Number of clusters &  error threshold \\ [0.5ex] 
 				\hline\hline
 				10 & 16 \\
 				20 & 4 \\
@@ -240,7 +237,7 @@ the hyperparameters used for each cluster count.
 				\hline
 			\end{tabular}
 		\end{center}
-		\caption{Hyperparameter used for \mcnn.}
+		\caption{Hyperparameters used for \mcnn.}
 		\label{table:hyperparameter-mcnn}
 \end{figure}
 
@@ -282,7 +279,7 @@ during the training phase.
 
 The implementation from StreamDM was used in this
 benchmark. It uses a Gaussian
-estimation for numeric attributes.
+fit for numeric attributes.
 
 In a \naivebayes classifier, the smoothing parameter is the
 default counter given to an attribute value that
@@ -291,7 +288,7 @@ We do not use any smoothing since our datasets
 only contain numeric
 attributes. Therefore, as long as there is one data
 point to train with, there will be a Gaussian
-estimation for each attribute.
+fit for each attribute.
 
 \subsubsection{\hoeffdingtree~\cite{VFDT}}
 %\begin{itemize}
@@ -304,13 +301,13 @@ estimation for each attribute.
 	%\item All floating point values are double and all counters are int.
 %\end{itemize}
 Similar to a decision tree, the \hoeffdingtree
-recursively splits the space to maximize a metric
-function, often the information gain or the Gini
+recursively splits the feature space to maximize a metric, often the
+information gain or the Gini
 index. However, instead of using the entire
 dataset, the \hoeffdingtree relies on the
 Hoeffding bound, a measure of the score deviation
 of the splits, to estimate when a leaf should be
-split. To classify a data point, this data point
+split. During classification, a data point
 is sorted to a leaf, and a label is predicted by
 aggregating the labels of the training data points
 in that leaf, usually through majority voting or
@@ -322,13 +319,13 @@ disadvantage: once a split is decided, it cannot
 be re-considered which makes this algorithm weak
 to concept drifts.
 
-The \hoeffdingtree have multiple parameters: the
+The \hoeffdingtree has multiple parameters: the
 confidence level, the grace period, and the leaf
 learner. The confidence level is probability of
 the Hoeffding bound to make a wrong estimation of
 the deviation. The grace period is the number of
-data point to see before considering to split a
-leaf. The leaf learner is the method used in the
+processed data points before a leaf is evaluated for split.
+ The leaf learner is the method used in the
 leaf to predict the label.  In this study we used
 a confidence level of $0.01$ with a grace period
 of 10 data points and \naivebayes as leaf
@@ -337,34 +334,33 @@ learners.
 \subsubsection{\FNN}
 %We need a citation there
 A neural network is a combination of artificial
-neurons also known as perceptrons. Each
-perceptron has weighted input values and an
+neurons, also known as perceptrons, that all have input weights and an
 activation function. To predict a class label, the
-perceptron applies the activation function to the sum
+perceptron applies the activation function to the weighted sum
 of its input values. The output
 value of the perceptron is the result of this
 activation function. This prediction phase is also
 called feed-forward. To train the neural network,
-we feed-forward, then the error between the
+feed-forward is applied first, then the error between the
 prediction and the expected result is used in the
 backpropagation process to adjust the weights of
 the input values.  A neural network combines
 multiple perceptrons by connecting perceptron outputs
 to inputs of other perceptrons.  In
-this benchmark, we used a \FNN, 
+this benchmark, we used a fully-connected \FNN, 
 that is, a network where perceptrons are organized in
 layers and all output
 values from perceptrons of layer $n-1$ serve as
 input values for perceptrons of layer $n$. 
-We used a 3-layers network with 120 inputs, 30
-perceptron in the hidden layer, and 33 output
+We used a 3-layer network with 120 inputs, 30
+perceptrons in the hidden layer, and 33 output
 perceptrons.
 
 In this study, we used histogram features
 from~\cite{omid_2019} instead of the ones
 presented in Section~\ref{sec:method-dataset}
-because the Lulti-Layer Perceptron would performed
-poorly with the features. The histogram features
+because the network performed
+poorly with these features. The histogram features
 produce 20 bins per axis.
 
 This neural network can be tuned by changing the
@@ -385,22 +381,20 @@ acceleration axis of the right forearm sensor,
 $\ldots$). We tested multiple values for the
 parameters.
 
-Except for the \FNN, the
+The
 classifiers start the prequential phase with no
-knowledge from the first subject. Only the
+knowledge from the first subject, except the \FNN \TG{why?}. Only the
 hyperparameters were selected to maximize the
-F1-score.
+F1-score \TG{unclear, should be rephrased}.
 
-On the other hand, we have noticed that the
-\FNN is useless without a
-pretraining of many epochs. Otherwise, it cannot
-learn fast enough and it does not do better than a
+We noticed that the
+\FNN performs very pooly without a
+pretraining of many epochs. Otherwise, it 
+does not learn fast enough and it does not do better than a
 random classifier. Therefore, we decided to
 pre-train the \FNN and re-use
 the weights as a starting point for the
-prequential phase. This implies that the
-\FNN starts the prequential
-phase with knowledge from the data.
+prequential phase.
 
 \subsection{Evaluation}
 We computed four metrics: the F1-score, the memory
