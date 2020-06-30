@@ -1,11 +1,35 @@
 \begin{center}
 \section*{Abstract}
-\begin{minipage}{0.9\textwidth}
-%Background
-%Method
-%Result
-%Conclusion
-\end{minipage}
+This paper aims to evaluate the feasibility of
+running data stream classifiers on smart
+devices. We start with a description of the
+Internet of Things and how its centralized
+pipeline limits the expansion of the concept.
+We explain that leveraging data stream
+algorithms on smart devices is a good
+opportunity to tackle the limitation indued by
+the centralized pipeline. Then we proposed to
+focus on data stream classification in order
+to evaluate classifiers adapted for this
+purpose. In particular, we focus on their
+learning curves and resource consumption
+(runtime, memory, and power).
+We retained eight classifiers that we wanted
+to compare on two Human Activity datasets and
+three additional synthetic datasets generated
+by MOA. The results show that the runtime is
+highly correlated to the classification
+performances whereas the memory footprint
+affects the memory bounded classifiers. The
+power consumption shows no significant
+variation regarding which classifier is run.
+These results also show that the \naivebayes,
+the \hoeffdingtree, and the \mondrianforest
+has the best classification results. We
+finally conclude by the need to improve the
+\mondrianforest to decrease the impact of the
+memory footprint impact or to reduce the
+runtime.
 \end{center}
 
 % vim: tw=50 ts=2
