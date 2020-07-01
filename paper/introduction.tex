@@ -1,39 +1,5 @@
 \section{Introduction}
 \label{sec:introduction}
-
-In this paper, we evaluate the performances of
-data stream classification algorithms to provide
-insights about which algorithm to choose regarding
-the situation.
-This evaluation check the classification
-performances as well as the resource usage (energy
-and memory).
-
-\begin{itemize}
-		\item Introduce the IoT.
-		\item Describe the IoT with an example.
-		\item Human Activity Recognition.
-		\item Describe the pipeline of IoT.
-		\item Low-level environment, wearable device
-		\item Embedded with OS functions unavailable
-		\item Describe the issues related to this
-				pipeline.
-		\item (Privacy, Battery, maintenance).
-		\item Explain our strategie to deploy
-				classifier on sensors and things.
-		\item IoT == data streams.
-		\item We study the feasibility of such
-				approach with this benchmark.
-		\item Expend "regarding the situation" to talk about IoT.
-		\item concept drift.
-		\item descibre the goal of the data stream
-				training (we evaluate with no knowledge of
-				the stream). We are looking for a model
-				that generalize easily.
-		\item Explain the heavy uses of standard
-				library in streamdm. And why it's a
-				problem.
-\end{itemize}
 The Internet of
 Things is a concept in which a wide variety
 of objects are connected to the Internet to
@@ -47,30 +13,26 @@ as temperature, humidity, or acceleration.  The
 sensor is said wearable when it is incorporated
 into clothing or worn as an implant. These objects often
 embed a wireless communication system like wifi
-or Bluetooth.  Finally, they can be
-connected to Internet directly, with their own IP
-address, or indirectly, through another connected
-object such as a phone.
+or Bluetooth.  
 
 %Example of use
 Connected objects can be used in various
-situations.  For instance, a network of street
-lights can be designed to keep a high feeling of
-security while minimizing energy consumption.  On
-the other hand, wearable sensors that gather data
-about human activity, as described
+situations.  For instance, wearable sensors that
+gather data about human activity, as described
 in~\cite{recofit}, can be leveraged to improve
-athletes performances and health. 
-As a concrete example, the Motsai company develops
-the Neblina, a wearable device as small as a coin
-that incorporates nine motion sensors with 64KB
-of main
+athletes performances and health.  As a concrete
+example, the Motsai company develops the Neblina,
+a wearable device as small as a coin that
+incorporates nine motion sensors with 64KB of main
 memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
 This wearable sensor is designed to track and
-analyze human motion.
+analyze human motion. Due to the limited memory,
+the sensor is not embeded with an operating system,
+therefore most of the existing code that relies on
+operating system functions must be adapted.
 
-The current pipelines that process data from
-connected appliances are centralized, as
+The current pipeline that processes the data from
+connected appliances is centralized, as
 illustrated in~\cite{recofit}.  Data are produced
 on a device, then transmitted to a centralized
 cloud or a laptop where they are stored and turned
@@ -79,9 +41,20 @@ to extract useful information in an offline
 manner.  The extraction is qualified as offline
 because it starts once all data are collected. For
 instance, when training a Machine Learning model,
-the data are gather then carefully curated to select
+the data are gathered then carefully curated to select
 the best features. Then the model is trained and
-tested on the data set.
+tested on the data set. Finally, the model is
+transmitted to be used as-is.
+
+This centralized pipeline raises multiple issues.
+A privacy issue, because users are increasingly
+sensitive about the use made of their personal
+data.  A battery issue because the centralized
+approach increases information transmission through
+the wireless network which is the most
+energy-consuming action for a connected
+device~\cite{sensor-network-survey,
+sensor-energy-model}.
 
 To tackle these privacy and battery issues,
 algorithms with small memory footprint were
@@ -96,16 +69,42 @@ relevant data to the cluster. The survey
 in~\cite{kejariwal2015} reviews the problems faced
 by connected devices.
 
+A data stream algorithm is designed to process an
+infinite sequence of element that cannot be
+stored, namely a data stream. A sensor can be
+seen as producing data streams since it emits data
+for its lifetime, these data are accessible in
+sequence, and the storage is too small to save the
+entire stream. Data stream classification is
+performing a classification task where the dataset
+is a data stream. This means that the model
+accesses data points in sequence, should be able
+to classify at any time, and cannot store all the
+points in memory. The task is designated as Human Activity
+Recognition when we try to recognize human motion.
+Because the stream is infinite, the concept
+learned by the model may evolve over time, which is
+called a concept drift.
 
+In this paper, we evaluate the learning of data
+stream classifiers applied to Human Activity
+Recognition (HAR) in order to provide insights
+about which algorithm to choose regarding the
+situation. The evaluation is done without any
+prior knowledge of the data to simulate a brand
+new model trying to learn from a sensor. This
+study evaluates the classification performances as
+well as resource usage (power, runtime, and
+memory). In particular, we want to observe any
+relation between resources and classification
+performances with the final goal being to estimate the
+feasibility of running data stream classifier
+on a smart device.
 
 %NOTE: Keep the next three lines :D.
 %\cite{sensor-energy-consumption} (conclusion, second paragraph) communication uses more energy.
 %\cite{leach} and \cite{sensor-energy-model}(page 3, first column, check equations and values)
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
-
-%Maintenance problems (not necesserly related to the pipeline.)
-
-%Outline of the report
 
 \subsection{Related Work}
 %Implemented in R modules

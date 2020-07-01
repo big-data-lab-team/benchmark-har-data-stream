@@ -45,3 +45,9 @@ sudo apt-get install libcap2-bin
 sudo setcap cap_sys_rawio+ep ./AppPowerMeter
 sudo setcap cap_sys_rawio+ep ./PowerMonitor
 ```
+
+Notes
+-----
+Turn datafile into ARRF file.
+sed 's/\(.*\)\..*/\1/' a.log | ag -v ',0$' > final_a.log
+
