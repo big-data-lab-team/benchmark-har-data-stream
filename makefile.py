@@ -596,7 +596,7 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- F1 stdv')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 10 tree(s) (RAM x2)', 'Mondrian 5 tree(s) (RAM x2)']:
+            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 50 tree(s) (RAM x2.0)', 'Mondrian 50 tree(s) (RAM x3.0)', 'Mondrian 50 tree(s) (RAM x4.0)', 'Mondrian 50 tree(s) (RAM x5.0)']:
                 y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
                 y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
                 plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
