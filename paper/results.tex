@@ -32,7 +32,7 @@
 		\caption{\banosdataset (with Drift)}
 		\label{fig:f1-drift}
 	\end{subfigure}
-	\caption{F1-scores for the six datasets.}
+	\caption{F1-scores for the six datasets. Result over 20 repetitions.}
 	\label{fig:f1}
 \end{figure*}
 
@@ -181,7 +181,7 @@ fair even though they are implemented differently.}.
 		\caption{\recofitdataset}
 		\label{fig:runtime-recofit}
 	\end{subfigure}
-	\caption{Runtime with the two real datasets.}
+	\caption{Runtime with the two real datasets (20 repetitions).}
 	\label{fig:runtime}
 \end{figure*}
 
@@ -222,17 +222,17 @@ all error thresholds perform equally.
 \begin{figure}
 	 \begin{subfigure}[b]{0.49\textwidth}
 		 \centering
-		 \includegraphics[width=\linewidth]{figures/Banos_S1_shuf_MCNN_40_error_check.png}
+		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_40.png}
 		 \caption{40 clusters}
 	 \end{subfigure}
 	 \begin{subfigure}[b]{0.49\textwidth}
 		 \centering
-		 \includegraphics[width=\linewidth]{figures/Banos_S1_shuf_MCNN_20_error_check.png}
+		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_20.png}
 		 \caption{20 clusters}
 	 \end{subfigure}
 	 \begin{subfigure}[b]{0.49\textwidth}
 		 \centering
-		 \includegraphics[width=\linewidth]{figures/Banos_S1_shuf_MCNN_10_error_check.png}
+		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_10.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
 	\caption{Hyperparameters tuning of \mcnn with first subject of \banosdataset dataset. \TG{It's a bit weird to use accuracy here while F1 score was used before. 
@@ -259,7 +259,7 @@ performance; the best-performing value is 0.1.
 	 \centering
 	 \begin{subfigure}[b]{0.49\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/Banos_S1_shuf_Mondrian_T10_check.png}
+		\includegraphics[width=\textwidth]{figures/calibration_mondrian_base.png}
 		\caption{Impact of the base count with 10 trees, a budget of $1.0$, and a discount factor of $0.2$. \TG{Could you simplify the figure legend to just show ``Mondrian - <base count>''? 
 		it's a bit difficult to read and all parameters are the same and reported in this caption. Same comment for the other sub-figures.}} 
 		\label{fig:mondrian-base-count}
@@ -267,14 +267,14 @@ performance; the best-performing value is 0.1.
 	\hfill
 	 \begin{subfigure}[b]{0.49\textwidth}
 		 \centering
-		 \includegraphics[width=\textwidth]{figures/Banos_S1_shuf_Mondrian_T10_bc_0.1_budget_check.png}
+		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_lifetime.png}
 		 \caption{Impact of the budget with 10 trees, a base count of $0.1$, and discount factor of $0.2$.}
 		 \label{fig:mondrian-budget}
 	 \end{subfigure}
 	 \hfill
 	 \begin{subfigure}[b]{0.49\textwidth}
 		 \centering
-		 \includegraphics[width=\textwidth]{figures/Banos_S1_disount_check.png}
+		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_discount.png}
 		 \caption{Impact of the discount factor with 10 trees, a budget of $1.0$, and a base count of $0.1$. \TG{put this graph on the same 0-1 scale as the two other ones.}}
 		 \label{fig:mondrian-discount}
 	 \end{subfigure}
