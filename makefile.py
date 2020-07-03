@@ -117,19 +117,17 @@ def calibration_list(commands):
         for run_id in map(str,range(10)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
-            commands.append(["bin/banos/empty_classifier", filename, seed, model_id, run_id])
-            model_id = get_model_id("Previous," + filename)
-            commands.append(["bin/banos/previous_classifier", filename, seed, model_id, run_id])
+            commands.append(["bin/banos_6/empty_classifier", filename, seed, model_id, run_id])
             for cluster in ["10", "20", "32", "33", "34", "40", "50"]:
                 for error_th in ["2", "4", "8", "10", "16"]:
                     for cleaning in ["0", "1", "2"]:
                         if cleaning == "0":
                             model_id = get_model_id("MCNN," + filename + "," + cluster + "," + error_th + "," + cleaning + ",10")
-                            commands.append(["bin/banos/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, "10"])
+                            commands.append(["bin/banos_6/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, "10"])
                         else:
                             for performance_th in ["10", "30", "50", "70", "90"]:
                                 model_id = get_model_id("MCNN," + filename + "," + cluster + "," + error_th + "," + cleaning + "," + performance_th)
-                                commands.append(["bin/banos/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, performance_th])
+                                commands.append(["bin/banos_6/mcnn_c" + cluster, filename, seed, model_id, run_id, error_th, cleaning, performance_th])
 
             # for hidden_layer_size in ["1", "3", "5", "7", "9", "11"]:
                 # for learning_rate in ["0.01", "0.05", "0.1", "0.15", "0.2"]:
@@ -137,18 +135,19 @@ def calibration_list(commands):
                     # commands.append(["bin/banos/mlp_3", filename, seed, model_id, run_id, learning_rate, hidden_layer_size])
 
 
-            # for confidence in ["0.01"]:
-                # for grace_period in ["10"]:
-                    # for adaptive in ["0", "1"]:
-                        # model_id = get_model_id("StreamDM HoeffdingTree," + filename + "," + adaptive + "," + confidence + "," + grace_period)
-                        # commands.append(["bin/banos/streamdm_ht", filename, seed, model_id, run_id, adaptive, confidence, grace_period])
+            for confidence in ["0.01"]:
+                for grace_period in ["10"]:
+                    for adaptive in ["0", "1"]:
+                        model_id = get_model_id("StreamDM HoeffdingTree," + filename + "," + adaptive + "," + confidence + "," + grace_period)
+                        commands.append(["bin/banos_6/streamdm_ht", filename, seed, model_id, run_id, adaptive, confidence, grace_period])
 
-            # for base_count in ["0.0", "0.01", "0.05", "0.005", "0.1", "0.3", "0.8"]:
-                # for budget in ["2.0", "1.6", "0.8", "0.6"]:
-                    # for discount in ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]:
-                        # for tree_count in [1, 5, 20, 10, 50]:
-                            # model_id = get_model_id("Mondrian" + str(tree_count) + "," + filename + "," + budget + "," + base_count + "," + discount)
-                            # commands.append(["bin/banos/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
+            for base_count in ["0.0", "0.01", "0.05", "0.005", "0.1", "0.3", "0.5", "0.8", "1.0", "1.3"]:
+                for budget in ["2.0", "1.6", "1.0", "1.4", "0.8", "0.6", "0.4", "0.2"]:
+                    for discount in ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]:
+                        for tree_count in [1, 5, 20, 10, 50]:
+                            model_id = get_model_id("Mondrian," + filename + "," + budget + "," + base_count + "," + discount + "," + str(tree_count) + ",600000")
+                            commands.append(["bin/banos_6/mondrian_t" + str(tree_count), filename, seed, model_id, run_id, budget, base_count, discount])
+
 def memory_list(commands):
     # for dataset_name in ['banos']:
     for dataset_name in ['drift_6', 'banos_6', 'recofit_6']:
@@ -223,36 +222,36 @@ def final_list(commands):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
             commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
+            model_id = get_model_id("MCNN," + filename + ",10,16,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "2", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",20,10,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "10", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",40,8,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "8", "0", "10"])
+            model_id = get_model_id("MCNN," + filename + ",33,16,0,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "16", "0", "10"])
             model_id = get_model_id("MCNN," + filename + ",50,2,0,10")
             commands.append(["bin/" + dataset_name + "/mcnn_c50", filename, seed, model_id, run_id, "2", "0", "10"])
-            model_id = get_model_id("MCNN," + filename + ",10,16,0,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "16", "0", "10"])
-            model_id = get_model_id("MCNN," + filename + ",20,4,0,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "4", "0", "10"])
-            model_id = get_model_id("MCNN," + filename + ",40,4,0,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "4", "0", "10"])
-            model_id = get_model_id("MCNN," + filename + ",33,10,0,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "10", "0", "10"])
 
+            model_id = get_model_id("MCNN," + filename + ",10,2,1,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "2", "1", "10"])
+            model_id = get_model_id("MCNN," + filename + ",20,10,1,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "10", "1", "10"])
+            model_id = get_model_id("MCNN," + filename + ",40,8,1,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "8", "1", "10"])
+            model_id = get_model_id("MCNN," + filename + ",33,16,1,10")
+            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "16", "1", "10"])
             model_id = get_model_id("MCNN," + filename + ",50,2,1,10")
             commands.append(["bin/" + dataset_name + "/mcnn_c50", filename, seed, model_id, run_id, "2", "1", "10"])
-            model_id = get_model_id("MCNN," + filename + ",10,16,1,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "16", "1", "10"])
-            model_id = get_model_id("MCNN," + filename + ",20,4,1,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "4", "1", "10"])
-            model_id = get_model_id("MCNN," + filename + ",40,4,1,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "4", "1", "10"])
-            model_id = get_model_id("MCNN," + filename + ",33,10,1,10")
-            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "10", "1", "10"])
 
-            model_id = get_model_id("Mondrian," + filename + ",0.8,0.1,1.0,1,600000")
-            commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "0.8", "0.1", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.8,0.0,1.0,5,600000")
-            commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.8", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,1.0,10,600000")
-            commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.6", "0.0", "1.0"])
-            model_id = get_model_id("Mondrian," + filename + ",0.6,0.0,0.1,50,600000")
-            commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.6", "0.0", "0.1"])
+            model_id = get_model_id("Mondrian," + filename + ",1.0,0.1,1.0,1,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "1.0", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.4,0.0,1.0,5,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t5", filename, seed, model_id, run_id, "0.4", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.4,0.0,1.0,10,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.4", "0.0", "1.0"])
+            model_id = get_model_id("Mondrian," + filename + ",0.2,0.0,1.0,50,600000")
+            commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.2", "0.0", "1.0"])
             model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
             commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
             model_id = get_model_id("NaiveBayes," + filename)
@@ -261,14 +260,14 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
             if dataset_name == 'banos_6' or dataset_name == 'recofit_6':
-                model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1200000')
-                commands.append(['bin/' + dataset_name + '/mondrian_t1_double', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
-                model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1200000')
-                commands.append(['bin/' + dataset_name + '/mondrian_t5_double', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
-                model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,1200000')
-                commands.append(['bin/' + dataset_name + '/mondrian_t10_double', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
-                model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1200000')
-                commands.append(['bin/' + dataset_name + '/mondrian_t50_double', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
+                model_id = get_model_id('Mondrian,' + filename + ',1.0,0.0,1.0,1,3000000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t1_quintuple', filename, seed, model_id, run_id, '1.0', '0.0', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,5,3000000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t5_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,10,3000000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t10_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
+                model_id = get_model_id('Mondrian,' + filename + ',0.2,0.0,1.0,50,3000000')
+                commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.2', '0.0', '1.0'])
 
     for dataset_name in ["banos_3_histogram", "banos_6_histogram"]:
         filename = "/tmp/" + dataset_name + ".log"
@@ -281,9 +280,9 @@ def run(output_filename, run_output_filename):
     output_file = open(output_filename, "w")
     run_output_file = open(run_output_filename, "w")
     commands = []
-    # calibration_list(commands)
+    calibration_list(commands)
     # final_list(commands)
-    memory_list(commands)
+    # memory_list(commands)
 
     shuffle(commands)
 
@@ -475,13 +474,13 @@ def print_results(output, output_runs, models, output_directory="."):
             if models[x[1]]['memory_size'] == '600000':
                 return '#00BFFF'
             if models[x[1]]['memory_size'] == '1200000':
-                return '#0048FF'
+                return '##9400D3'
             if models[x[1]]['memory_size'] == '1800000':
                 return '#FF69B4'
             if models[x[1]]['memory_size'] == '2400000':
                 return '#5BE33D'
             if models[x[1]]['memory_size'] == '3000000':
-                return '#9400D3'
+                return '#0048FF'
         elif x[0].find('NaiveBayes') >= 0:
             return '#F20B13'
         elif x[0].find('HT') >= 0 or x[0].find('HoeffdingTree') >= 0:
@@ -530,8 +529,7 @@ def print_results(output, output_runs, models, output_directory="."):
     print(markers)
     print(styles)
     plt.rcParams.update({'font.size': 26})
-    list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'banos_6', 'recofit_6']
-    list_datastets = ['drift_6', 'banos_6', 'recofit_6']
+    list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'banos_6', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
@@ -596,7 +594,7 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- F1 stdv')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 50 tree(s) (RAM x2.0)', 'Mondrian 50 tree(s) (RAM x3.0)', 'Mondrian 50 tree(s) (RAM x4.0)', 'Mondrian 50 tree(s) (RAM x5.0)']:
+            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 1 tree(s) (RAM x5.0)', 'Mondrian 5 tree(s) (RAM x5.0)', 'Mondrian 10 tree(s) (RAM x5.0)', 'Mondrian 50 tree(s) (RAM x5.0)']:
                 y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
                 y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
                 plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
@@ -637,6 +635,133 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
         plt.clf()
+
+def print_calibration(output, output_runs, models, output_directory="."):
+    def mondrian_lifetime(key, tree_count):
+        name = models[key]['name']
+        if name == 'Mondrian' and models[key]['tree_count'] == tree_count and models[key]['discount'] == '0.2' and models[key]['base'] == '0.1':
+            return True
+        return False
+    def mondrian_discount(key, tree_count):
+        name = models[key]['name']
+        if name == 'Mondrian' and models[key]['tree_count'] == tree_count and models[key]['lifetime'] == '1.0' and models[key]['base'] == '0.1':
+            return True
+        return False
+    def mondrian_base(key, tree_count):
+        name = models[key]['name']
+        if name == 'Mondrian' and models[key]['tree_count'] == tree_count and models[key]['lifetime'] == '1.0' and models[key]['discount'] == '0.2':
+            return True
+        return False
+    def mcnn_error(key, cluster_count, cleaning):
+        name = models[key]['name']
+        if name == 'MCNN' and models[key]['cluster_count'] == cluster_count and models[key]['cleaning'] == cleaning:
+            return True
+        return False
+    def mondrian_by_tree(key, tree_count):
+        name = models[key]['name']
+        if name == 'Mondrian' and models[key]['tree_count'] == tree_count:
+            return True
+        return False
+
+    plt.rcParams.update({'font.size': 26})
+    dataset_name = "processed_subject1_ideal_shuf.log"
+
+    daty = output[output.file.str.contains(dataset_name)]
+    daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
+    keys = [key for key in models if mondrian_lifetime(key, '10') == True]
+    m = daty['model_id'].isin(keys)
+    daty = daty[m]
+    model_ids = daty.model_id.unique()
+    fig = plt.figure(figsize=(23.38582, 16.53544))
+    for model_id in model_ids:
+        sub = daty[daty.model_id == model_id]
+        plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['lifetime'])
+    plt.legend(prop={"size":25}, ncol=3)
+    plt.ylim(0,1)
+    plt.ylabel("F1")
+    plt.xlabel("Element")
+    plt.tight_layout()
+    plt.savefig(output_directory + "/calibration_mondrian_lifetime.png")
+    plt.clf()
+
+    daty = output[output.file.str.contains(dataset_name)]
+    daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
+    keys = [key for key in models if mondrian_discount(key, '10') == True]
+    m = daty['model_id'].isin(keys)
+    daty = daty[m]
+    model_ids = daty.model_id.unique()
+    fig = plt.figure(figsize=(23.38582, 16.53544))
+    for model_id in model_ids:
+        sub = daty[daty.model_id == model_id]
+        plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['discount'])
+    plt.legend(prop={"size":25}, ncol=3)
+    plt.ylim(0,1)
+    plt.ylabel("F1")
+    plt.xlabel("Element")
+    plt.tight_layout()
+    plt.savefig(output_directory + "/calibration_mondrian_discount.png")
+    plt.clf()
+
+    daty = output[output.file.str.contains(dataset_name)]
+    daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
+    keys = [key for key in models if mondrian_base(key, '10') == True]
+    m = daty['model_id'].isin(keys)
+    daty = daty[m]
+    model_ids = daty.model_id.unique()
+    fig = plt.figure(figsize=(23.38582, 16.53544))
+    for model_id in model_ids:
+        sub = daty[daty.model_id == model_id]
+        plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['base'])
+    plt.legend(prop={"size":25}, ncol=3)
+    plt.ylim(0,1)
+    plt.ylabel("F1")
+    plt.xlabel("Element")
+    plt.tight_layout()
+    plt.savefig(output_directory + "/calibration_mondrian_base.png")
+    plt.clf()
+
+    for cluster_count in ['10', '20', '40']:
+        daty = output[output.file.str.contains(dataset_name)]
+        daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
+        keys = [key for key in models if mcnn_error(key, cluster_count, '0') == True]
+        m = daty['model_id'].isin(keys)
+        daty = daty[m]
+        model_ids = daty.model_id.unique()
+        fig = plt.figure(figsize=(23.38582, 16.53544))
+        for model_id in model_ids:
+            sub = daty[daty.model_id == model_id]
+            plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='MCNN ' + models[str(model_id)]['error_threshold'])
+        plt.legend(prop={"size":25}, ncol=3)
+        plt.ylim(0,1)
+        plt.ylabel("F1")
+        plt.xlabel("Element")
+        plt.tight_layout()
+        plt.savefig(output_directory + "/calibration_mcnn_" + cluster_count + ".png")
+        plt.clf()
+
+    print("look best of")
+    daty = output[output.file.str.contains(dataset_name)]
+    daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
+    for cluster_count in ['10', '20', '33', '40', '50']:
+        keys = [key for key in models if mcnn_error(key, cluster_count, '0') == True]
+        average = 0
+        best_model = '-1'
+        for model_id in keys:
+            sub = mean(daty[daty.model_id == int(model_id)]['f1'][-250:])
+            if sub > average:
+                average = sub
+                best_model = str(model_id)
+        print('MCNN ' + cluster_count + ': ' + str(models[best_model]))
+    for tree_count in ['1', '5', '10', '50']:
+        keys = [key for key in models if mondrian_by_tree(key, tree_count) == True]
+        average = 0
+        best_model = -1
+        for model_id in keys:
+            sub = mean(daty[daty.model_id == int(model_id)]['f1'][-250:])
+            if sub > average:
+                average = sub
+                best_model = str(model_id)
+        print('Mondrian ' + tree_count + ': ' + str(models[best_model]))
 
 def additional_computation(results):
     print("Done")
@@ -775,8 +900,9 @@ if len(sys.argv) > 1:
         latex()
     if sys.argv[1] == "process":
         # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        directory = "memory_results/"
+        directory = "results_9/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
         print_results(output, output_runs, models)
+        # print_calibration(output, output_runs, models)
 
