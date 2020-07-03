@@ -32,13 +32,11 @@ algorithms.  The
 \mondrianforest~\cite{mondrian2014} builds
 decision trees without immediat need of labels
 which is useful in situations where labels are
-delayed, as described
-in~\cite{stream_learning_review}\TG{reworded this
-but it's still a bit ambiguous}.  The
+delayed~\cite{stream_learning_review}.  The
 Micro-Cluster Nearest
 Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
 neighbor~(KNN) that was shown to be more accurate for human activity
-recognition \TG{reference?}; we included
+recognition~\cite{mc-nn}; we included
 it since the work in~\cite{Janidarmian_2017} showed that KNN was the
 best-performing classifier for human activity recognition from wearable
 sensors.  The \naivebayes~\cite{naive_bayes}
@@ -166,18 +164,16 @@ the hyperparameters used for each number of trees.
 			\hline
 			Number of trees &  Base count & Discount & Budget \\ [0.5ex] 
 			\hline\hline
-			1 & 0.1 & 1.0 & 0.8 \\
-			5 & 0.0 & 1.0 & 0.8 \\
-			10 & 0.0 & 1.0 & 0.6 \\
-			50 & 0.0 & 0.1 & 0.6 \\
+			1 & 0.0 & 1.0 & 1.0 \\
+			5 & 0.0 & 1.0 & 0.4 \\
+			10 & 0.0 & 1.0 & 0.4 \\
+			50 & 0.0 & 1.0 & 0.2 \\
 			\hline
 		\end{tabular}
 	\end{center}
 	\caption{Hyperparameters used for \mondrianforest.}
 		\label{table:hyperparameter-mondrian}
 \end{figure}
-
-
 \subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(\mcnn) is a
 variant of k-nearest neighbors where data points
@@ -230,10 +226,10 @@ the hyperparameters used for each number of clusters.
 				\hline
 				Number of clusters &  error threshold \\ [0.5ex] 
 				\hline\hline
-				10 & 16 \\
-				20 & 4 \\
-				33 & 10 \\
-				40 & 4 \\
+				10 & 2 \\
+				20 & 10 \\
+				33 & 16 \\
+				40 & 8 \\
 				50 & 2 \\
 				\hline
 			\end{tabular}
@@ -241,34 +237,6 @@ the hyperparameters used for each number of clusters.
 		\caption{Hyperparameters used for \mcnn.}
 		\label{table:hyperparameter-mcnn}
 \end{figure}
-
-\subsubsection{k-Nearest Neighbors}
-\TG{did you use kNN at all? They don't seem to be in the results.}
-
-The k-Nearest Neighbors~(kNN) is a classification
-algorithm that uses the k nearest data points from
-the training set to classify.  An adaption of this
-algorithm to data stream classification is the use
-of a sliding window~\cite{Mining_Massive_Datasets}
-as the training set.
-
-Normally, the sliding window stores the most
-recent data point, but in this benchmark, we used
-a biased window~\cite{biased_reservoir_sampling}.
-This window acts as a sample of
-the stream (similar to a reservoir sampling) but
-biased on the most recent data point.  Therefore,
-the window does not contain the most recent data
-point, but instead, these data points will have a
-higher chance of being in the window.  This type
-of window is useful to keep knowledge from the
-past while focusing on the recent part of the
-dataset.
-
-The kNN algorithm can be tuned by adjusting the
-parameter k. It can also be tuned by changing the
-distance function. Finally, it can be optimized by
-adapting the window size.
 
 \subsubsection{\naivebayes~\cite{naive_bayes}}
 The \naivebayes algorithm keeps a table of
@@ -371,7 +339,6 @@ learning ratio can be changed. The learning ratio
 indicates by how much the weights should change
 during backpropagation.
 
-
 \subsubsection{Hyperparameters Tuning}
 Hyperparameters were tuned using the first
 subject from the \banosdataset dataset.  The data from
@@ -384,18 +351,20 @@ parameters.
 
 The
 classifiers start the prequential phase with no
-knowledge from the first subject, except the \FNN \TG{why?}. Only the
-hyperparameters were selected to maximize the
-F1-score \TG{unclear, should be rephrased}.
-
-We noticed that the
-\FNN performs very pooly without a
-pretraining of many epochs. Otherwise, it 
-does not learn fast enough and it does not do better than a
-random classifier. Therefore, we decided to
+knowledge from the first subject.
+We made an exception for the \FNN because we noticed that the
+\FNN performs poorly with random weights and it
+needs many epochs to achieve better performances
+than a random  classifier. Therefore, we decided to
 pre-train the \FNN and re-use
 the weights as a starting point for the
 prequential phase.
+
+For other classifiers, only the 
+hyperparameters were taken from the tuning phase.
+We selected the hyperparameters that were
+maximizing the F1-score on the first subject.
+
 
 \subsection{Evaluation}
 We computed four metrics: the F1-score, the memory
@@ -409,22 +378,19 @@ at the end of each execution.
 %Time to process one element.
 %Explain the concept drift recovery time.
 \paragraph{Classification Performance}
-We used the prequential error to evaluate the
-algorithms, that is, we tested algorithms with
-each new data point before training with it.  We
-monitored the accuracy and the F1-score to measure
-the classification performances of the
-classifiers. These two metrics were computed every
-50
-elements to avoid overloading the run with this computation \TG{so you
-measure the prequential error (TP, FP, TN, FN for each class) after each
-element but you compute the F1 score only every 10 elements, right?}. We
-did not apply any fading factor that could attenuate errors from the
-beginning.
-We computed the
-F1-score in a one-versus-all fashion for each class, averaged across all classes
+We monitored the true positives, false positive,
+true negative, and false negative using the
+prequential evaluation. This means that with each
+new data point the model was tested then trained.
+From these counts, we computed the F1-score every
+50 elements. We did not apply any fading factor
+that could attenuate errors from the beginning.
+We computed the F1-score in a one-versus-all
+fashion for each class, averaged across all
+classes
 (macro-average, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).  When a class has not been encountered yet, its F1-score is ignored.
-Similarly to the accuracy, we did not apply a fading factor.
+We used the F1-score rather than the accuracy
+because the real data sets are imbalanced.
 
 \paragraph{Memory}
 We measured the memory footprint by reading file
@@ -450,18 +416,12 @@ predicted class 0.
 
 \subsection{Experimental Conditions}
 We automated our experiments with a Python script that defines
-classifiers and their parameters, randomizes all the runs, and plots the
+classifiers and their parameters, randomizes all
+the repetitions, and plots the
 resulting data. The datasets and output results are stored in memory
 through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
-
-We averaged metrics for multiple runs of the same
-classifier (same classifier, same parameters, and
-same dataset). The energy
-consumption is the average energy consumption of
-the classifier. Regarding the
-classification performance (F1-score, accuracy), we averaged measurements
-across repetitions \TG{are these repetitions the same as runs that are averaged at the beginning of section II.C? If so, 
-I would remove the mentioning of averaging there, and only put it here.}.
+We averaged metrics accross repetitions (same classifier, same parameters, and
+same dataset).
 
 The experiment was done  with a single core of a
 cluster node. The node was two Intel(R) Xeon(R)
