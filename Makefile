@@ -101,7 +101,8 @@ rerun:
 	python makefile.py run
 moa:
 	cd $(MOA_DIR)
-	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -a 3 -k 0) -f dataset_1.arff -m 200000"
+	#We set the random seed to 888
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -a 3 -k 0 -i 888) -f dataset_1.arff -m 200000"
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 777 -i 888 -a 3 -n 20) -f dataset_2.arff -m 200000"
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomTreeGenerator -r 777 -i 888 -c 10 -o 0 -u 6 -d 10 -l 5) -f dataset_3.arff -m 200000"
 	 sed 's/,class1,/,0/g' dataset_1.arff | sed 's/,class2,/,1/g' | sed 's/,/	/g' > dataset_1.log

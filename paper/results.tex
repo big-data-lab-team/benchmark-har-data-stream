@@ -4,6 +4,11 @@
 		\caption{\banosdataset}
 		\label{fig:f1-banos}
 	\end{subfigure}
+	\begin{subfigure}[t]{.49\linewidth}
+		\includegraphics[width=\linewidth]{figures/results/drift_6_f1.png}
+		\caption{\banosdataset (with Drift)}
+		\label{fig:f1-drift}
+	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/recofit_6_f1.png}
@@ -26,12 +31,6 @@
 		\caption{RandomTree (MOA)}
 		\label{fig:f1-dataset_3}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/drift_3_f1.png}
-		\caption{\banosdataset (with Drift)}
-		\label{fig:f1-drift}
-	\end{subfigure}
 	\caption{F1-scores for the six datasets. Result over 20 repetitions.}
 	\label{fig:f1}
 \end{figure*}
@@ -43,11 +42,12 @@ hyperparameter tunning experiments.
 \subsection{F1-score}
 Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
 six datasets.  \naivebayes and the \hoeffdingtree outperforme the other
-classifiers on the two real datasets (\banosdataset and \recofitdataset).  On
-the other hand, the \mondrianforest with 5 or 10 trees achieves the best
-performances on 2 synthetic datasets.  Also, the \mondrianforest is the third
-classifier on the two real datasets.  Finally, the \hoeffdingtree outperform
-all other classifiers on the RandomTree dataset, where it is followed by the
+classifiers on the two real datasets (\banosdataset and \recofitdataset) even
+though the F1-scores observed remained low (0.6 and 0.35).  On the other hand,
+the \mondrianforest with 5 or 10 trees achieves the best performances on 2
+synthetic datasets.  Also, the \mondrianforest is the third classifier on the
+two real datasets.  Finally, the \hoeffdingtree outperform all other
+classifiers on the RandomTree dataset, where it is followed by the
 \mondrianforest.
 
 F1-score values vary greatly across the datasets.  While the highest
@@ -65,9 +65,9 @@ is more noticable when a concept drift occurs.
 
 On all datasets, \mcnn OrpailleCC achieves better performances than \mcnn
 Original. Additionally, on the datasets RandomRBF and RandomTree, the lowest
-\mcnn OrpailleCC performs better than the highest \mcnn Origin \TG{not sure I
-understand this sentence. Maybe add a brief explanation instead, ``presumably
-due to \ldots''}.
+\mcnn OrpailleCC performs better than the highest \mcnn Origin. Presumably due
+to the fact that \mcnn Original removes clusters too fast even with the
+participation threshold low.
 
 On the real datasets (\banosdataset and \recofitdataset), the \mcnn OrpailleCC
 classifier appears to be learning faster than the \mondrianforest, although
@@ -165,9 +165,10 @@ in the leaves of the \hoeffdingtree. The \mcnn classifiers are the fastest
 ones, with a runtime very close to the empty classifier.
 
 We observe that \naivebayes from StreamDM is slightly faster than the one
-from OrpailleCC \TG{I think they are quite comparable in fact. You should
-explain that this makes the comparison between hoeffding tree and mondrian
-fair even though they are implemented differently.}.
+from OrpailleCC. This suggest that the two library are implemented with a
+similar regard to runtime performances. Therefore, the comparison between
+\hoeffding and \mondrianforest is fair even though they are implemented
+in different libraries.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -196,9 +197,8 @@ Memory footprint is similar across all datasets, due to the fact that most
 algorithms follow a bounded memory policy or have a constant space complexity.
 The only exception is the \hoeffdingtree that constantly selects new splits
 depending on new data points. The \mondrianforest have the same behavior but
-OrpailleCC implementation include a memory bound which make its memory
+OrpailleCC implementation includes a memory bound which make its memory
 footprint constant.
-\TG{Last two sentences should be improved, this can be written in a more compact way.}.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
@@ -235,8 +235,7 @@ all error thresholds perform equally.
 		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_10.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
-	\caption{Hyperparameters tuning of \mcnn with first subject of \banosdataset dataset. \TG{It's a bit weird to use accuracy here while F1 score was used before. 
-	Couldn't you just use F1 score here too?}}
+	\caption{Hyperparameters tuning of \mcnn with first subject of \banosdataset dataset.}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
 
@@ -247,10 +246,9 @@ the classification performance.
 
 The base count hyperparameter (Figure~\ref{fig:mondrian-base-count}) has a
 very substantial impact on classification performance; the smallest value
-(0.005) results in the best performance. On the contrary, the
+(0.0) results in the best performance. On the contrary, the
 budget hyperparameter (Figure~\ref{fig:mondrian-budget}) only has a
-moderate impact on classification; the best value is slightly below
-1.0. Finally, the discount hyperparameter
+moderate impact on classification; the best value is 0.2. Finally, the discount hyperparameter
 (Figure~\ref{fig:mondrian-discount}) has a negligible impact on the
 performance; the best-performing value is 0.1.
 
