@@ -1,11 +1,13 @@
 \section{Conclusion}
-In this study, we observed that \naivebayes, the \hoeffdingtree with
-\naivebayes leaves, and the \mondrianforest were the best classifiers for
-Datastream Human Activity Recognition. However, their predictions performances
-remain quite low and they depend on the dataset. Additionally, we have
-observed that the \mcnn classifier would achieve better performances than the
-\naivebayes on two of the synthetic datasets. 
-
+In this study, we observed that the \hoeffdingtree, the \mondrianforest, and
+the \naivebayes showed an overall superiority for Human Activity Recognition on
+data streams. Noticeably, we observed that the \hoeffdingtree is consistently
+in the three best classifiers. We have also noticed that the \mondrianforest is
+among the top three classi with four datasets and that it could be the first
+with even more memory.  On the other hand, the predictions performances remain
+quite low compared to their offline counterpart and the F1-score vary with the
+dataset. Additionally, we have observed that the \mcnn classifier would achieve
+better performances than the \naivebayes on two of the synthetic datasets. 
 We also discovered that the \hoeffdingtree and the \mcnns were more resilient
 to a drift that the others.  We learn that a memory-bound has an important
 impact on the classification performances of the \mondrianforest, to the point
