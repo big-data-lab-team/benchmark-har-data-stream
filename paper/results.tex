@@ -8,19 +8,12 @@
 		\includegraphics[width=\linewidth]{figures/results/drift_6_f1.png}
 		\caption{\banosdataset (with Drift)}
 		\label{fig:f1-drift}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_6_f1.png}
-		\caption{\recofitdataset}
-		\label{fig:f1-recofit}
 	\end{subfigure}\\
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_1_f1.png}
 		\caption{Hyperplane (MOA)}
 		\label{fig:f1-dataset_1}
 	\end{subfigure}
-	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_2_f1.png}
 		\caption{RandomRBF (MOA)}
@@ -30,6 +23,11 @@
 		\includegraphics[width=\linewidth]{figures/results/dataset_3_f1.png}
 		\caption{RandomTree (MOA)}
 		\label{fig:f1-dataset_3}
+	\end{subfigure}
+	\begin{subfigure}[t]{.49\linewidth}
+		\includegraphics[width=\linewidth]{figures/results/recofit_6_f1.png}
+		\caption{\recofitdataset}
+		\label{fig:f1-recofit}
 	\end{subfigure}
 	\caption{F1-scores for the six datasets. Result over 20 repetitions.}
 	\label{fig:f1}
@@ -115,10 +113,9 @@ Figure~\ref{fig:f1-banos} shows that the F1-score of the \FNN
 is around 0.3. Therefore, it remains better than \mcnn Origin but it is quite
 low compare to other classifiers with the same dataset.
 
-Finally, we notice that the StreamDM and OrpailleCC implementations of
-\naivebayes remain close on the two real datasets: \banosdataset and
-\recofitdataset.  This suggests that the two implementations are not similar,
-but SreamDM implements additional mechanisms \TG{this is too vague}.
+Finally, we note that the StreamDM and OrpailleCC implementations of
+\naivebayes are indistinguishable from each other. This suggest that the two
+implementation are extremely close.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -167,7 +164,7 @@ ones, with a runtime very close to the empty classifier.
 We observe that \naivebayes from StreamDM is slightly faster than the one
 from OrpailleCC. This suggest that the two library are implemented with a
 similar regard to runtime performances. Therefore, the comparison between
-\hoeffding and \mondrianforest is fair even though they are implemented
+\hoeffdingtree and \mondrianforest is fair even though they are implemented
 in different libraries.
 
 \begin{figure*}
