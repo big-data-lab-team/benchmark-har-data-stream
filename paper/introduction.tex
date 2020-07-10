@@ -10,9 +10,21 @@ model to adapt otherwise its prediction will become obsolete.  The
 classification task is designated as Human Activity Recognition when the model
 tries to recognize human motion.
 
-A connected object from the Internet of Things can be seen as producing data
-streams for three reasons. It emits data for its lifetime, these data are
-accessible in sequence, and the storage is too small to save the entire stream.
+A connected object from the Internet of Things can
+be seen as producing data streams for three
+reasons. It emits data for its lifetime, these
+data are accessible in sequence, and the storage
+is too small to save the entire stream.  As a
+concrete example, the Motsai company develops the
+Neblina, a wearable device as small as a coin that
+incorporates nine motion sensors with 64KB of main
+memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
+Due to its low main memory, the Neblina does not
+embed an operating system, therefore most of the
+system functions are not available or may be
+implemented differently.  This wearable sensor is
+designed to track and analyze human motion.
+
 Therefore, applying data stream algorithms to connected objects could help
 restructure data processing from the IoT.  Indeed, the current pipeline that
 processes the data from connected appliances is centralized, as illustrated
