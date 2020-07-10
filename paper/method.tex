@@ -52,8 +52,6 @@ recognition or game playing. We used a
 \FNN with one hidden layer, as described in~\cite{omid_2019} for the recognition 
 of fitness activities on a low-power platform.
 
-
-
 The remainder of this section details the datasets, classifiers,
 evaluation metrics and parameters used in our benchmark.
 
@@ -115,9 +113,7 @@ data stream classifiers. In addition to classification algorithms, MOA provides 
 tools to read and generate datasets.
 We generated three synthetic datasets\footnote{MOA commands available \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
 a hyperplane, a RandomRBF, and a RandomTree
-dataset \TG{juste pour mon info: tu sembles
-regenerer les datasets a chaque run, utilises-tu
-la meme graine a chaque fois?}. We generated 200,000 data points
+dataset. We generated 200,000 data points
  for each of these synthetic datasets.
 The hyperplane and the RandomRBF both have three features and two classes, however, the RandomRBF has a slight imbalance toward one class.
 The RandomTree dataset is the hardest of the three, with six attributes and
@@ -368,8 +364,8 @@ maximizing the F1-score on the first subject.
 
 \subsection{Evaluation}
 We computed four metrics: the F1-score, the memory
-footprint, the runtime, and the power usage \TG{is accuracy missing in this list, or should it be removed from the remainder of the text?}.
-The F1-score, the accuracy, and the memory
+footprint, the runtime, and the power usage.
+The F1-score and the memory
 footprint were computed periodically during the
 execution of a classifier. The
 power consumption and the runtime were collected
