@@ -1,26 +1,34 @@
 
 \begin{abstract}
 Decentralized data stream analyses have an important role to play in the
-Internet of Things, through their potential impact on both users privacy
-and energy consumption. This paper evaluates data stream classifiers from
-the perspective of smart connected devices, focusing on the common use case
-of human activity recognition. We measure both classification performance
-and resource consumption (runtime, memory, and power) of eight usual stream
-classification algorithms, implemented in a consistent library, and applied
-to two real human activity datasets and three additional synthetic
-datasets. Regarding classification performance, results show an overall
-superiority of the \naivebayes, the \hoeffdingtree, and the \mondrianforest
-classifiers over the \FNN and the Micro-Cluster Nearest Neighbor classifier
-\TG{we lack a quantitative argument for that: X outperformed Y in a/b of
-the datasets}. Regarding resource consumption, the runtime is highly
-correlated to the classification performances whereas the memory footprint
-affects the memory bounded classifiers \TG{be more explicit and name the
-slowest / more memory intensive classifiers}. Power consumption shows no
-significant variation among classifiers, although overall energy
-consumption varies a lot due to differences in runtime. \TG{Conclusion on the feasibility of 
-stream classification on connected objects for human activity recognition?} As future work,
-decreasing the memory footprint of \mondrianforest seems to be a promising
-way to improve classification performance while ensuring usability on connected objects.
+Internet of Things, through their potential impact on both users' privacy and
+energy consumption. This paper evaluates data stream classifiers from the
+perspective of smart connected devices, focusing on the common use case of
+human activity recognition. We measure both classification performance and
+resource consumption (runtime, memory, and power) of eight usual stream
+classification algorithms, implemented in a consistent library, and applied to
+two real human activity datasets and three additional synthetic datasets.
+Regarding classification performance, results show an overall superiority of
+the \naivebayes, the \hoeffdingtree, and the \mondrianforest classifiers over
+the \FNN and the Micro-Cluster earest Neighbor classifier on 4 datasets out of
+6 including the real datasets. On the other datasets, we noted that \mcnn
+showed good performances and tend to perform better than \naivebayes or the
+\mondrianforest, especially when there was a concept drift. Despite their
+overall superiority, we also noticed that the F1-scores of the three leading
+classifiers were quite low on the real datasets.  Regarding resource
+consumption, the \hoeffdingtree and the \mondrianforest have shown the highest
+memory dependency. The \hoeffdingtree because it has the largest memory
+footprint and the \mondrianforest because the more memory it has, the better
+its F1-score is.  Additionally, the \mondrianforest and the \hoeffdingtree are
+the slowest classifiers.  The fastest being the \mcnn and the \FNN.  Finally,
+power consumption shows no significant variation among classifiers, although
+overall energy consumption varies a lot due to differences in runtime.  We
+conclude by stating that Human Activity Recognition on connected objects is set
+back by two factors. A high need in memory to achieve the best F1-score, and
+low F1-score despite higher memory.  As future work, we recommend decorrelating
+the memory footprint and the F1-score of the \mondrianforest and the
+\hoeffdingtree.  Additionally, we suggest improving the overall classification
+performance of to make it usable.
 \end{abstract}
 
 % vim: tw=50 ts=2

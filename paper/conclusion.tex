@@ -1,12 +1,19 @@
 \section{Conclusion}
-In this study, we observed that Naïve Bayes and the Hoeffding Tree with Naïve
-Bayes leaves were the best classifiers for Datastream Human Activity
-Recognition.  We also discovered that the Hoeffding Tree and the MCNNs were
-more resilient to a drift that the others.  We learn that a memory-bound has an
-important impact on the classification performances of the Mondrian Forest,
-to the point where it cannot learn nor adapt to a drift.  Finally, we found out
-that the classifier used does not have an impact on power consumption.
+In this study, we observed that \naivebayes, the \hoeffdingtree with
+\naivebayes leaves, and the \mondrianforest were the best classifiers for
+Datastream Human Activity Recognition. However, their predictions performances
+remain quite low and they depend on the dataset. Additionally, we have
+observed that the \mcnn classifier would achieve better performances than the
+\naivebayes on two of the synthetic datasets. 
 
-The next step of this study will be to decrease the memory dependency of the
-Mondrian Forest and to improve its runtime to make it more competitive with
-classifiers such as the Naïve Bayes or the Hoeffding Tree.
+We also discovered that the \hoeffdingtree and the \mcnns were more resilient
+to a drift that the others.  We learn that a memory-bound has an important
+impact on the classification performances of the \mondrianforest, to the point
+where it cannot learn nor adapt to a drift.  Finally, we found out that the
+classifier used does not have an impact on power consumption.
+
+As future works, we suggest focusing the research to decrease the memory need
+of the \hoeffdingtree and the \mondrianforest. We also advise to improve the
+runtime to make these classifiers competitive with \mcnn and \FNN. Most of all
+we suggest improving the classification performance of the learning
+algorithms.
