@@ -6,12 +6,8 @@ C++ implementation of StreamDM~\cite{StreamDM}, a
 software to mine big data streams using
 \href{https://spark.apache.org/streaming/}{Apache
 Spark Streaming}. StreamDM-Cpp is usually faster
-than StreamDM on small datasets, due to the
-overhead induced by Spark, but it makes heavy use
-of the C standard library, in particular the
-vector and list structures, which may not be
-available on embedded systems \TG{This should be
-explained in intro rather than here.}.
+than StreamDM with one core, due to the
+overhead induced by Spark.
 
 OrpailleCC is a collection of data stream
 algorithms developed for embedded devices. The key
@@ -66,7 +62,10 @@ evaluation metrics and parameters used in our benchmark.
 %17 subject.
 The \banosdataset dataset~\cite{Banos_2014} is a
 human activity dataset with 17 participants
-and 9 sensors per participant. Each sensor samples a 3D
+and 9 sensors per
+participant\footnote{\banosdataset dataset
+available
+\href{https://archive.ics.uci.edu/ml/datasets/REALDISP+Activity+Recognition+Dataset\#:\~:text=The\%20REALDISP\%20(REAListic\%20sensor\%20DISPlacement,\%2Dplacement\%20and\%20induced\%2Ddisplacement.}{here}.}. Each sensor samples a 3D
 acceleration, gyroscope, and magnetic field, as
 well as the orientation in a quaternion format,
 producing a total of 13 values.  Sensors are
@@ -93,7 +92,9 @@ consumption.
 \subsubsection{\recofitdataset}
 The \recofitdataset dataset~\cite{recofit} is a
 human activity dataset containing 94
-participants. Similarly to the \banosdataset
+participants\footnote{\recofitdataset dataset
+available
+\href{https://msropendata.com/datasets/799c1167-2c8f-44c4-929c-227bf04e2b9a}{here}.}. Similarly to the \banosdataset
 dataset, the activity labelled 0 indicates no
 specific activity.
 Since many of these activities are similar, we
@@ -120,7 +121,6 @@ The RandomTree dataset is the hardest of the three, with six attributes and
 ten classes. Since the data points are generated with a tree structure, we
 expect the decision trees to show better performances than the other
 classifiers.
-\TG{You should put this dataset in the paper repo, and \banosdataset too if the license allows}
 
 \subsection{Algorithms and Implementation}
 In this section, we describe the algorithms used in the benchmark, their
