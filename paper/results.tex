@@ -1,3 +1,8 @@
+\begin{figure*}[b]
+	\includegraphics[width=\linewidth]{figures/legend.png}
+	\caption{Legend}
+	\label{fig:f1-legend}
+\end{figure*}
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/banos_6_f1.png}
@@ -39,15 +44,15 @@ hyperparameter tunning experiments.
 
 \subsection{F1-score}
 Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
-six datasets.  \naivebayes and the \hoeffdingtree outperforme the other
-classifiers on the two real datasets (\banosdataset and \recofitdataset) even
-though the F1-scores observed remained low (0.6 and 0.35) compared to offline
-results (0.92 and 0.7)~\cite{behzad2019}.  On the other hand, the
-\mondrianforest with 5 or 10 trees achieves the best performances on 2
-synthetic datasets.  Also, the \mondrianforest is the third classifier on the
-two real datasets.  Finally, the \hoeffdingtree outperform all other
-classifiers on the RandomTree dataset, where it is followed by the
-\mondrianforest.
+six datasets (Figure~\ref{fig:f1-legend} shows the corresponding legend).
+\naivebayes and the \hoeffdingtree outperforme the other classifiers on the two
+real datasets (\banosdataset and \recofitdataset) even though the F1-scores
+observed remained low (0.6 and 0.35) compared to offline results (0.92 and
+0.7)~\cite{behzad2019}.  On the other hand, the \mondrianforest with 5 or 10
+trees achieves the best performances on 2 synthetic datasets.  Also, the
+\mondrianforest is the third classifier on the two real datasets.  Finally, the
+\hoeffdingtree outperform all other classifiers on the RandomTree dataset,
+where it is followed by the \mondrianforest.
 
 F1-score values vary greatly across the datasets.  While the highest
 observed F1-score is above 0.95 on the Hyperplane and RandomRBF datasets,
@@ -202,8 +207,7 @@ footprint constant.
 	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
 	\caption{Memory footprint of the classifiers compared to an empty
 	classifier on the Banos dataset. The memory footprint of the empty
-	classifier is slightly above 3.4~MB.\TG{increase font size in all graphs,
-	to make it only slightly smaller than font size in caption}}
+	classifier is slightly above 3.4~MB.}
 	\label{fig:memory}
 \end{figure}
 
