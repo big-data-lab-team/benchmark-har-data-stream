@@ -1,12 +1,12 @@
 \section{Method}
-We evaluated 6 classifiers implemented in either
+We evaluated 5 classifiers implemented in either
 StreamDM-Cpp~\cite{StreamDM-CPP} or
 OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a
 C++ implementation of StreamDM~\cite{StreamDM}, a
 software to mine big data streams using
 \href{https://spark.apache.org/streaming/}{Apache
 Spark Streaming}. StreamDM-Cpp is usually faster
-than StreamDM with one core, due to the
+than StreamDM in single-core environments, due to the
 overhead induced by Spark.
 
 OrpailleCC is a collection of data stream
@@ -23,19 +23,16 @@ Temporal Compression~\cite{multi-ltc}. We extended
 it with a few classifiers for the purpose of this
 benchmark.
 
-This benchmark includes six popular classification
+This benchmark includes five popular classification
 algorithms.  The
 \mondrianforest~\cite{mondrian2014} builds
-decision trees without immediat need of labels
+decision trees without immediate need for labels
 which is useful in situations where labels are
 delayed~\cite{stream_learning_review}.  The
 Micro-Cluster Nearest
-Neighbors~\cite{mc-nn} is a compressed version of the K-nearest
-neighbor~(KNN) that was shown to be more accurate for human activity
-recognition~\cite{mc-nn}; we included
-it since the work in~\cite{Janidarmian_2017} showed that KNN was the
-best-performing classifier for human activity recognition from wearable
-sensors.  The \naivebayes~\cite{naive_bayes}
+Neighbors~\cite{mc-nn} is a compressed version of the k-nearest
+neighbor~(KNN) that was shown to be among the most accurate classifiers for human activity
+recognition from wearable sensors~\cite{Janidarmian_2017}. The \naivebayes~\cite{naive_bayes}
 classifier builds a table of feature
 occurrence to estimate class
 likelihoods.
@@ -43,7 +40,7 @@ The \hoeffdingtree~\cite{VFDT} builds a
 decision tree using the Hoeffding Bound to
 estimate when the best split is found. 
 Finally, Neural Network classifiers have
-become popular by achieving human-like performance in many fields such as image
+become popular by reaching or even exceeding human performance in many fields such as image
 recognition or game playing. We used a
 \FNN with one hidden layer, as described in~\cite{omid_2019} for the recognition 
 of fitness activities on a low-power platform.
@@ -112,7 +109,7 @@ frequent label to the window.
 Massive Online Analysis~\cite{moa} (MOA) is a Java framework to compare
 data stream classifiers. In addition to classification algorithms, MOA provides many
 tools to read and generate datasets.
-We generated three synthetic datasets\footnote{MOA commands available \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}}:
+We generated three synthetic datasets\footnote{MOA commands available \href{https://github.com/azazel7/paper-benchmark/blob/e0c9a94d0d17490f7ab14293dec20b8322a6447c/Makefile\#L90}{here}.}:
 a hyperplane, a RandomRBF, and a RandomTree
 dataset. We generated 200,000 data points
  for each of these synthetic datasets.
@@ -138,7 +135,7 @@ During prediction, a node combines its observed
 label count with its parent prediction.
 
 In OrpailleCC, the size allocated for the forest
-is set at the beginning and it is shared by all
+is set beforehand and it is shared by all
 the trees.  Therefore, the memory footprint of the
 classifier is constant.
 
@@ -186,11 +183,11 @@ the closest cluster.  Regularly, the algorithm
 also assigns a participation score to each cluster
 and when this score gets below a threshold, the
 cluster is removed. Given that the maximum number
-of clusters is fixed, this mechanism helps to make
-space for new clusters in the future, and possibly
-to adjust to concept drifts.  
+of clusters is fixed, this mechanism makes
+space for new clusters, and possibly
+helps adjust to concept drifts.  
 The space and time complexity of \mcnn are
-constant since the maximum number of cluster does
+constant since the maximum number of clusters does
 not change.
 
 We implemented two versions of \mcnn in
@@ -198,24 +195,24 @@ OrpailleCC, which differ in the way they remove
 clusters during training. The first version (\mcnn
 Origin) is similar to the mechanism described
 in~\cite{mc-nn}, based on participation scores.
-Instead, the second version (\mcnn OrpailleCC)
+The second version (\mcnn OrpailleCC)
 removes the cluster with the lowest participation
 only when space is needed.  A cluster slot is
 needed when an existing cluster is split and there
 are no more slot available because the number of
-active cluster already reached the maximum defined
+active clusters already reached the maximum defined
 by the user.
 
-The \mcnn OrpailleCC implementation has one
+\mcnn OrpailleCC has one
 parameter, the error threshold after which a
-cluster is split.  The \mcnn Origin has two
+cluster is split.  \mcnn Origin has two
 parameters: the error threshold and the
 participation threshold. The participation
 threshold is the limit below which a cluster is
 removed.
 
 Table~\ref{table:hyperparameter-mcnn} shows
-the hyperparameters used for each number of clusters.
+the hyperparameters used for each number of clusters \TG{where is the participation threshold?}.
 \begin{figure}
 		\begin{center}
 			\begin{tabular}{|| r | c ||} 
@@ -236,7 +233,7 @@ the hyperparameters used for each number of clusters.
 
 \subsubsection{\naivebayes~\cite{naive_bayes}}
 The \naivebayes algorithm keeps a table of
-counters for each feature's values and each label.
+counters for each feature value and each label.
 During prediction, the algorithm assigns a
 score for each label depending on how the data
 point to predict compares to the values observed
@@ -244,13 +241,14 @@ during the training phase.
 
 The implementation from StreamDM was used in this
 benchmark. It uses a Gaussian
-fit for numeric attributes.
+fit for numerical attributes.
 
 In a \naivebayes classifier, the smoothing parameter is the
 default counter given to an attribute value that
 has not been seen. It is meant to avoid scores of zeros.
-We do not use any smoothing since our datasets
-only contain numeric
+We do not use \TG{could you check that all the verbs that describe the experiment are present tense? 
+A few of them are past.} any smoothing since our datasets
+only contain numerical
 attributes. Therefore, as long as there is one data
 point to train with, there will be a Gaussian
 fit for each attribute.
@@ -268,11 +266,11 @@ fit for each attribute.
 Similar to a decision tree, the \hoeffdingtree
 recursively splits the feature space to maximize a metric, often the
 information gain or the Gini
-index. However, instead of using the entire
-dataset, the \hoeffdingtree relies on the
+index. However,  to estimate when a leaf should be
+split, the \hoeffdingtree relies on the
 Hoeffding bound, a measure of the score deviation
-of the splits, to estimate when a leaf should be
-split. During classification, a data point
+of the splits instead of using the entire
+dataset \TG{unclear: what is using the entire dataset? decision trees only focus on the data in the leaf to split}. During classification, a data point
 is sorted to a leaf, and a label is predicted by
 aggregating the labels of the training data points
 in that leaf, usually through majority voting or
@@ -282,19 +280,22 @@ classifier as implemented in StreamDM-Cpp.  The
 classification, however, it suffers from one main
 disadvantage: once a split is decided, it cannot
 be re-considered which makes this algorithm weak
-to concept drifts.
+to concept drifts \TG{This is a weird comment given that Hoeffing Tree is
+the only classifier that recovers well from the drift in the results. Also, there's no mentioning of 
+concept drifts in the other classifiers, maybe just add a paragraph to comment in general about their 
+robustness to concept drift.}.
 
-The \hoeffdingtree has multiple parameters: the
+The \hoeffdingtree has multiple \TG{say three explicitly} parameters: the
 confidence level, the grace period, and the leaf
-learner. The confidence level is probability of
-the Hoeffding bound to make a wrong estimation of
+learner. The confidence level is probability that
+the Hoeffding bound makes a wrong estimation of
 the deviation. The grace period is the number of
 processed data points before a leaf is evaluated for split.
  The leaf learner is the method used in the
 leaf to predict the label.  In this study we used
 a confidence level of $0.01$ with a grace period
 of 10 data points and \naivebayes as leaf
-learners.
+learner.
 
 \subsubsection{\FNN}
 %We need a citation there
@@ -336,21 +337,20 @@ indicates by how much the weights should change
 during backpropagation.
 
 \subsubsection{Hyperparameters Tuning}
-Hyperparameters were tuned using the first
+For each classifier, hyperparameters were tuned using the first
 subject from the \banosdataset dataset.  The data from
 this subject was pre-processed as the rest of
 the \banosdataset dataset (window size of one second,
 average and standard deviation on the three
 acceleration axis of the right forearm sensor,
 $\ldots$). We tested multiple values for the
-parameters.
+parameters \TG{grid search?}.
 
 The
 classifiers start the prequential phase with no
 knowledge from the first subject.
-We made an exception for the \FNN because we noticed that the
-\FNN performs poorly with random weights and it
-needs many epochs to achieve better performances
+We made an exception for the \FNN because we noticed that it performed poorly with random weights and it
+needed many epochs to achieve better performances
 than a random  classifier. Therefore, we decided to
 pre-train the \FNN and re-use
 the weights as a starting point for the
@@ -358,8 +358,8 @@ prequential phase.
 
 For other classifiers, only the 
 hyperparameters were taken from the tuning phase.
-We selected the hyperparameters that were
-maximizing the F1-score on the first subject.
+We selected the hyperparameters that 
+maximized the F1-score on the first subject.
 
 
 \subsection{Evaluation}
@@ -374,19 +374,20 @@ at the end of each execution.
 %Time to process one element.
 %Explain the concept drift recovery time.
 \paragraph{Classification Performance}
-We monitored the true positives, false positive,
-true negative, and false negative using the
-prequential evaluation. This means that with each
-new data point the model was tested then trained.
+We monitored the true positives, false positives,
+true negatives, and false negatives using the
+prequential evaluation, meaning that with each
+new data point the model was first tested and then trained.
 From these counts, we computed the F1-score every
 50 elements. We did not apply any fading factor
-that could attenuate errors from the beginning.
+to attenuate errors throughout the stream.
 We computed the F1-score in a one-versus-all
 fashion for each class, averaged across all
 classes
-(macro-average, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).  When a class has not been encountered yet, its F1-score is ignored.
-We used the F1-score rather than the accuracy
-because the real data sets are imbalanced.
+(macro-average, code available \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}). 
+When a class had not been encountered yet, its F1-score was ignored. We used
+the F1-score rather than the accuracy because the real data sets are
+imbalanced.
 
 \paragraph{Memory}
 We measured the memory footprint by reading file
@@ -397,7 +398,10 @@ The runtime of a classifier is the time needed for
 the classifier to process the dataset. It is
 measured at the end of an execution using the
 \textit{perf}
-command.
+command \TG{maybe naive but how do you measure runtime only at the end of
+the execution? Maybe reword that.} \TG{There is still an issue with verb
+tenses here: ``It is measured'' in this paragraph, ``We measured'' in the
+previous one.}. \TG{Add link to the tool}
 
 %\MK{Explain the runtime somewhere and how it is
 %computed.}
@@ -420,7 +424,7 @@ We averaged metrics accross repetitions (same classifier, same parameters, and
 same dataset).
 
 The experiment was done  with a single core of a
-cluster node. The node was two Intel(R) Xeon(R)
-Gold 6130 CPU and a main memory of 250G.
+cluster node with two Intel(R) Xeon(R)
+Gold 6130 CPUs and a main memory of 250G.
 
 % vim: tw=50 ts=2
