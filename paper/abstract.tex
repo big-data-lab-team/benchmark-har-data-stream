@@ -1,32 +1,33 @@
 
 \begin{abstract}
 Decentralized data stream analyses have an important role to play in the
-Internet of Things, through their potential impact on both users' privacy and
+Internet of Things, through their potential impact on both user privacy and
 energy consumption. This paper evaluates data stream classifiers from the
 perspective of smart connected devices, focusing on the common use case of
 human activity recognition. We measure both classification performance and
 resource consumption (runtime, memory, and power) of five usual stream
 classification algorithms, implemented in a consistent library, and applied to
-two real human activity datasets and three additional synthetic datasets.
+two real human activity datasets and three synthetic datasets.
 Regarding classification performance, results show an overall superiority of
 the \hoeffdingtree, the \mondrianforest, and the \naivebayes classifiers over
 the \FNN and the \mcnn classifiers on 4 datasets out of
-6 including the real datasets. The \hoeffdingtree
+6 including the real datasets. In addition, the \hoeffdingtree
 and to some extent \mcnn, are the only
 classifiers that can recover from a concept
 drift. Overall the F1-scores of the three
-leading classifiers were quite low (lower than
-0.7) on the real datasets.  On the contrary,
+leading classifiers remain quite low (lower than
+0.7) on the real datasets.
 Regarding resource consumption, the
 \hoeffdingtree and the \mondrianforest are the
-most memory intensive, are the longest
+most memory intensive, have the longest
 runtime, and therefore are the highest energy
-consummer since power does not vary among
+consumer since power does not vary among
 classifiers. We conclude that Human Activity
 Recognition on connected objects is set back
 by two factors which could lead to interesting
 research directions: a high memory consumption
-and a low F1-scores overall.
+and low F1 scores overall.
 \end{abstract}
+
 
 % vim: tw=50 ts=2
