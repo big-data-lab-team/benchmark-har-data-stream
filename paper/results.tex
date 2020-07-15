@@ -202,6 +202,10 @@ depending on new data points. The \mondrianforest has the same behavior but the
 OrpailleCC implementation includes a memory bound, which makes its memory
 footprint constant.
 
+\TG{it looks like the hoeffding tree consumes way more memory, but isnt it a
+side effect of using streamDM? Maybe all memory consumptions should be computed by reference 
+to the naive bayes baseline. }
+
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
 	\caption{Memory footprint of the classifiers relatively to the empty
