@@ -31,7 +31,7 @@ class MLPClassifier{
 
 #ifdef NN_TRAINING
 		if(counter%5000 == 0)
-			cout << "Error: " << err << " ---- " << min_err << endl;
+			cout << "Error: " << err << " ---- " << min_err << " (" << (min_err > 0.00001) << ") " << 0.00001 << endl;
 #endif
 
 		counter += 1;
