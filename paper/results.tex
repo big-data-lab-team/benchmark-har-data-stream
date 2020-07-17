@@ -2,7 +2,7 @@
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/legend.png}
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/banos_6_f1.png}
+		\includegraphics[width=\linewidth]{figures/results/banos_6_f1_std.png}
 		\caption{\banosdataset}
 		\label{fig:f1-banos}
 	\end{subfigure}
@@ -31,7 +31,7 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
-	\caption{F1-scores for the six datasets (average over 20 repetitions).}
+	\caption{F1-scores for the six datasets (average over 20 repetitions). The horizontal dashed green line indicate the offline KNN F1-score.}
 	\label{fig:f1}
 \end{figure*}
 
@@ -41,17 +41,16 @@ hyperparameter tunning experiments.
 
 \subsection{F1-score}
 Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
-six datasets.
-\naivebayes and the \hoeffdingtree outperform the other classifiers on the two
-real datasets (\banosdataset and \recofitdataset) even though the F1-scores
-observed remained low (0.6 and 0.35) compared to offline results (0.92 and
-0.7)~\cite{behzad2019} \TG{OK but these results used more than 1 sensor, it would be better to do the offline experiment yourself}.  On the other hand, the \mondrianforest with 5 or 10
-trees achieves the best performances on 2 synthetic datasets.  The
-\mondrianforest \TG{mention with how much RAM because it is ambiguous} is also the third classifier on the two real datasets.  Finally, the
-\hoeffdingtree outperforms all other classifiers on the RandomTree dataset,
-where it is followed by the \mondrianforest.
-\TG{Methods should explain how much RAM were given to Mondrian forest, and explain that for some datasets 
-you also used RAM x 5.}
+six datasets.  \naivebayes and the \hoeffdingtree outperform the other
+classifiers on the two real datasets (\banosdataset and \recofitdataset) even
+though the F1-scores observed remained low (0.6 and 0.35) compared to offline
+results (green horizontal line). On the other hand, the \mondrianforest (cyan)
+with 5 or 10 trees achieves the best performances on 2 synthetic datasets.  The
+\mondrianforest is also the third classifier on the two real datasets.
+Finally, the \hoeffdingtree outperforms all other classifiers on the RandomTree
+dataset, where it is followed by the \mondrianforest. We also note that the
+\FNN remains better than \mcnn Origin but it is quite low compare to other
+classifiers with the same dataset.
 
 F1-score values vary greatly across the datasets.  While the highest
 observed F1-score is above 0.95 on the Hyperplane and RandomRBF datasets,
@@ -59,36 +58,43 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
 
+Figure~\ref{fig:f1-banos} includes the variance of the F1-score for
+\mondrianforest classifiers, the only ones to involve randomness. The
+variance decreases with the number of trees, as expected.
+\TG{I dont find the last two sentences particularly
+informative and this figure doesn't bring much at the end of the day. Could
+you just add variance to figure 3?}.
+
 The StreamDM \hoeffdingtree algorithm achieves better performance than the
 \naivebayes except for the \banosdataset dataset.  Both of them start close
 together because the \hoeffdingtree uses a \naivebayes in its leaves.  However,
-they start diverging because the \hoeffdingtree improves by reshaping its tree
+they start diverging most likely because the \hoeffdingtree improves by reshaping its tree
 structure.  This is caused by a sufficient amount of element and the difference
-is more noticable when a concept drift occurs \TG{do you have evidence for the 
-affirmations of the last two sentences? If not, let's just write ``most likely because'' or ``presumably due to''.}.
+is more noticable when a concept drift occurs.
 
 On all datasets, \mcnn OrpailleCC achieves better performances than \mcnn
-Original. Additionally, on the RandomRBF and RandomTree datasets, the lowest
-\mcnn OrpailleCC performs better than the highest \mcnn Origin \TG{not sure what this means, fix syntax}. Presumably due
-to the fact that \mcnn Original removes clusters too fast even with the
-participation threshold low \TG{This sentence lacks a verb}.
+Original. Presumably due
+to the fact that \mcnn Original removes clusters too fast even with a low
+participation threshold.
 Besides, on the real datasets (\banosdataset and \recofitdataset), the \mcnn OrpailleCC
 classifier appears to be learning faster than the \mondrianforest, although
 \mondrianforest catches up after a few thousand elements. 
 
-Surprisingly, a \mondrianforest with 50 trees performs worse than with 5 or
-10 trees \TG{on all datasets?}. This is due to the fact that our
-\mondrianforest implementation allocates a fixed amount of memory, which is
-useful on connected objects but limits tree growth when the allocated
-memory is full. Because 50 trees fill the memory faster than 10 or 5 trees,
-the classifier adaptation is blocked faster, when the trees have not
-learned enough from the data.
+Surprisingly, a \mondrianforest with 50 trees performs worse than with 5 or 10
+trees on most datasets. The only exception is the Hyperplane dataset where
+50 trees F1-score is between 5 and 10 trees. This is due to the fact that
+our \mondrianforest implementation allocates a fixed amount of memory, which is
+useful on connected objects but limits tree growth when the allocated memory is
+full. Because 50 trees fill the memory faster than 10 or 5 trees, the
+classifier adaptation is blocked faster, when the trees have not learned enough
+from the data.
 
-This dependency of the \mondrianforest to memory allocation is 
-shown in Figures~\ref{fig:f1-banos}-\ref{fig:f1-recofit}, where 
-an additional configuration with twice as much memory as the base one is shown.
-The memory increase induces a F1-score difference greater than 0.1, except when only one tree
-is used. In which case the improvement caused by the memory is less than 0.05 \TG{this sentence lacks a verb}.
+This dependency of the \mondrianforest to memory allocation is shown in
+Figures~\ref{fig:f1-banos}-\ref{fig:f1-recofit}, where an additional
+configuration with five time more memory (total of 3MB) is shown (deep blue).  The memory
+increase induces a F1-score difference greater than 0.1, except when only one
+tree is used. In which case the improvement caused by the memory is less than
+0.05.
 
 The \hoeffdingtree appears to be the most robust to concept drifts
 (Figure~\ref{fig:f1-drift}), while the \mondrianforest and \naivebayes
@@ -98,26 +104,8 @@ two factors. First, existing nodes in trees of a \mondrianforest cannot be updat
 Second, when the memory limit is reached, \mondrianforest cannot grow
 or reshape their structure anymore.
 
-\begin{figure}
-		\includegraphics[width=\linewidth]{figures/results/banos_6_f1_std.png}
-		\caption{F1-score variance on \banosdataset dataset. Some classifiers
-		have been removed to make the Figure clearer (\mcnn Origin,
-		\hoeffdingtree, some of the \mcnn OrpailleCC)}
-		\label{fig:f1-variance}
-\end{figure}
-
-Figure~\ref{fig:f1-variance} shows the variance of the F1-score for
-\mondrianforest classifiers, the only ones to involve randomness. The
-variance decreases with the number of trees, as expected. We notice that
-the \mondrianforest variance with double memory covers the \naivebayes
-lines. Therefore, some \mondrianforest run achieves better F1-score than
-the \naivebayes \TG{I dont find the last two sentences particularly
-informative and this figure doesn't bring much at the end of the day. Could
-you just add variance to figure 3?}.
-
 Figure~\ref{fig:f1-banos} shows that the F1-score of the \FNN
-is around 0.3 \TG{Why isn't it shown in the other figures?}. Therefore, it remains better than \mcnn Origin but it is quite
-low compare to other classifiers with the same dataset. \TG{Move this to one sentence in the first paragraph of III.A}
+is around 0.3 \TG{Why isn't it shown in the other figures?}. 
 
 Finally, we note that the StreamDM and OrpailleCC implementations of
 \naivebayes are indistinguishable from each other, which confirms our
@@ -195,7 +183,7 @@ Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
 figure only shows the memory difference between the classifiers and the empty
 classifier. 
 
-Memory footprint is similar across all datasets \TG{do you mean across all classifiers?}, due to the fact that most
+Memory footprint is similar across all datasets and all classifiers, due to the fact that most
 algorithms follow a bounded memory policy or have a constant space complexity.
 The only exception is the \hoeffdingtree that constantly selects new splits
 depending on new data points. The \mondrianforest has the same behavior but the
@@ -210,7 +198,7 @@ to the naive bayes baseline. }
 	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
 	\caption{Memory footprint of the classifiers relatively to the empty
 	classifier, measured on the \banosdataset dataset. The memory footprint of the empty
-	classifier is slightly above 3.4~MB \TG{give the exact value}.}
+	classifier is slightly above 3.439KB.}
 	\label{fig:memory}
 \end{figure}
 
@@ -218,7 +206,7 @@ to the naive bayes baseline. }
 \subsection{Micro-Cluster Nearest Neighbor Hyperparameters}
 
 Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
-in the \mcnn classifiers with different cluster counts \TG{write ``error threshold'' in the figure legend}. The error
+in the \mcnn classifiers with different cluster counts. The error
 threshold of \mcnn has little impact on the classification performance. For
 20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
 that a cluster may do 2 or 4 errors before being split. For 10 clusters,
@@ -240,7 +228,7 @@ all error thresholds perform equally.
 		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_10.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
-	\caption{Hyperparameters tuning of \mcnn with first subject of \banosdataset dataset.}
+	\caption{Error threshold tuning of \mcnn with first subject of \banosdataset dataset.}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
 
