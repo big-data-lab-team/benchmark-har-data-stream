@@ -58,6 +58,11 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
 
+The main difference between these datasets is the lower complexity of RandomRBF
+and Hyperplane. Indeed, these two datasets have two classes with three
+attributes while the others have at least ten classes. This suggest that the
+number of classes may have an impact in the classification performance.
+
 Figure~\ref{fig:f1-banos} includes the variance of the F1-score for
 \mondrianforest classifiers, the only ones to involve randomness. The
 variance decreases with the number of trees, as expected.
@@ -73,21 +78,56 @@ structure.  This is caused by a sufficient amount of element and the difference
 is more noticable when a concept drift occurs.
 
 On all datasets, \mcnn OrpailleCC achieves better performances than \mcnn
-Original. Presumably due
-to the fact that \mcnn Original removes clusters too fast even with a low
-participation threshold.
-Besides, on the real datasets (\banosdataset and \recofitdataset), the \mcnn OrpailleCC
-classifier appears to be learning faster than the \mondrianforest, although
-\mondrianforest catches up after a few thousand elements. 
+Original. Presumably due to the fact that \mcnn Original removes clusters too
+fast even with a low participation threshold.  Besides, on the real datasets
+(\banosdataset and \recofitdataset), the \mcnn OrpailleCC classifier appears to
+be learning faster than the \mondrianforest, although \mondrianforest catches
+up after a few thousand elements. 
 
+\subsubsection{\FNN}
+Figure~\ref{fig:f1-banos} has shown that the \FNN has a low
+F1-score compared to other classifiers. It contradicts the results
+depicted in~\cite{omid_2019} where \FNN achieves more than 95\% 
+accuracy. The main difference between~\cite{omid_2019} and this study comes
+from the training set. In~\cite{omid_2019}, not only the training set includes examples from every
+subjects, but also the windows are overlapping and wider than the ones we used.
+Therefore, we expect the \FNN to have already encountered
+most of the datapoints from the testing set. When instead of using only the
+first subject of the \banosdataset dataset we used a sample of 10\% of of all datapoints in the \banosdataset dataset, we
+managed to reach an F1-score slightly above 0.6, which is close to the \naivebayes.
+
+Note that the pre-training of the \FNN is slightly different from the other
+classifiers. Indeed, the hyperparameters tuning of the other classifiers
+implies that they start the testing phase with no prior knowledge of the
+dataset even about the element seen in the tuning phase. On the other hand, the
+\FNN starts with its weights already set, therefore we can say that it has
+already seen part of the dataset. We proceed that way because it takes many
+epochs for the weights to adjust correctly so if the weights were randomly
+initialized for the testing phase, the \FNN would answer randomly.
+
+We deviated from the method for the \FNN classifier because neural networks have
+shown a wide range of classification abilities depending on how they are used.
+Therefore, we tried to follow~\cite{omid_2019} which exhibits high classification
+performance.
+
+\subsubsection{Bounded Memory}
 Surprisingly, a \mondrianforest with 50 trees performs worse than with 5 or 10
 trees on most datasets. The only exception is the Hyperplane dataset where
 50 trees F1-score is between 5 and 10 trees. This is due to the fact that
-our \mondrianforest implementation allocates a fixed amount of memory, which is
+our \mondrianforest implementation is memory bounded, which is
 useful on connected objects but limits tree growth when the allocated memory is
 full. Because 50 trees fill the memory faster than 10 or 5 trees, the
-classifier adaptation is blocked faster, when the trees have not learned enough
+classifier learning is blocked faster, when the trees have not learned enough
 from the data.
+We differentiate bounded memory from constant space complexity because in the
+first case, a limited amount of memory may force the classifier to find a way
+around this lack of memory: stop growing or making space for new data.
+Therefore, influencing its performance.  On the other hand, a constant space
+complexity is a feature of a classifier and its performances are not expected
+to change no  matter the amount of memory available. The classifier is simply
+supposed to fail without the required amount of memory. From the algorithm
+involved in this study, \mondrianforest has a bounded memory policy while
+\naivebayes is a classifier with a constant space complexity.
 
 This dependency of the \mondrianforest to memory allocation is shown in
 Figures~\ref{fig:f1-banos}-\ref{fig:f1-recofit}, where an additional
@@ -95,6 +135,10 @@ configuration with five time more memory (total of 3MB) is shown (deep blue).  T
 increase induces a F1-score difference greater than 0.1, except when only one
 tree is used. In which case the improvement caused by the memory is less than
 0.05.
+
+Note that the selected the memory bound does not match all situations. Indeed,
+depending on the connected object the memory limit can range from few KB to GB.
+In this study, the \mondrianforest is limited to 600~KB.
 
 The \hoeffdingtree appears to be the most robust to concept drifts
 (Figure~\ref{fig:f1-drift}), while the \mondrianforest and \naivebayes
@@ -111,6 +155,16 @@ Finally, we note that the StreamDM and OrpailleCC implementations of
 \naivebayes are indistinguishable from each other, which confirms our
 implementation in OrpailleCC.
 
+In this study, we focused on using one sensor rather than all the sensors
+available in the real datasets. In the case of more sensor used, we would
+expect an F1-score improvement for all classifiers because they would have
+access to more data in order to discriminate the classes. On the other hand we
+would expect an increase in the memory footprint because more sensors means
+more attribute extracted. This should have minimal impact on classifier such as
+\naivebayes because their footprint is already low. However, the
+\mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to grow
+significatively because more sensors means more attributes for each leaf or cluster.
+
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/banos_3_watt.png}
@@ -119,14 +173,14 @@ implementation in OrpailleCC.
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_3_watt.png}
-		\caption{\recofitdataset}
-		\label{fig:power-recofit}
-	\end{subfigure}\\
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/drift_3_watt.png}
+		\includegraphics[width=\linewidth]{figures/results/drift_6_watt.png}
 		\caption{\banosdataset with drift.}
 		\label{fig:power-drift}
+	\end{subfigure}\\
+	\begin{subfigure}[t]{.49\linewidth}
+		\includegraphics[width=\linewidth]{figures/results/recofit_6_watt.png}
+		\caption{\recofitdataset}
+		\label{fig:power-recofit}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{.49\linewidth}
@@ -140,9 +194,21 @@ implementation in OrpailleCC.
 \subsection{Power}
 \label{sec:result-power}
 Figure~\ref{fig:power} shows the power usage of each classifier on four
-datasets. Since all classifiers
-exhibit comparable power consumptions, close to 102~W, we decided to show only
-four of them.
+datasets. Since all classifiers exhibit comparable power consumptions, close to
+102~W, we decided to show only four of them. Figure~\ref{fig:power-drift} also
+shows that the concept drift does not influence the power consumption.
+
+This observation is explainable by two factors. The platform used is too powerful
+and it was already working at minimal power. Indeed, to ensure no disturbance
+by a background process, we run the classifier on an isolated cluster node with
+eight cores. Therefore, the power difference on one core is not noticeable.
+
+Another reason is the dataset size. Indeed, the slowest run is about
+10 seconds with 50 Mondrian trees on \recofitdataset dataset.  Such short
+execution does not leave the time for the CPU to switch P-states because it
+barely warms a core.
+\TG{you should explain why your results are still relevant and how they are expected to generalize on 
+connected objects.}
 
 
 \subsection{Runtime}
@@ -183,12 +249,14 @@ Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
 figure only shows the memory difference between the classifiers and the empty
 classifier. 
 
-Memory footprint is similar across all datasets and all classifiers, due to the fact that most
-algorithms follow a bounded memory policy or have a constant space complexity.
-The only exception is the \hoeffdingtree that constantly selects new splits
-depending on new data points. The \mondrianforest has the same behavior but the
-OrpailleCC implementation includes a memory bound, which makes its memory
-footprint constant.
+Memory footprint is similar across all datasets and all classifiers, due to the
+fact that most algorithms follow a bounded memory policy or have a constant
+space complexity.  The only exception is the \hoeffdingtree that constantly
+selects new splits depending on new data points. The \mondrianforest has the
+same behavior but the OrpailleCC implementation includes a memory bound, which
+makes its memory footprint constant. Note that the concept drift does not
+increase the memory footprint of the \hoeffdingtree.
+
 
 \TG{it looks like the hoeffding tree consumes way more memory, but isnt it a
 side effect of using streamDM? Maybe all memory consumptions should be computed by reference 
