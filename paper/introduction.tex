@@ -1,23 +1,25 @@
 \section{Introduction}
 \label{sec:introduction}
-A data stream algorithm is designed to process an infinite sequence of elements
-that cannot be stored in memory. Data stream classification is
-performing a classification task where the dataset is a data stream. This means
-that the model accesses data points in sequence, should be able to classify at
-any time, and cannot store all the points in memory. Additionally, the concept
-learned may evolve over time. This is called a concept drift and it forces the
-model to adapt otherwise its prediction will become obsolete.  The
-classification task is designated as Human Activity Recognition when the model
-tries to recognize human motion.
+A data stream algorithm is designed to process an
+infinite sequence of elements that cannot be
+stored in memory. Data stream classification is performing a
+classification task where the dataset is a data
+stream. This means that not only the classifier
+has to follow data stream constraints, but it also
+has to adapt to concept drifts.  The
+classification task is designated as Human
+Activity Recognition when the model tries to
+recognize human motion.
 
 A connected object from the Internet of Things can
 be seen as producing data streams for three
 reasons. It emits data for its lifetime, these
 data are accessible in sequence, and the storage
 is too small to save the entire stream.  As a
-concrete example, the Motsai company develops the
-Neblina, a wearable device as small as a coin that
-incorporates nine motion sensors with 64KB of main
+concrete example, we work with the Motsai company
+that produces the Neblina, a wearable device as
+small as a coin that incorporates nine motion
+sensors with 64KB of main
 memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
 Due to its low main memory, the Neblina does not
 embed an operating system, therefore most of the
@@ -25,23 +27,25 @@ system functions are not available or may be
 implemented differently.  This wearable sensor is
 designed to track and analyze human motion.
 
-Therefore, applying data stream algorithms to connected objects could help
-restructure data processing from the IoT.  Indeed, the current pipeline that
-processes the data from connected appliances is centralized, as illustrated
-in~\cite{recofit}.  Data are produced on a device, then transmitted to a
-centralized cloud or a laptop where they are stored and turned into a proper
-dataset. Then, the dataset is used to extract useful information in an offline
-manner.  The extraction is qualified as offline because it starts once all data
-are collected. For instance, when training a Machine Learning model, the data
-are gathered then carefully curated to select the best features. Then the model
-is trained and tested on the data set. Finally, the model is transmitted to be
-used as-is.
+Therefore, applying data stream algorithms to
+connected objects could help restructure data
+processing from the IoT.  Indeed, the current
+pipeline that processes the data from connected
+appliances is centralized, as illustrated
+in~\cite{recofit}.  Data are produced on a device,
+then transmitted to a centralized cloud or a
+laptop where they are stored and turned into a
+proper dataset. Then, the dataset is used to
+extract useful information. 
 
-This centralized pipeline raises multiple issues.  A privacy issue, because
-users are increasingly sensitive about the use made of their personal data.  A
-battery issue because the centralized approach increases information
-transmission through the wireless network which is the most energy-consuming
-action for a connected device~\cite{sensor-network-survey,
+This centralized pipeline raises two issues. A
+privacy issue, because users are increasingly
+sensitive about the use of their personal data.  A
+battery issue because the centralized approach
+increases information transmission through the
+wireless network which is the most
+energy-consuming action for a connected
+device~\cite{sensor-network-survey,
 sensor-energy-model}.
 
 To tackle these privacy and battery issues, data stream algorithms were used to
