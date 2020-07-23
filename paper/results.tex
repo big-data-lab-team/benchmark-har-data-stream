@@ -50,6 +50,18 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
 
+%Offline observations
+The offline KNN used as comparison achieves better F1 scores than all other
+classifiers except for the \mondrianforest on the Hyperplane and the RandomRBF.
+In particular, these F1 scores are lower than what is observed in litterature.
+Indeed, on \banosdataset KNN only reach 0.86 when \cite{behzad2019} achieves
+0.92 and \cite{Banos_2014} reaches 0.96. Similarly, \cite{behzad2019} reaches
+0.65 on \recofitdataset dataset when we only achieve 0.4.
+
+%Offline observations
+The offline KNN used as comparison achieves better F1 scores than all other
+classifiers except for the \mondrianforest on the Hyperplane and the RandomRBF.
+
 %Hoeffding and Naïve Bayes description when they are the best
 The \naivebayes and the \hoeffdingtree stand out on the two real datasets
 (\banosdataset and \recofitdataset) even though the F1-scores observed remained
@@ -137,7 +149,10 @@ to adjust correctly so if the weights were randomly initialized for the testing
 phase, the \FNN would answer randomly.  We deviated from the method for the \FNN
 classifier because neural networks have shown a wide range of classification
 abilities depending on how they are used.  Therefore, we
-followed~\cite{omid_2019} which exhibits high classification performance.
+followed~\cite{omid_2019} which exhibits high classification performance. Since
+the \FNN model is tightly coupled with network structure and since we only
+trained the model with subject 1 from \banosdataset, we only run \FNN on the
+\banosdataset datasets.
 
 %Variance
 Figure~\ref{fig:f1-banos} includes the F1 score variance. Only the
@@ -219,18 +234,18 @@ connected objects.}
 
 \subsection{Runtime}
 Figure~\ref{fig:runtime} shows the runtime of classifiers for the two real
-datasets. The
-\mondrianforest is the slowest classifier, in particular for 50 trees. The
-second slowest classifier is the \hoeffdingtree, with a runtime comparable to the
-\mondrianforest with 10 trees. The \hoeffdingtree is followed by the two \naivebayes
-implementations, which is not surprising since \naivebayes classifiers are used
-in the leaves of the \hoeffdingtree. The \mcnn classifiers are the fastest
-ones, with a runtime very close to the empty classifier.
+datasets. The \mondrianforest is the slowest classifier, in particular for 50
+trees. The second slowest classifier is the \hoeffdingtree, with a runtime
+comparable to the \mondrianforest with 10 trees. The \hoeffdingtree is followed
+by the two \naivebayes implementations, which is not surprising since
+\naivebayes classifiers are used in the leaves of the \hoeffdingtree. The \mcnn
+classifiers are the fastest ones, with a runtime very close to the empty
+classifier. Note that allocating more memory to the \mondrianforest
+significatively increase the runtime.
 
 We observe that the runtime of StreamDM's \naivebayes is comparable to
- OrpailleCC's. This suggests that the performance of the two
- libraries is similar, which justifies our comparision of \hoeffdingtree
- and \mondrianforest.
+OrpailleCC's. This suggests that the performance of the two libraries is
+similar, which justifies our comparision of \hoeffdingtree and \mondrianforest.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -251,11 +266,15 @@ We observe that the runtime of StreamDM's \naivebayes is comparable to
 \subsection{Memory}
 \label{sec:result-memory}
 Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
-\banosdataset dataset. Because we focus on the classifiers footprint, the
-figure only shows the memory difference between the classifiers and the empty
-classifier. 
+\banosdataset dataset. Since we observed that \naivebayes memory footprint was
+almost indistinguishable from the empty classifier, we used the two \naivebayes
+as a baseline for the two libraries. This enables us to remove the 1.2~MB overhead
+induced by StreamDM.
 
-Memory footprint is similar across all datasets and all classifiers, due to the
+We observe that the memory footprints of the \mondrianforest and the
+\hoeffdingtree are significatively higher while the \mcnns and the \naivebayes are
+close to zero~KB.
+Overall, memory footprints are similar across datasets, due to the
 fact that most algorithms follow a bounded memory policy or have a constant
 space complexity.  The only exception is the \hoeffdingtree that constantly
 selects new splits depending on new data points. The \mondrianforest has the
@@ -263,16 +282,11 @@ same behavior but the OrpailleCC implementation includes a memory bound, which
 makes its memory footprint constant. Note that the concept drift does not
 increase the memory footprint of the \hoeffdingtree.
 
-
-\TG{it looks like the hoeffding tree consumes way more memory, but isnt it a
-side effect of using streamDM? Maybe all memory consumptions should be computed by reference 
-to the naive bayes baseline. }
-
 \begin{figure}
-	\includegraphics[width=\linewidth]{figures/results/banos_3_memory.png}
+	\includegraphics[width=\linewidth]{figures/results/banos_6_memory.png}
 	\caption{Memory footprint of the classifiers relatively to the empty
 	classifier, measured on the \banosdataset dataset. The memory footprint of the empty
-	classifier is slightly above 3.439KB.}
+	classifier is slightly above 3.439MB.}
 	\label{fig:memory}
 \end{figure}
 
