@@ -164,7 +164,7 @@ On the \banosdataset and \recofitdataset datasets,
 we also explore the \mondrianforest with 3MB of
 memory in order to observe any impact on
 performances (classification, runtime, and power).
-\begin{figure}
+\begin{table}
 	\begin{center}
 		\begin{tabular}{|| r | c | c | c ||} 
 			\hline
@@ -179,7 +179,7 @@ performances (classification, runtime, and power).
 	\end{center}
 	\caption{Hyperparameters used for \mondrianforest.}
 		\label{table:hyperparameter-mondrian}
-\end{figure}
+\end{table}
 \subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(\mcnn) is a
 variant of k-nearest neighbors where data points
@@ -234,7 +234,7 @@ removed.
 Table~\ref{table:hyperparameter-mcnn} shows
 the hyperparameters used for each number of
 clusters. 
-\begin{figure}
+\begin{table}
 		\begin{center}
 			\begin{tabular}{|| r | c | c ||} 
 				\hline
@@ -253,7 +253,7 @@ clusters.
 		participation threshold was applied only to
 		\mcnn Original.}
 		\label{table:hyperparameter-mcnn}
-\end{figure}
+\end{table}
 
 \subsubsection{\naivebayes~\cite{naive_bayes}}
 The \naivebayes algorithm keeps a table of
@@ -455,4 +455,4 @@ The experiment is done with a single core of a
 cluster node with two Intel(R) Xeon(R)
 Gold 6130 CPUs and a main memory of 250G.
 
-% vim: tw=50 ts=2
+% vim: tw=80 ts=2
