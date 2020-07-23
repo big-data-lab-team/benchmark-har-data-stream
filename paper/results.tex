@@ -31,7 +31,8 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
-	\caption{F1-scores for the six datasets (average over 20 repetitions). The horizontal dashed black line indicate the offline KNN F1-score.}
+	\caption{F1-scores for the six datasets (average over 20 repetitions). The
+		horizontal dashed black line indicate the offline \knn F1-score.}
 	\label{fig:f1}
 \end{figure*}
 
@@ -51,21 +52,17 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 consistent for all classifiers.
 
 %Offline observations
-The offline KNN used as comparison achieves better F1 scores than all other
+The offline \knn used as comparison achieves better F1 scores than all other
 classifiers except for the \mondrianforest on the Hyperplane and the RandomRBF.
 In particular, these F1 scores are lower than what is observed in litterature.
-Indeed, on \banosdataset KNN only reach 0.86 when \cite{behzad2019} achieves
+Indeed, on \banosdataset \knn only reach 0.86 when \cite{behzad2019} achieves
 0.92 and \cite{Banos_2014} reaches 0.96. Similarly, \cite{behzad2019} reaches
 0.65 on \recofitdataset dataset when we only achieve 0.4.
-
-%Offline observations
-The offline KNN used as comparison achieves better F1 scores than all other
-classifiers except for the \mondrianforest on the Hyperplane and the RandomRBF.
 
 %Hoeffding and Naïve Bayes description when they are the best
 The \naivebayes and the \hoeffdingtree stand out on the two real datasets
 (\banosdataset and \recofitdataset) even though the F1-scores observed remained
-low (0.6 and 0.35) compared to offline KNN (0.86 and 0.40). Additionally, the
+low (0.6 and 0.35) compared to offline \knn (0.86 and 0.40). Additionally, the
 \hoeffdingtree achieves outstanding performances on the RandomTree dataset and
 \banosdataset dataset with a drift.
 
@@ -79,7 +76,7 @@ concept drift occurs.
 
 %Mondrian when at best
 On two synthetic datasets, Hyperplane and RandomRBF, the \mondrianforest (cyan)
-with 10 trees achieves the best performances($> 0.95$), above the offline KNN.
+with 10 trees achieves the best performances($> 0.95$), above the offline \knn.
 Additionally, the \mondrianforest with 5 or 10 trees rank third on the two real
 datasets.
 
@@ -123,7 +120,7 @@ that \mcnn Origin removes clusters too fast even with a low participation
 threshold.  On the real datasets (\banosdataset and \recofitdataset), we notice
 that \mcnn OrpailleCC classifier appears to be learning faster than the
 \mondrianforest, although \mondrianforest catches up after a few thousand
-elements. Finally, we note that \mcnn stays quite lower than the offline KNN.
+elements. Finally, we note that \mcnn stays quite lower than the offline \knn.
 
 %FNN observation
 Figure~\ref{fig:f1-banos} has shown that the \FNN has a low F1-score (0.36)
