@@ -31,8 +31,8 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
-	\caption{F1-scores for the six datasets (average over 20 repetitions). The
-		horizontal dashed black line indicate the offline \knn F1-score.}
+	\caption{F1 scores for the six datasets (average over 20 repetitions). The
+		horizontal dashed black line indicate the offline \knn F1 score.}
 	\label{fig:f1}
 \end{figure*}
 
@@ -40,13 +40,13 @@
 This section presents our benchmark results and the corresponding
 hyperparameter tunning experiments.
 
-\subsection{F1-score}
-Figure~\ref{fig:f1} compares the F1-scores obtained by all classifiers on the
+\subsection{F1 score}
+Figure~\ref{fig:f1} compares the F1 scores obtained by all classifiers on the
 six datasets.
 
 %General description
-F1-scores vary greatly across the datasets. While the highest
-observed F1-score is above 0.95 on the Hyperplane and RandomRBF datasets,
+F1 scores vary greatly across the datasets. While the highest
+observed F1 score is above 0.95 on the Hyperplane and RandomRBF datasets,
 it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 0.4 on the \recofitdataset and RandomTree datasets. This trend is
 consistent for all classifiers.
@@ -54,14 +54,14 @@ consistent for all classifiers.
 %Offline observations
 The offline \knn used as comparison achieves better F1 scores than all other
 classifiers except for the \mondrianforest on the Hyperplane and the RandomRBF.
-In particular, these F1 scores are lower than what is observed in litterature.
+In particular, these F1 scores are lower than what is observed in the literature.
 Indeed, on \banosdataset \knn only reach 0.86 when \cite{behzad2019} achieves
 0.92 and \cite{Banos_2014} reaches 0.96. Similarly, \cite{behzad2019} reaches
 0.65 on \recofitdataset dataset when we only achieve 0.4.
 
 %Hoeffding and Naïve Bayes description when they are the best
 The \naivebayes and the \hoeffdingtree stand out on the two real datasets
-(\banosdataset and \recofitdataset) even though the F1-scores observed remained
+(\banosdataset and \recofitdataset) even though the F1 scores observed remained
 low (0.6 and 0.35) compared to offline \knn (0.86 and 0.40). Additionally, the
 \hoeffdingtree achieves outstanding performances on the RandomTree dataset and
 \banosdataset dataset with a drift.
@@ -71,19 +71,19 @@ Except for the \banosdataset dataset, the \hoeffdingtree F1 score is better than
 the \naivebayes. Both F1 scores start close because the \hoeffdingtree uses a
 \naivebayes in its leaves.  However, they start diverging most likely because
 the \hoeffdingtree improves by reshaping its tree structure.  This is caused by
-a sufficient amount of element and the difference is more noticable when a
+a sufficient amount of element and the difference is more noticeable when a
 concept drift occurs.
 
 %Mondrian when at best
 On two synthetic datasets, Hyperplane and RandomRBF, the \mondrianforest (cyan)
 with 10 trees achieves the best performances($> 0.95$), above the offline \knn.
-Additionally, the \mondrianforest with 5 or 10 trees rank third on the two real
+Additionally, the \mondrianforest with 5 or 10 trees ranks third on the two real
 datasets.
 
 %Mondrian discussion
 Surprisingly, a \mondrianforest (cyan) with 50 trees performs worse than 5 or 10
 trees on most datasets. The only exception is the Hyperplane dataset where
-50 trees F1-score is between 5 and 10 trees. This is due to the fact that
+50 trees F1 score is between 5 and 10 trees. This is due to the fact that
 our \mondrianforest implementation is memory bounded, which is
 useful on connected objects but limits tree growth when the allocated memory is
 full. Because 50 trees fill the memory faster than 10 or 5 trees, the
@@ -104,16 +104,16 @@ involved in this study, \mondrianforest has a bounded memory policy while
 %Mondrian RAMx5
 This dependency of the \mondrianforest to memory allocation is shown in
 Figures~\ref{fig:f1-banos}-\ref{fig:f1-recofit}, where an additional
-configuration with five time more memory (total of 3MB) is shown (deep blue)
-whereas the \mondrianforest (cyan) has 600~KB.  The memory increase induces a
-F1-score difference greater than 0.1, except when only one tree is used. In
+configuration with five-time more memory (total of 3MB) is shown (deep blue)
+whereas the \mondrianforest (cyan) has 600~KB.  The memory increase induces an
+F1 score difference greater than 0.1, except when only one tree is used. In
 which case the improvement caused by the memory is less than 0.05. Note that the
-selected the memory bound does not match all situations. Indeed, depending on
-the connected object the memory limit can range from few KB to GB.
+selected memory-bound does not match all situations. Indeed, depending on
+the connected object the memory limit can range from a few KB to GB.
 
 %MCNN observations
-The \mcnn OrpailleCC stands out in Figure~\ref{fig:f1:drift} where it ranks
-second by adapting to a concept drif.  On other datasets, \mcnn OrpailleCC is
+The \mcnn OrpailleCC stands out in Figure~\ref{fig:f1-drift} where it ranks
+second by adapting to a concept drift.  On other datasets, \mcnn OrpailleCC is
 ranked after the \mondrianforest and the \hoeffdingtree, but above \mcnn
 Original. This difference between the two \mcnns is presumably due to the fact
 that \mcnn Origin removes clusters too fast even with a low participation
@@ -123,7 +123,7 @@ that \mcnn OrpailleCC classifier appears to be learning faster than the
 elements. Finally, we note that \mcnn stays quite lower than the offline \knn.
 
 %FNN observation
-Figure~\ref{fig:f1-banos} has shown that the \FNN has a low F1-score (0.36)
+Figure~\ref{fig:f1-banos} has shown that the \FNN has a low F1 score (0.36)
 compared to other classifiers (above 0.5). It contradicts the results depicted
 in~\cite{omid_2019} where \FNN achieves more than 95\% accuracy. The main
 difference between~\cite{omid_2019} and this study comes from the training set.
@@ -132,7 +132,7 @@ subjects, but also the windows are overlapping and wider than the ones we used.
 Therefore, we expect the \FNN to have already encountered most of the datapoints
 from the testing set. When instead of using only the first subject of the
 \banosdataset dataset we used a sample of 10\% of of all datapoints in the
-\banosdataset dataset, we managed to reach an F1-score slightly above 0.6, which
+\banosdataset dataset, we managed to reach an F1 score slightly above 0.6, which
 is close to the \naivebayes.
 
 %FNN discussion
@@ -162,7 +162,7 @@ The \hoeffdingtree appears to be the most robust to concept drifts
 classifiers are the most impacted. \mcnn classifiers are marginally impacted.
 The low resilience of \mondrianforest to concept drifts can be attributed to
 two factors. First, existing nodes in trees of a \mondrianforest cannot be updated.
-Second, when the memory limit is reached, \mondrianforest cannot grow
+Second, when the memory limit is reached, \mondriantrees cannot grow
 or reshape their structure anymore.
 
 %Naive Bayes and Naive Bayes
@@ -173,10 +173,10 @@ implementation in OrpailleCC.
 %One sensor
 In this study, we focused on using one sensor rather than all the sensors
 available in the real datasets. In the case of more sensor used, we would expect
-an F1-score improvement for all classifiers because they would have access to
-more data in order to discriminate the classes. On the other hand we would
-expect an increase in the memory footprint because more sensors means more
-attribute extracted. This should have minimal impact on classifier such as
+an F1 score improvement for all classifiers because they would have access to
+more data in order to discriminate the classes. On the other hand, we would
+expect an increase in the memory footprint because more sensors mean more
+attribute extracted. This should have minimal impact on classifiers such as
 \naivebayes because their footprint is already low. However, the
 \mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to
 grow significatively because more sensors means more attributes for each leaf or

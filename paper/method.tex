@@ -374,13 +374,13 @@ starting point for the prequential phase.
 For other classifiers, only the 
 hyperparameters are taken from the tuning phase.
 We select the hyperparameters that 
-maximized the F1-score on the first subject.
+maximized the F1 score on the first subject.
 
 
 \subsection{Evaluation}
-We compute four metrics: the F1-score, the memory
+We compute four metrics: the F1 score, the memory
 footprint, the runtime, and the power usage.
-The F1-score and the memory
+The F1 score and the memory
 footprint are computed periodically during the
 execution of a classifier. The
 power consumption and the runtime are collected
@@ -394,14 +394,14 @@ true negatives, and false negatives using the
 prequential evaluation, meaning that with each new
 data point the model is first tested and then
 trained.  From these counts, we compute the
-F1-score every 50 elements. We do not apply any
+F1 score every 50 elements. We do not apply any
 fading factor to attenuate errors throughout the
-stream.  We compute the F1-score in a
+stream.  We compute the F1 score in a
 one-versus-all fashion for each class, averaged
 across all classes (macro-average, code available
 \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).
 When a class has not been encountered yet, its
-F1-score is ignored. We use the F1-score rather
+F1 score is ignored. We use the F1 score rather
 than the accuracy because the real data sets are
 imbalanced.
 
