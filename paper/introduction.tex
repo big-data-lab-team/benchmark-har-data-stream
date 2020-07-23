@@ -1,131 +1,85 @@
 \section{Introduction}
 \label{sec:introduction}
-A data stream algorithm is designed to process an
-infinite sequence of elements that cannot be
-stored in memory. Data stream classification is performing a
-classification task where the dataset is a data
-stream. This means that not only the classifier
-has to follow data stream constraints, but it also
-has to adapt to concept drifts.  The
-classification task is designated as Human
-Activity Recognition when the model tries to
-recognize human motion.
 
-A connected object from the Internet of Things can
-be seen as producing data streams for three
-reasons. It emits data for its lifetime, these
-data are accessible in sequence, and the storage
-is too small to save the entire stream.  As a
-concrete example, we work with the Motsai company
-that produces the Neblina, a wearable device as
-small as a coin that incorporates nine motion
-sensors with 64KB of main
-memory\footnote{\url{http://docs.motsai.com/Neblina/Neblina_Module/V2/Datasheet.html}}.
-Due to its low main memory, the Neblina does not
-embed an operating system, therefore most of the
-system functions are not available or may be
-implemented differently.  This wearable sensor is
-designed to track and analyze human motion.
+Internet of Things applications may adopt a
+centralized model, where connected objects transfer data to servers with 
+adequate computing capabilities, or a decentralized model, where data is analyzed directly on the connected
+objects or on nearby devices. While the decentralized model limits network transmission,
+increases battery life~\cite{sensor-network-survey, sensor-energy-model},
+and reduces data privacy risks, it also raises important processing challenges
+due to the modest computing capacity of connected objects. Indeed, it is not uncommon for wearable devices and other smart objects
+to include a processing memory of less than 100~KB, little to no storage
+memory, a slow CPU, and no operating system. With multiple sensors
+producing data at high frequencies, typically 50~Hz to 800~Hz, processing speed and
+memory consumption become critical properties of data analyses. 
 
-Therefore, applying data stream algorithms to
-connected objects could help restructure data
-processing from the IoT.  Indeed, the current
-pipeline that processes the data from connected
-appliances is centralized, as illustrated
-in~\cite{recofit}.  Data are produced on a device,
-then transmitted to a centralized cloud or a
-laptop where they are stored and turned into a
-proper dataset. Then, the dataset is used to
-extract useful information. 
+Data stream processing algorithms are precisely designed to analyze
+virtually infinite sequences of data elements with reduced amounts of
+working memory. Several classes of stream processing algorithms were
+developed in the past decades, such as filtering, counting, or sampling
+algorithms~\cite{kejariwal2015}. \TG{Maybe mention a few key properties of streaming algorithms} Our study focuses on supervised
+classification, a key component of contemporary data models.
 
-This centralized pipeline raises two issues. A
-privacy issue, because users are increasingly
-sensitive about the use of their personal data.  A
-battery issue because the centralized approach
-increases information transmission through the
-wireless network which is the most
-energy-consuming action for a connected
-device~\cite{sensor-network-survey,
-sensor-energy-model}.
+We evaluate supervised data stream classifiers from
+the point of view of connected objects, with a particular focus on human
+activity recognition. The main motivating use case is that of wearable
+sensors measuring 3D acceleration and orientation at different locations on
+the human body, from which activities such as gym exercises have to be
+predicted. A previously untrained supervised classifier is deployed directly on the wearables or on
+a nearby object, perhaps a watch, and aggregates the data, learns a data model, predicts the current
+activity, and episodically receives true labels from the human subject. Our
+main question is to determine whether on-chip classification is feasible in
+this context. 
 
-To tackle these privacy and battery issues, data stream algorithms were used to
-mine information directly on the devices rather than in a centralized cloud.
-Because they were designed to handle more data than available resources can
-accommodate, these algorithms are fit for a connected object such as a wearable
-sensor.  Using such method allow transmitting only the relevant data to the
-cluster which reduces the communication and increases the battery lifetime. The
-survey in~\cite{kejariwal2015} reviews the problems faced by connected devices.
-However, we noticed the lack of supervised learning which raises the question
-of its feasibility on connected objects since this task has been applied to
-connected object data.
+We evaluate existing classifiers from the complementary angles of (1)
+classification performance, including in the presence of concept drift, and
+(2) resource consumption, including memory usage and classification time
+per element (latency). We consider six datasets in our benchmark, including
+the two most popular open datasets used for human activity recognition, and
+four simulated datasets. 
 
-In this paper, we evaluate the learning of data stream classifiers from the
-point of view of the IoT in order to provide insights about which algorithm
-to choose regarding the situation. The evaluation is done without any prior
-knowledge of the data to simulate a brand new model trying to learn from a
-sensor. This study evaluates the classification performances as well as
-resource usage (power, runtime, and memory). In particular, we want to observe
-any relation between resources and classification performances with the final
-goal being to estimate the feasibility of running data stream classifiers on a
-smart device. We will focus on Human Activity Recognition as an application of IoT.
 
 %NOTE: Keep the next three lines :D.
 %\cite{sensor-energy-consumption} (conclusion, second paragraph) communication uses more energy.
 %\cite{leach} and \cite{sensor-energy-model}(page 3, first column, check equations and values)
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
 
-\subsection{Related Work}
-%Implemented in R modules
-%List des classifier, quel sont les résultat
-%The comparison in, the benchmark done in, the study in
-%Profiling
-%EN discussion, compared avec les résultat obtenu dans ce papier.
-%En future work, éventuellement pousser la
-%comparaison pour évaluer les étape de chaque algo en terme mémoire/énergy
-The work in \cite{memory_consumption_machine_learning}
-explores the memory consumption and
-the runtime of many R classifiers. The conclusion proposes different ways to
-limit the overhead related to the implementation of the R module.
+% offline works
+Several studies evaluated classifiers for human activity recognition in an
+offline (non data stream) setting. In particular, the work
+in~\cite{Janidarmian_2017} compared 293 classifiers using various sensor
+placements and window sizes, concluding on the superiority of k nearest
+neighbors (kNN) and pointing out a trade-off between runtime and
+classification performance. Resource consumption, including memory and runtime, was also studied 
+for offline classifiers, such as in~\cite{memory_consumption_machine_learning}
+for the particular case of the R programming language.
 
-\cite{Janidarmian_2017} is an extensive study that
-observes offline classifiers' performance with
-wearable sensor data. This study shows high
-accuracy using a K-fold validation and good
-accuracy when using subject-independent
-cross-validation. It also explores different
-sensor placement as well as different window
-sizes. The conclusion states that KNN is the most
-stable classifier across sensor placement and
-window size. Additionally to the classification
-performances, the study also analyzes the
-trade-off between runtime and efficiency.
+% data stream classifiers
+Data stream classifiers were also compared, in particular
+in~\TG{Martin, add references and a brief summary of results.}
+However, these studies remained limited to ... 
 
-\cite{omid_2019} studies the feasibility of
-running classifier directly on wearable sensors.
-The paper focuses on a comparison between a
-Feedforward Neural Network~(FNN) and a K-nearest
-neighbor~(KNN). It shows that a trained neural
-network achieves high accuracy and performs better
-than KNN. The dataset was acquired with the
-Neblina, a wearable sensor placed on the right
-forearm. The data from the Neblina was merged to
-send to the computer a stream of 9-axis. Only
-then, the stream was processed to extract features
-and feed the classifier.
+Regarding connected objects, the work in~\cite{omid_2019} presents a
+wearable system capable of running pre-trained classifiers \TG{Martin,
+are they really pre-trained?} with high classification accuracy. It shows
+the superiority of the proposed Feedforward Neural Network~(FNN) over KNN
+~\TG{Check the spelling of kNN vs KNN and harmonize accordingly}. \TG{any other relevant study on connected objects?}
+%  It shows that a trained neural
+% network achieves high accuracy and performs better
+% than KNN. The dataset was acquired with the
+% Neblina, a wearable sensor placed on the right
+% forearm. The data from the Neblina was merged to
+% send to the computer a stream of 9-axis. Only
+% then, the stream was processed to extract features
+% and feed the classifier.
 
-These three studies compared classification
-performances, runtime, and resource usage of many
-classifiers. Two of them use wearable sensor data
-and one focuses on runtime and memory usage.
-However, none of them is applied to data stream
-situations because they either rely on K-fold
-validation or cross-subject validation.
-Additionally, these papers do not compare energy
-consumption. The only mention of energy is made in
-\cite{omid_2019} where the consumption is assumed to be
-constant. Therefore, only the runtime affects 
-energy consumption, and reducing the runtime
-reduces the energy needed.
+Compared to these previous works, the contributions of our paper are the following:
+\begin{itemize}
+    \item We compare the most popular data stream classifiers on the specific case of human activity recognition;
+    \item We provide quantitative measurements of memory and power consumption, as well as runtime;
+    \item We implement data stream classifiers in a consistent software library meant for deployment on embedded systems.
+\end{itemize} 
+The subsequent sections present the materials, methods, and results of our benchmark.
 
 %Étendre related work, regarder les papiers qui ont cité ces papier
 %En particulier la référence Janidarmian_2017, pareil pour memory_consumption_machine_learning
