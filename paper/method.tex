@@ -1,52 +1,37 @@
 \section{Materials and Methods}
-We evaluate 5 classifiers implemented in either
-StreamDM-Cpp~\cite{StreamDM-CPP} or
-OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a
-C++ implementation of StreamDM~\cite{StreamDM}, a
-software to mine big data streams using
-\href{https://spark.apache.org/streaming/}{Apache
-Spark Streaming}. StreamDM-Cpp is usually faster
-than StreamDM in single-core environments, due to the
-overhead induced by Spark.
+We evaluate 5 classifiers implemented in either StreamDM-Cpp~\cite{StreamDM-CPP}
+or OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a C++ implementation of
+StreamDM~\cite{StreamDM}, a software to mine big data streams using
+\href{https://spark.apache.org/streaming/}{Apache Spark Streaming}. StreamDM-Cpp
+is usually faster than StreamDM in single-core environments, due to the overhead
+induced by Spark.
 
-OrpailleCC is a collection of data stream
-algorithms developed for embedded devices. The key
-functions, such as random number generation or
-memory allocation, are parametrizable through
-class templates and can thus be customized on a
-given execution platform.  OrpailleCC is not
-limited to classification algorithms, it
-implements other data stream algorithms such as
-the Cuckoo filter~\cite{cuckoo} or a
-multi-dimensional extension of the Lightweight
-Temporal Compression~\cite{multi-ltc}. We extended
-it with a few classifiers for the purpose of this
-benchmark.
+OrpailleCC is a collection of data stream algorithms developed for embedded
+devices. The key functions, such as random number generation or memory
+allocation, are parametrizable through class templates and can thus be
+customized on a given execution platform.  OrpailleCC is not limited to
+classification algorithms, it implements other data stream algorithms such as
+the Cuckoo filter~\cite{cuckoo} or a multi-dimensional extension of the
+Lightweight Temporal Compression~\cite{multi-ltc}. We extended it with a few
+classifiers for the purpose of this benchmark.
 
-This benchmark includes five popular classification
-algorithms.  The
-\mondrianforest~\cite{mondrian2014} builds
-decision trees without immediate need for labels
-which is useful in situations where labels are
-delayed~\cite{stream_learning_review}.  The
-Micro-Cluster Nearest
-Neighbors~\cite{mc-nn} is a compressed version of the k-nearest
-neighbor~(KNN) that was shown to be among the most accurate classifiers for human activity
-recognition from wearable sensors~\cite{Janidarmian_2017}. The \naivebayes~\cite{naive_bayes}
-classifier builds a table of attribute
-occurrence to estimate class
-likelihoods.
-The \hoeffdingtree~\cite{VFDT} builds a
-decision tree using the Hoeffding Bound to
-estimate when the best split is found. 
-Finally, Neural Network classifiers have
-become popular by reaching or even exceeding human performance in many fields such as image
-recognition or game playing. We use a
-\FNN with one hidden layer, as described in~\cite{omid_2019} for the recognition 
-of fitness activities on a low-power platform.
+This benchmark includes five popular classification algorithms.  The
+\mondrianforest~\cite{mondrian2014} builds decision trees without immediate need
+for labels which is useful in situations where labels are
+delayed~\cite{stream_learning_review}.  The Micro-Cluster Nearest
+Neighbors~\cite{mc-nn} is a compressed version of the k-nearest neighbor~(KNN)
+that was shown to be among the most accurate classifiers for \har from wearable
+sensors~\cite{Janidarmian_2017}. The \naivebayes~\cite{naive_bayes} classifier
+builds a table of attribute occurrence to estimate class likelihoods.  The
+\hoeffdingtree~\cite{VFDT} builds a decision tree using the Hoeffding Bound to
+estimate when the best split is found.  Finally, Neural Network classifiers have
+become popular by reaching or even exceeding human performance in many fields
+such as image recognition or game playing. We use a \FNN with one hidden layer,
+as described in~\cite{omid_2019} for the recognition of fitness activities on a
+low-power platform.
 
-The remainder of this section details the datasets, classifiers,
-evaluation metrics and parameters used in our benchmark.
+The remainder of this section details the datasets, classifiers, evaluation
+metrics and parameters used in our benchmark.
 
 \subsection{Datasets}
 \label{sec:method-dataset}
