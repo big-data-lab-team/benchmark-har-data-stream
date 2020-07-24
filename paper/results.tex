@@ -31,8 +31,9 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
-	\caption{F1 scores for the six datasets (average over 20 repetitions). The
-		horizontal dashed black line indicate the offline \knn F1 score.}
+	\caption{F1 scores for the six datasets (average over 20 repetitions).
+		The horizontal dashed black line indicate the offline \knn F1 score
+		(the value of k was obtained by grid search in [2, 20]).}
 	\label{fig:f1}
 \end{figure*}
 
@@ -42,7 +43,6 @@ hyperparameter tunning experiments.
 
 
 \subsection{Comparison of classification performance}
-
 
 %General description
 Figure~\ref{fig:f1} compares the F1 scores obtained by all classifiers on the
@@ -54,14 +54,40 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 consistent for all classifiers.
 
 %Offline observations
-The offline \knn used as comparison achieves better F1 scores than all
-other classifiers except for the \mondrianforest on the Hyperplane and the
-RandomRBF. In particular, these F1 scores are lower than what is observed
-in the literature. Indeed, on \banosdataset \knn only reach 0.86 when
-\cite{behzad2019} achieves 0.92 and \cite{Banos_2014} reaches 0.96.
-Similarly, \cite{behzad2019} reaches 0.65 on \recofitdataset dataset when
-we only achieve 0.40 \TG{Fix writing and add a sentence to explain why this
-is the case. Make sure that the value of k is mentioned.}.
+The offline \knn classifier used as baseline achieves better F1 scores than
+all other classifiers, except for the \mondrianforest on the Hyperplane and
+the RandomRBF datasets. On the \banosdataset dataset, the difference of
+\TG{x} with the best stream classifier remains very substantial, which
+quantifies the remaining performance gap between data stream and offline
+classifiers. On the \recofitdataset dataset, the difference between stream
+and offline classifiers is lower, but the offline performance remains very
+low.
+
+It should be noted that the F1 scores observed for the offline \knn
+classifier on the real datasets are substantially lower than the values
+reported in the literature. On the \banosdataset dataset, the original
+study in~\cite{Banos_2014} reports an F1 score of 0.96, the work
+in~\cite{behzad2019} achieves 0.92, but our benchmark only achieves 0.86.
+Similarly, on the \recofitdataset dataset, \TG{check original study} the
+work in~\cite{behzad2019} reaches 0.65 while our benchmark only achieves
+0.40. This is most likely due to our use of data coming from a single
+sensor, consistently with our motivating use case, while the other works used mutiple ones (\TG{x} in the case of
+\banosdataset, \TG{y} in the case of \recofitdataset).
+
+% %One sensor
+% In this study, we focused on using one sensor rather than all the sensors
+% available in the real datasets. In the case of more sensor used, we would expect
+% an F1 score improvement for all classifiers because they would have access to
+% more data in order to discriminate the classes. 
+% On the other hand, we would
+% expect an increase in the memory footprint because more sensors mean more
+% attribute extracted. 
+% This should have minimal impact on classifiers such as
+% \naivebayes because their footprint is already low. However, the
+% \mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to
+% grow significatively because more sensors means more attributes for each leaf or
+% cluster. In particular, we expect the \mondrianforest F1 score to be mitigated
+% by the decrease of memory induced by the increased leave size \TG{Merge in second paragraph of sub-section A.}.
 
 %Concept drift
 The \hoeffdingtree appears to be the most robust to concept drifts
@@ -146,32 +172,32 @@ elements. Finally, we note that \mcnn remains quite lower than the offline \knn.
 
 %FNN observation
 Figure~\ref{fig:f1-banos} shows that the \FNN has a low F1 score (0.36)
-compared to other classifiers (above 0.5), which contradicts the results reported
-in~\cite{omid_2019} where the \FNN achieves more than 95\% accuracy. The main
-difference between~\cite{omid_2019} and our study is the definition of the training set.
-In~\cite{omid_2019}, the training set includes examples from every
-subject, time windows overlap, and they are wider than the ones we used.
-Therefore, we expect the \FNN to have already encountered most of the datapoints
-from the testing set during training. When instead of using only the first subject of the
-\banosdataset dataset we used a sample of 10\% of of all datapoints in the
-\banosdataset dataset \TG{revise writing}, we managed to reach an F1 score slightly above 0.6, which
-is close to the \naivebayes.
+compared to other classifiers (above 0.5), which contradicts the results
+reported in~\cite{omid_2019} where the \FNN achieves more than 95\%
+accuracy in a context of offline training. The main difference
+between~\cite{omid_2019} and our study lies in the definition of the
+training set. In~\cite{omid_2019}, the training set includes examples from
+every subject, while we only use a single one, to ensure an objective
+comparison with the other stream classifiers that do not require offline
+training (except for hyperparameter tuning, done on the first subject of
+the \banosdataset dataset). When we use a random sample of 10\% of the
+datapoints across all subjects for offline training, we reach an F1 score
+of 0.62 \TG{check value}, which is closer to the performance of the
+\naivebayes classifier.
 
 %FNN discussion
-As explained earlier, the pre-training of the \FNN is slightly different from that of the other
-classifiers. Indeed, the hyperparameters tuning of the other classifiers implies
-that they start the testing phase with no prior knowledge of the dataset, even
-about the element seen in the tuning phase. On the other hand, the \FNN starts
-with its weights already set, therefore we can say that it has already seen part
-of the dataset. We proceed that way because it takes many epochs for the weights
-to adjust correctly so if the weights were randomly initialized for the testing
-phase, the \FNN would answer randomly.  We deviated from the method for the \FNN
-classifier because neural networks have shown a wide range of classification
-abilities depending on how they are used.  Therefore, we
-followed~\cite{omid_2019} which exhibits high classification performance. Since
-the \FNN model is tightly coupled with network structure and since we only
-trained the model with subject 1 from \banosdataset, we only run \FNN on the
-\banosdataset datasets \TG{Fix writing}.
+% On the other hand, the \FNN starts
+% with its weights already set, therefore we can say that it has already seen part
+% of the dataset. We proceed that way because it takes many epochs for the weights
+% to adjust correctly so if the weights were randomly initialized for the testing
+%  phase, the \FNN would answer randomly. 
+% We deviated from the method for the \FNN
+% classifier because neural networks have shown a wide range of classification
+% abilities depending on how they are used.  Therefore, we
+% followed~\cite{omid_2019} which exhibits high classification performance. Since
+% the \FNN model is tightly coupled with network structure and since we only
+% trained the model with subject 1 from \banosdataset, we only run \FNN on the
+% \banosdataset datasets \TG{Fix writing}.
 
 %Variance
 Figure~\ref{fig:f1-banos} includes the F1 score variance. Only the
@@ -183,19 +209,6 @@ randomness. The variance decreases with the number of trees, as expected \TG{mov
 Finally, we note that the StreamDM and OrpailleCC implementations of
 \naivebayes are indistinguishable from each other, which confirms our
 implementation in OrpailleCC \TG{Move to Naive Bayes}.
-
-%One sensor
-In this study, we focused on using one sensor rather than all the sensors
-available in the real datasets. In the case of more sensor used, we would expect
-an F1 score improvement for all classifiers because they would have access to
-more data in order to discriminate the classes. On the other hand, we would
-expect an increase in the memory footprint because more sensors mean more
-attribute extracted. This should have minimal impact on classifiers such as
-\naivebayes because their footprint is already low. However, the
-\mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to
-grow significatively because more sensors means more attributes for each leaf or
-cluster. In particular, we expect the \mondrianforest F1 score to be mitigated
-by the decrease of memory induced by the increased leave size \TG{Merge in second paragraph of sub-section A.}.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
