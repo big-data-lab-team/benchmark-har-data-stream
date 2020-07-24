@@ -2,11 +2,10 @@
 
 We conclude that the \hoeffdingtree, the \mondrianforest, and the
 \naivebayes data stream classifiers have an overall superiority over the
-\FNN and the \mcnns ones for \har.  However, the
-predictions performances remain quite low compared to their offline
-counterpart, and they vary substantially between datasets. Noticeably, the
-\hoeffdingtree and the \mcnns classifiers are more resilient to concept drift that the
-other ones.
+\FNN and the \mcnns ones for \har.  However, the prediction performance
+remains quite low compared to an offline \knn classifier, and it varies
+substantially between datasets. Noticeably, the \hoeffdingtree and the
+\mcnns classifiers are more resilient to concept drift that the other ones.
 
 Regarding memory consumption, only the \mcnns and \naivebayes classifiers
 were found to have a negligible memory footprint, in the order of a few
@@ -21,7 +20,8 @@ strongly modulated by the amount of memory allocated. With enough memory, a
 The amount of energy consumed by classifiers is mostly impacted by their
 runtime, as all power consumptions were found comparable. The
 \hoeffdingtree and \mondrianforest are substantially slower than the other
-classifiers, with runtimes in the order of 0.35~ms/element. 
+classifiers, with runtimes in the order of 0.35~ms/element, a performance not compatible 
+with common sampling frequencies of wearable sensors. 
 
 Future research will focus on reducing the memory requirements and runtime
 of the \hoeffdingtree and the \mondrianforest classifiers. In addition to
@@ -32,6 +32,6 @@ memory remains a bottleneck in the \mondrianforest.
 \section*{Acknowledgement}
 This work was funded by a Strategic Project Grant of the Natural Sciences
 and Engineering Research Council of Canada. The computing platform was
-obtained through funding from the Canada Foundation for Innovation.
+obtained with funding from the Canada Foundation for Innovation.
 
 % vim: tw=80 ts=2
