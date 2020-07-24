@@ -35,12 +35,12 @@ def latex():
 def dataset_banos():
     # output_directory = "recofit/windowed_6/"
     # input_directory = "recofit/"
-    # ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
-    # filenames = ["subject_" + str(i) + ".log" for i in ids]
-    output_directory = "sensor_dataset/windowed_histogram_3/"
-    input_directory = "sensor_dataset/sensor_dataset/"
-    ids = [i for i in range(1, 18)]
-    filenames = ["subject" + str(i) + "_ideal.log" for i in ids]
+    ids = [3, 13, 15, 17, 23, 28, 31, 62, 64, 66, 67, 69, 71, 72, 73, 74, 75, 76, 77, 80, 81, 82, 83, 84, 201, 203, 216, 218, 223, 224, 228, 229, 230, 231, 232, 233, 235, 236, 238, 239, 240, 241, 242, 244, 246, 247, 248, 252, 253, 454, 502, 506, 509, 512, 517, 525, 526, 528, 530, 531, 532, 533, 534, 535, 536, 537, 539, 541, 542, 543, 545, 546, 547, 549, 550, 551, 555, 556, 559, 560, 561, 564, 567, 570, 575, 576, 579, 590, 10001, 10002, 10003, 10004, 10005, 10006]
+    filenames = ["subject_" + str(i) + ".log" for i in ids]
+    input_directory = "recofit/svg/"
+    output_directory = "recofit/windowed_histogramm_6/"
+    # ids = [i for i in range(1, 18)]
+    # filenames = ["subject" + str(i) + "_ideal.log" for i in ids]
     for filename in filenames:
         try:
             in_f = open(input_directory + filename,"r")
@@ -524,11 +524,12 @@ def print_results(output, output_runs, models, output_directory="."):
     colors = [add_colors(key) for key in keys]
     markers = [add_markers(key) for key in keys]
     styles = [add_style(key) for key in keys]
+    knn_offline_f1 = {'banos_3': 0.0, 'recofit_3': 0.0, 'drift_3': 0.0, 'dataset_1': 0.95, 'dataset_2' : 0.78, 'dataset_3' : 0.69, 'banos_6': 0.86, 'recofit_6': 0.40, 'drift_6' : 0.86}
     print(names)
     print(colors)
     print(markers)
     print(styles)
-    plt.rcParams.update({'font.size': 26})
+    plt.rcParams.update({'font.size': 27})
     list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'banos_6', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
@@ -582,8 +583,13 @@ def print_results(output, output_runs, models, output_directory="."):
 
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":25}, ncol=3)
+        # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
+            # plt.legend(prop={"size":27}, ncol=3)
+        if dataset_name in knn_offline_f1:
+            x = [a for a in daty[daty.fullname == name]['element_count']]
+            y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
+            plt.plot(x, y, color='#000000', linestyle='-.', label='KNN Offline')
+
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
@@ -591,16 +597,37 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.savefig(output_directory + "/" + dataset_name + "_f1" + ".png")
         plt.clf()
 
+        # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
+            # print('\t- legend')
+            # # fig = plt.figure(figsize=(23.38582, 16.53544))
+
+            # zeross = [0 for i in daty[daty.fullname == name]['element_count']]
+            # x = [i for i in daty[daty.fullname == name]['element_count']]
+            # print(len(zeross))
+            # print(daty[daty.fullname == name]['element_count'])
+            # for name, color, marker, style in zip(names, colors, markers, styles):
+                # plt.plot(x, zeross, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+
+            # plt.legend(prop={"size":23}, ncol=3)
+            # plt.ylim(0,1)
+            # plt.tight_layout()
+            # plt.show()
+            # plt.savefig(output_directory + "/" + dataset_name + "_legend.png")
+            # plt.clf()
+
         print('\t- F1 stdv')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-            if name in ['NaiveBayes', 'Mondrian 1 tree(s)', 'MCNN OrpailleCC 50 clusters', 'StreamDM NaiveBayes', 'Mondrian 10 tree(s)', 'Mondrian 5 tree(s)', 'Mondrian 50 tree(s)', 'Empty', 'MCNN OrpailleCC 20 clusters', 'MCNN OrpailleCC 33 clusters', 'FNN', 'Mondrian 1 tree(s) (RAM x5.0)', 'Mondrian 5 tree(s) (RAM x5.0)', 'Mondrian 10 tree(s) (RAM x5.0)', 'Mondrian 50 tree(s) (RAM x5.0)']:
-                y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
-                y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
-                plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-                plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.2)
-        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":25}, ncol=3)
+            y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
+            y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
+            plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+            plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.2)
+        if dataset_name in knn_offline_f1:
+            x = [a for a in daty[daty.fullname == name]['element_count']]
+            y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
+            plt.plot(x, y, color='#000000', linestyle='-.', label='KNN Offline')
+        # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
+            # plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
@@ -622,14 +649,19 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
 
-        print('\t- Memory')
+        print('\t- Memory ' + str(daty[daty.fullname == 'Empty']['memory'][0]))
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
+
+            if 'StreamDM' in name:
+                base = [x for x in daty[daty.fullname == 'StreamDM NaiveBayes']['memory']]
+            else:
+                base = [x for x in daty[daty.fullname == 'NaiveBayes']['memory']]
             if len(daty[daty.fullname == name]['memory']) == len(daty[daty.fullname == 'Empty']['memory']):
-                y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], daty[daty.fullname == 'Empty']['memory'])]
+                y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], base)]
                 plt.plot(daty[daty.fullname == name]['element_count'], y, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":25}, ncol=3)
+            plt.legend(prop={"size":26}, ncol=3)
         plt.ylabel("KB")
         plt.xlabel("Element")
         plt.tight_layout()
