@@ -17,12 +17,17 @@ Data stream processing algorithms are precisely designed to analyze
 virtually infinite sequences of data elements with reduced amounts of
 working memory. Several classes of stream processing algorithms were
 developed in the past decades, such as filtering, counting, or sampling
-algorithms~\cite{kejariwal2015}. \TG{Maybe mention a few key properties of streaming algorithms} Our study focuses on supervised
+algorithms~\cite{kejariwal2015}.
+These algorithms must follow multiple constrains
+such as a constant time per data processed or a
+constant space
+complexity~\cite{issues_learning_from_stream}.
+Our study focuses on supervised
 classification, a key component of contemporary data models.
 
 We evaluate supervised data stream classifiers from
-the point of view of connected objects, with a particular focus on human
-activity recognition. The main motivating use case is that of wearable
+the point of view of connected objects, with a
+particular focus on \har. The main motivating use case is that of wearable
 sensors measuring 3D acceleration and orientation at different locations on
 the human body, from which activities such as gym exercises have to be
 predicted. A previously untrained supervised classifier is deployed directly on the wearables or on
@@ -35,8 +40,8 @@ We evaluate existing classifiers from the complementary angles of (1)
 classification performance, including in the presence of concept drift, and
 (2) resource consumption, including memory usage and classification time
 per element (latency). We consider six datasets in our benchmark, including
-the two most popular open datasets used for human activity recognition, and
-four simulated datasets. 
+the two most popular open datasets used for \har, and
+four simulated datasets. \MK{is drift simulated?}
 
 
 %NOTE: Keep the next three lines :D.
@@ -45,7 +50,7 @@ four simulated datasets.
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
 
 % offline works
-Several studies evaluated classifiers for human activity recognition in an
+Several studies evaluated classifiers for \har in an
 offline (non data stream) setting. In particular, the work
 in~\cite{Janidarmian_2017} compared 293 classifiers using various sensor
 placements and window sizes, concluding on the superiority of k nearest
@@ -62,8 +67,8 @@ However, these studies remained limited to ...
 Regarding connected objects, the work in~\cite{omid_2019} presents a
 wearable system capable of running pre-trained classifiers \TG{Martin,
 are they really pre-trained?} with high classification accuracy. It shows
-the superiority of the proposed Feedforward Neural Network~(FNN) over KNN
-~\TG{Check the spelling of kNN vs KNN and harmonize accordingly}. \TG{any other relevant study on connected objects?}
+the superiority of the proposed Feedforward Neural
+Network~(FNN) over \knn. \TG{any other relevant study on connected objects?}
 %  It shows that a trained neural
 % network achieves high accuracy and performs better
 % than KNN. The dataset was acquired with the
@@ -75,7 +80,7 @@ the superiority of the proposed Feedforward Neural Network~(FNN) over KNN
 
 Compared to these previous works, the contributions of our paper are the following:
 \begin{itemize}
-    \item We compare the most popular data stream classifiers on the specific case of human activity recognition;
+    \item We compare the most popular data stream classifiers on the specific case of \har;
     \item We provide quantitative measurements of memory and power consumption, as well as runtime;
     \item We implement data stream classifiers in a consistent software library meant for deployment on embedded systems.
 \end{itemize} 
