@@ -126,10 +126,21 @@ structure of the tree, we expect the
 certain extent. In particular, it should be quite
 slow to recover a drift compare to \mcnn.
 
+%Bounded memory discussion
 In OrpailleCC, the size allocated for the forest
 is set beforehand and it is shared by all
 the trees.  Therefore, the memory footprint of the
 classifier is constant.
+We call this implementation memory bounded.
+We differentiate it from constant space complexity because in the
+first case, a limited amount of memory may force the classifier to find a way
+around this lack of memory: stop growing or making space for new data.
+On the other hand, a constant space
+complexity is a feature of a classifier and its performances are not expected
+to change no  matter the amount of memory available. The classifier is simply
+supposed to fail without the required amount of memory. From the algorithm
+involved in this study, \mondrianforest has a bounded memory policy while
+\naivebayes is a classifier with a constant space complexity \TG{Writing to be fixed a bit.}.
 
 Mondrian trees can be tuned using three
 parameters: the base count, the discount factor,
@@ -311,6 +322,7 @@ of 10 data points and \naivebayes as leaf
 learner.
 
 \subsubsection{\FNN}
+\label{sec:method-fnn}
 %We need a citation there
 A neural network is a combination of artificial
 neurons, also known as perceptrons, that all have input weights and an
@@ -376,6 +388,9 @@ hyperparameters are taken from the tuning phase.
 We select the hyperparameters that 
 maximized the F1 score on the first subject.
 
+\subsubsection{Offline Comparison}
+We compare data stream algorithms with an offline \knn. The value of $k$ is
+selected using a grid search.
 
 \subsection{Evaluation}
 We compute four metrics: the F1 score, the memory
@@ -404,6 +419,7 @@ When a class has not been encountered yet, its
 F1 score is ignored. We use the F1 score rather
 than the accuracy because the real data sets are
 imbalanced.
+
 
 \paragraph{Memory}
 We measure the memory footprint by reading file
