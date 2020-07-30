@@ -1,47 +1,44 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Internet of Things applications may adopt a
-centralized model, where connected objects transfer data to servers with 
-adequate computing capabilities, or a decentralized model, where data is analyzed directly on the connected
-objects or on nearby devices. While the decentralized model limits network transmission,
-increases battery life~\cite{sensor-network-survey, sensor-energy-model},
-and reduces data privacy risks, it also raises important processing challenges
-due to the modest computing capacity of connected objects. Indeed, it is not uncommon for wearable devices and other smart objects
-to include a processing memory of less than 100~KB, little to no storage
-memory, a slow CPU, and no operating system. With multiple sensors
-producing data at high frequencies, typically 50~Hz to 800~Hz, processing speed and
-memory consumption become critical properties of data analyses. 
+Internet of Things applications may adopt a centralized model, where connected
+objects transfer data to servers with adequate computing capabilities, or a
+decentralized model, where data is analyzed directly on the connected objects or
+on nearby devices. While the decentralized model limits network transmission,
+increases battery life~\cite{sensor-network-survey, sensor-energy-model}, and
+reduces data privacy risks, it also raises important processing challenges due
+to the modest computing capacity of connected objects. Indeed, it is not
+uncommon for wearable devices and other smart objects to include a processing
+memory of less than 100~KB, little to no storage memory, a slow CPU, and no
+operating system. With multiple sensors producing data at high frequencies,
+typically 50~Hz to 800~Hz, processing speed and memory consumption become
+critical properties of data analyses. 
 
-Data stream processing algorithms are precisely designed to analyze
-virtually infinite sequences of data elements with reduced amounts of
-working memory. Several classes of stream processing algorithms were
-developed in the past decades, such as filtering, counting, or sampling
-algorithms~\cite{kejariwal2015}.
-These algorithms must follow multiple constrains
-such as a constant time per data processed or a
-constant space
-complexity~\cite{issues_learning_from_stream}.
-Our study focuses on supervised
+Data stream processing algorithms are precisely designed to analyze virtually
+infinite sequences of data elements with reduced amounts of working memory.
+Several classes of stream processing algorithms were developed in the past
+decades, such as filtering, counting, or sampling
+algorithms~\cite{kejariwal2015}.  These algorithms must follow multiple
+constrains such as a constant time per data processed or a constant space
+complexity~\cite{issues_learning_from_stream}.  Our study focuses on supervised
 classification, a key component of contemporary data models.
 
-We evaluate supervised data stream classifiers from
-the point of view of connected objects, with a
-particular focus on \har. The main motivating use case is that of wearable
-sensors measuring 3D acceleration and orientation at different locations on
-the human body, from which activities such as gym exercises have to be
-predicted. A previously untrained supervised classifier is deployed directly on the wearables or on
-a nearby object, perhaps a watch, and aggregates the data, learns a data model, predicts the current
-activity, and episodically receives true labels from the human subject. Our
-main question is to determine whether on-chip classification is feasible in
-this context. 
+We evaluate supervised data stream classifiers from the point of view of
+connected objects, with a particular focus on \har. The main motivating use case
+is that of wearable sensors measuring 3D acceleration and orientation at
+different locations on the human body, from which activities such as gym
+exercises have to be predicted. A previously untrained supervised classifier is
+deployed directly on the wearables or on a nearby object, perhaps a watch, and
+aggregates the data, learns a data model, predicts the current activity, and
+episodically receives true labels from the human subject. Our main question is
+to determine whether on-chip classification is feasible in this context. 
 
 We evaluate existing classifiers from the complementary angles of (1)
 classification performance, including in the presence of concept drift, and
 (2) resource consumption, including memory usage and classification time
 per element (latency). We consider six datasets in our benchmark, including
-the two most popular open datasets used for \har, and
-four simulated datasets. \MK{is drift simulated?}
+three derived from the two most popular open datasets used for \har, and
+three simulated datasets.
 
 
 %NOTE: Keep the next three lines :D.
@@ -50,19 +47,51 @@ four simulated datasets. \MK{is drift simulated?}
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
 
 % offline works
-Several studies evaluated classifiers for \har in an
-offline (non data stream) setting. In particular, the work
-in~\cite{Janidarmian_2017} compared 293 classifiers using various sensor
-placements and window sizes, concluding on the superiority of k nearest
-neighbors (\knn) and pointing out a trade-off between runtime and
-classification performance. Resource consumption, including memory and runtime, was also studied 
-for offline classifiers, such as in~\cite{memory_consumption_machine_learning}
-for the particular case of the R programming language.
+Several studies evaluated classifiers for \har in an offline (non data stream)
+setting. In particular, the work in~\cite{Janidarmian_2017} compared 293
+classifiers using various sensor placements and window sizes, concluding on the
+superiority of k nearest neighbors (\knn) and pointing out a trade-off between
+runtime and classification performance. Resource consumption, including memory
+and runtime, was also studied for offline classifiers, such as
+in~\cite{memory_consumption_machine_learning} for the particular case of the R
+programming language.
 
 % data stream classifiers
 Data stream classifiers were also compared, in particular
-in~\TG{Martin, add references and a brief summary of results.}
-However, these studies remained limited to ... 
+in~\cite{prasad2016stream, kaur2020,priya2020comprehensive, StreamDM-CPP}.
+\cite{prasad2016stream} draw an extensive list of classifiers, clusterers, and
+evaluator for data streams. In particular, it makes a comparison between the
+\hoeffdingtree, the \naivebayes, and the \knn. The paper reports an accuracy of
+92 for \knn and 80 for the \hoeffdingtree, whereas \naivebayes only reach 60.
+However, this study is limited to the dataset CoverType.
+
+\cite{kaur2020} make a comparison between four classifiers (Byesnet,
+\hoeffdingtree, \naivebayes, and Decision Stump) using MOA and the Hyperplane
+synthetic dataset. Results exhibit a similar accuracy of 90 for the Byesnet, the
+\hoeffdingtree, and \naivebayes, while the Decision Stump only reaches 65.  The
+Kappa statistics reported in the paper show a similar trend.  \cite{kaur2020}
+also report the runtime of each classifier. In particular, Bayesnet is the
+slowest model, four times slower than the \hoeffdingtree.  \naivebayes and
+Decision Stump show similar runtime and they are three time faster than the
+\hoeffdingtree.
+
+\cite{priya2020comprehensive} runs a benchmark of ensemble classifiers on
+imbalanced data streams with concept drifts.  It implies three datasets
+(electrical, intrusion, and SEA) and six classifiers, including \naivebayes and
+the \hoeffdingtree. The study reports high F1 scores situated above 0.7 on the
+three datasets. In particular, the \hoeffdingtree is the second best classifier
+after the Accuracy Updated Ensemble.
+
+\cite{StreamDM-CPP} describes the architecture of StreamDM-CPP. Additionally,
+the paper present an extensive benchmark of tree-based classifiers from three
+libraries, StreamDM-CPP, VFML, and MOA. The benchmark covers both runtime,
+memory, and accuracy. Finally, it shows that streamDM-C++ outperforms VFML
+implementation on most datasets.
+
+However, these studies remained limited to the generic datasets such as
+Electrical, CoverType, or Poker. Additionally, the benchmarks ignore the impact
+of memory limit on the classifiers. Finally, none of these comparison uses
+datasets made from wearable sensors.
 
 Regarding connected objects, the work in~\cite{omid_2019} presents a
 wearable system capable of running pre-trained classifiers \TG{Martin,
@@ -89,4 +118,4 @@ The subsequent sections present the materials, methods, and results of our bench
 %Étendre related work, regarder les papiers qui ont cité ces papier
 %En particulier la référence Janidarmian_2017, pareil pour memory_consumption_machine_learning
 
-% vim: tw=50 ts=2
+% vim: tw=80 ts=2
