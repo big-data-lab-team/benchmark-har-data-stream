@@ -31,9 +31,15 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
+<<<<<<< HEAD
 	\caption{F1 scores for the six datasets (average over 20 repetitions). The
 		horizontal dashed black line indicate the offline \knn F1 score, which 
 		respectively uses $k$ equals 3, 11, 19, 19, 15, and 9.}
+=======
+	\caption{F1 scores for the six datasets (average over 20 repetitions).
+		The horizontal dashed black line indicate the offline \knn F1 score
+		(the value of k was obtained by grid search in [2, 20]).}
+>>>>>>> 5c6d45aaa4fb8b23fbbec36d8bee4673ce57c41b
 	\label{fig:f1}
 \end{figure*}
 
@@ -54,21 +60,46 @@ it barely reaches 0.65 for the \banosdataset dataset, and it remains under
 consistent for all classifiers.
 
 %Offline observations
-The offline \knn used as comparison achieves better F1 scores than all
-other classifiers except for the \mondrianforest on the Hyperplane and the
-RandomRBF. In particular, these F1 scores are lower than what is observed
-in the literature. Indeed, on \banosdataset \knn only reach 0.86 when
-\cite{behzad2019} achieves 0.92 and \cite{Banos_2014} reaches 0.96.
-Similarly, \cite{behzad2019} reaches 0.65 on \recofitdataset dataset when
-we only achieve 0.40.
-These difference are explained by the use of one sensor rather than all the sensors
-available. This choice reflect the user case
+The offline \knn classifier used as baseline achieves better F1 scores than
+all other classifiers, except for the \mondrianforest on the Hyperplane and
+the RandomRBF datasets. On the \banosdataset dataset, the difference of
+\TG{x} with the best stream classifier remains very substantial, which
+quantifies the remaining performance gap between data stream and offline
+classifiers. On the \recofitdataset dataset, the difference between stream
+and offline classifiers is lower, but the offline performance remains very
+low.
 %Recofit 9
 %Banos 3
 %Hyperplane 19
 %RandomRBF 19
 %RandomTree 15
 %Drift 11
+
+It should be noted that the F1 scores observed for the offline \knn
+classifier on the real datasets are substantially lower than the values
+reported in the literature. On the \banosdataset dataset, the original
+study in~\cite{Banos_2014} reports an F1 score of 0.96, the work
+in~\cite{behzad2019} achieves 0.92, but our benchmark only achieves 0.86.
+Similarly, on the \recofitdataset dataset, \TG{check original study} the
+work in~\cite{behzad2019} reaches 0.65 while our benchmark only achieves
+0.40. This is most likely due to our use of data coming from a single
+sensor, consistently with our motivating use case, while the other works used mutiple ones (\TG{x} in the case of
+\banosdataset, \TG{y} in the case of \recofitdataset).
+
+% %One sensor
+% In this study, we focused on using one sensor rather than all the sensors
+% available in the real datasets. In the case of more sensor used, we would expect
+% an F1 score improvement for all classifiers because they would have access to
+% more data in order to discriminate the classes. 
+% On the other hand, we would
+% expect an increase in the memory footprint because more sensors mean more
+% attribute extracted. 
+% This should have minimal impact on classifiers such as
+% \naivebayes because their footprint is already low. However, the
+% \mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to
+% grow significatively because more sensors means more attributes for each leaf or
+% cluster. In particular, we expect the \mondrianforest F1 score to be mitigated
+% by the decrease of memory induced by the increased leave size \TG{Merge in second paragraph of sub-section A.}.
 
 %Concept drift
 The \hoeffdingtree appears to be the most robust to concept drifts
@@ -153,29 +184,33 @@ we note that \mcnn remains quite lower than the offline \knn.
 \subsection{\FNN}
 
 %FNN observation
-Figure~\ref{fig:f1-banos} shows that the \FNN has a low F1 score (0.36) compared
-to other classifiers (above 0.5), which contradicts the results reported
-in~\cite{omid_2019} where the \FNN achieves more than 95\% accuracy. The main
-difference between~\cite{omid_2019} and our study is the definition of the
-training set.  In~\cite{omid_2019}, the training set is bigger and includes
-datapoints from every subject. Therefore, the model has seen a wider range of
-examples.  When we use 10\% of the dataset as the training set, \FNN reaches an
-F1 score of 0.61 on the remaining 90\% of the datapoints, which is close to the
-\naivebayes.
+Figure~\ref{fig:f1-banos} shows that the \FNN has a low F1 score (0.36)
+compared to other classifiers (above 0.5), which contradicts the results
+reported in~\cite{omid_2019} where the \FNN achieves more than 95\%
+accuracy in a context of offline training. The main difference
+between~\cite{omid_2019} and our study lies in the definition of the
+training set. In~\cite{omid_2019}, the training set includes examples from
+every subject, while we only use a single one, to ensure an objective
+comparison with the other stream classifiers that do not require offline
+training (except for hyperparameter tuning, done on the first subject of
+the \banosdataset dataset). When we use a random sample of 10\% of the
+datapoints across all subjects for offline training, we reach an F1 score
+of 0.62 \TG{check value}, which is closer to the performance of the
+\naivebayes classifier.
 
 %FNN discussion
-As explained in Section~\ref{sec:method-fnn}, the pre-training of the \FNN is
-slightly different other classifiers. Indeed, the hyperparameters tuning of the
-other classifiers implies that they start the testing phase with no prior
-knowledge of the dataset, even about the element seen in the tuning phase. On
-the other hand, the \FNN starts with its weights already set from the training
-phase, therefore it has already seen datapoints from the first subject. This
-procedure genuinely helps the \FNN, otherwise the random weights would force the
-F1 score down, closer to the empty classifier.  Additionally to the
-pre-training, we used feature extraction from~\cite{omid_2019} which exhibits
-high classification performance.  Since we only trained the \FNN on the first
-subject of \banosdataset dataset, we could not apply the same neural network
-structure on other datasets.
+%As explained in Section~\ref{sec:method-fnn}, the pre-training of the \FNN is
+%slightly different other classifiers. Indeed, the hyperparameters tuning of the
+%other classifiers implies that they start the testing phase with no prior
+%knowledge of the dataset, even about the element seen in the tuning phase. On
+%the other hand, the \FNN starts with its weights already set from the training
+%phase, therefore it has already seen datapoints from the first subject. This
+%procedure genuinely helps the \FNN, otherwise the random weights would force the
+%F1 score down, closer to the empty classifier.  Additionally to the
+%pre-training, we used feature extraction from~\cite{omid_2019} which exhibits
+%high classification performance.  Since we only trained the \FNN on the first
+%subject of \banosdataset dataset, we could not apply the same neural network
+%structure on other datasets.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
