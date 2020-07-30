@@ -32,7 +32,8 @@
 		\label{fig:f1-recofit}
 	\end{subfigure}
 	\caption{F1 scores for the six datasets (average over 20 repetitions). The
-		horizontal dashed black line indicate the offline \knn F1 score.}
+		horizontal dashed black line indicate the offline \knn F1 score, which 
+		respectively uses $k$ equals 3, 11, 19, 19, 15, and 9.}
 	\label{fig:f1}
 \end{figure*}
 
@@ -42,7 +43,6 @@ hyperparameter tunning experiments.
 
 
 \subsection{Comparison of classification performance}
-
 
 %General description
 Figure~\ref{fig:f1} compares the F1 scores obtained by all classifiers on the
@@ -60,17 +60,25 @@ RandomRBF. In particular, these F1 scores are lower than what is observed
 in the literature. Indeed, on \banosdataset \knn only reach 0.86 when
 \cite{behzad2019} achieves 0.92 and \cite{Banos_2014} reaches 0.96.
 Similarly, \cite{behzad2019} reaches 0.65 on \recofitdataset dataset when
-we only achieve 0.40 \TG{Fix writing and add a sentence to explain why this
-is the case. Make sure that the value of k is mentioned.}.
+we only achieve 0.40.
+These difference are explained by the use of one sensor rather than all the sensors
+available. This choice reflect the user case
+%Recofit 9
+%Banos 3
+%Hyperplane 19
+%RandomRBF 19
+%RandomTree 15
+%Drift 11
 
 %Concept drift
 The \hoeffdingtree appears to be the most robust to concept drifts
-(Figure~\ref{fig:f1-drift}), while the \mondrianforest and \naivebayes
+(\banosdataset (with drift)), while the \mondrianforest and \naivebayes
 classifiers are the most impacted. \mcnn classifiers are marginally impacted.
 The low resilience of \mondrianforest to concept drifts can be attributed to
 two factors. First, existing nodes in trees of a \mondrianforest cannot be updated.
 Second, when the memory limit is reached, \mondriantrees cannot grow
 or reshape their structure anymore.
+
 
 \subsection{\hoeffdingtree and \naivebayes}
 
@@ -79,7 +87,8 @@ The \naivebayes and the \hoeffdingtree classifiers stand out on the two real dat
 (\banosdataset and \recofitdataset) even though the F1 scores observed remain
 low (0.6 and 0.35) compared to offline \knn (0.86 and 0.40). Additionally, the
 \hoeffdingtree performs outstandingly on the RandomTree dataset and
-\banosdataset dataset with a drift \TG{explain why}.
+\banosdataset dataset with a drift. Such good performances where expected on the
+RandomTree dataset because it was generated based on a tree structure, however
 
 %Explanation of their F1 score similarity
 Except for the \banosdataset dataset, the \hoeffdingtree performs better
@@ -90,13 +99,19 @@ stream, most likely because of the \hoeffdingtree's ability to reshape its
 tree structure.  This occurs after a sufficient amount of elements, and the
 difference is more noticeable after a concept drift.
 
+%Naive Bayes and Naive Bayes
+Finally, we note that the StreamDM and OrpailleCC implementations of
+\naivebayes are indistinguishable from each other, which confirms our
+implementation in OrpailleCC.
+
 \subsection{\mondrianforest}
 
 %Mondrian when at best
-On two synthetic datasets, Hyperplane and RandomRBF, the \mondrianforest
-with 10 trees \TG{refer to it as RAM x 1.0, this is ambiguous (update the legend too)} achieves the best performance (F1$>$0.95), above the offline \knn.
-Additionally, the \mondrianforest with 5 or 10 trees ranks third on the two real
-datasets \TG{so what?}.
+On two synthetic datasets, Hyperplane and RandomRBF, the \mondrianforest (RAM x
+1.0) with 10 trees achieves the best performance (F1$>$0.95), above the offline
+\knn.  Additionally, the \mondrianforest with 5 or 10 trees ranks third on the
+two real datasets which make it a viable alternative to \naivebayes or the
+\hoeffdingtree.\TG{so what?}.
 
 %Mondrian discussion
 Surprisingly, a \mondrianforest with 50 trees performs worse than 5 or 10
@@ -108,94 +123,59 @@ full. Because 50 trees fill the memory faster than 10 or 5 trees, the
 learning stops earlier, before the trees can learn learned enough
 from the data.
 
-%Bounded memory discussion
-We differentiate bounded memory from constant space complexity because in the
-first case, a limited amount of memory may force the classifier to find a way
-around this lack of memory: stop growing or making space for new data.
-Therefore, influencing its performance \TG{phrase sans verbe ?}.  On the other hand, a constant space
-complexity is a feature of a classifier and its performances are not expected
-to change no  matter the amount of memory available. The classifier is simply
-supposed to fail without the required amount of memory. From the algorithm
-involved in this study, \mondrianforest has a bounded memory policy while
-\naivebayes is a classifier with a constant space complexity \TG{move this to methods. Writing to be fixed a bit.}.
-
 %Mondrian RAMx5
 This dependency of the \mondrianforest to memory allocation is shown in
-Figures~\ref{fig:f1-banos} and \ref{fig:f1-recofit}, where an additional
+\banosdataset and \recofitdataset datasets, where an additional
 configuration with five times more memory than the initial configuration is
 shown (total of 3~MB).  The memory increase induces an F1 score difference
 greater than 0.1, except when only one tree is used, in
 which case the improvement caused by the memory is less than 0.05. Note that the
 selected memory bound may not be achievable on a connected object.
 
-\subsection{\mcnn}
-
-%MCNN observations
-The \mcnn OrpailleCC stands out in Figure~\ref{fig:f1-drift} \TG{results
-are referred sometimes with sub-figures, sometimes with dataset names. This
-should be harmonized (I prefer dataset names).} where it ranks second thanks
-to its adaptation to the concept drift.  On other datasets, \mcnn OrpailleCC
-ranks below the \mondrianforest and the \hoeffdingtree, but above \mcnn
-Original. This difference between the two \mcnns is presumably due to the fact
-that \mcnn Origin removes clusters with low participation too early.  On the real datasets (\banosdataset and \recofitdataset), we notice
-that the \mcnn OrpailleCC appears to be learning faster than the
-\mondrianforest, although the \mondrianforest catches up after a few thousand
-elements. Finally, we note that \mcnn remains quite lower than the offline \knn.
-
-\subsection{\FNN}
-
-%FNN observation
-Figure~\ref{fig:f1-banos} shows that the \FNN has a low F1 score (0.36)
-compared to other classifiers (above 0.5), which contradicts the results reported
-in~\cite{omid_2019} where the \FNN achieves more than 95\% accuracy. The main
-difference between~\cite{omid_2019} and our study is the definition of the training set.
-In~\cite{omid_2019}, the training set includes examples from every
-subject, time windows overlap, and they are wider than the ones we used.
-Therefore, we expect the \FNN to have already encountered most of the datapoints
-from the testing set during training. When instead of using only the first subject of the
-\banosdataset dataset we used a sample of 10\% of of all datapoints in the
-\banosdataset dataset \TG{revise writing}, we managed to reach an F1 score slightly above 0.6, which
-is close to the \naivebayes.
-
-%FNN discussion
-As explained earlier, the pre-training of the \FNN is slightly different from that of the other
-classifiers. Indeed, the hyperparameters tuning of the other classifiers implies
-that they start the testing phase with no prior knowledge of the dataset, even
-about the element seen in the tuning phase. On the other hand, the \FNN starts
-with its weights already set, therefore we can say that it has already seen part
-of the dataset. We proceed that way because it takes many epochs for the weights
-to adjust correctly so if the weights were randomly initialized for the testing
-phase, the \FNN would answer randomly.  We deviated from the method for the \FNN
-classifier because neural networks have shown a wide range of classification
-abilities depending on how they are used.  Therefore, we
-followed~\cite{omid_2019} which exhibits high classification performance. Since
-the \FNN model is tightly coupled with network structure and since we only
-trained the model with subject 1 from \banosdataset, we only run \FNN on the
-\banosdataset datasets \TG{Fix writing}.
-
 %Variance
 Figure~\ref{fig:f1-banos} includes the F1 score variance. Only the
 \mondrianforest shows variability because it is the only classifier involving
 randomness. The variance decreases with the number of trees, as expected \TG{move to \mondrianforest}.
 
+\subsection{\mcnn}
 
-%Naive Bayes and Naive Bayes
-Finally, we note that the StreamDM and OrpailleCC implementations of
-\naivebayes are indistinguishable from each other, which confirms our
-implementation in OrpailleCC \TG{Move to Naive Bayes}.
+%MCNN observations
+The \mcnn OrpailleCC stands out on \banosdataset (with drift) dataset where it
+ranks second thanks to its adaptation to the concept drift.  On other datasets,
+\mcnn OrpailleCC ranks below the \mondrianforest and the \hoeffdingtree, but
+above \mcnn Original. This difference between the two \mcnns is presumably due
+to the fact that \mcnn Origin removes clusters with low participation too early.
+On the real datasets (\banosdataset and \recofitdataset), we notice that the
+\mcnn OrpailleCC appears to be learning faster than the \mondrianforest,
+although the \mondrianforest catches up after a few thousand elements. Finally,
+we note that \mcnn remains quite lower than the offline \knn.
 
-%One sensor
-In this study, we focused on using one sensor rather than all the sensors
-available in the real datasets. In the case of more sensor used, we would expect
-an F1 score improvement for all classifiers because they would have access to
-more data in order to discriminate the classes. On the other hand, we would
-expect an increase in the memory footprint because more sensors mean more
-attribute extracted. This should have minimal impact on classifiers such as
-\naivebayes because their footprint is already low. However, the
-\mondrianforest, the \hoeffdingtree, and \mcnn memory footprints are expected to
-grow significatively because more sensors means more attributes for each leaf or
-cluster. In particular, we expect the \mondrianforest F1 score to be mitigated
-by the decrease of memory induced by the increased leave size \TG{Merge in second paragraph of sub-section A.}.
+\subsection{\FNN}
+
+%FNN observation
+Figure~\ref{fig:f1-banos} shows that the \FNN has a low F1 score (0.36) compared
+to other classifiers (above 0.5), which contradicts the results reported
+in~\cite{omid_2019} where the \FNN achieves more than 95\% accuracy. The main
+difference between~\cite{omid_2019} and our study is the definition of the
+training set.  In~\cite{omid_2019}, the training set is bigger and includes
+datapoints from every subject. Therefore, the model has seen a wider range of
+examples.  When we use 10\% of the dataset as the training set, \FNN reaches an
+F1 score of 0.61 on the remaining 90\% of the datapoints, which is close to the
+\naivebayes.
+
+%FNN discussion
+As explained in Section~\ref{sec:method-fnn}, the pre-training of the \FNN is
+slightly different other classifiers. Indeed, the hyperparameters tuning of the
+other classifiers implies that they start the testing phase with no prior
+knowledge of the dataset, even about the element seen in the tuning phase. On
+the other hand, the \FNN starts with its weights already set from the training
+phase, therefore it has already seen datapoints from the first subject. This
+procedure genuinely helps the \FNN, otherwise the random weights would force the
+F1 score down, closer to the empty classifier.  Additionally to the
+pre-training, we used feature extraction from~\cite{omid_2019} which exhibits
+high classification performance.  Since we only trained the \FNN on the first
+subject of \banosdataset dataset, we could not apply the same neural network
+structure on other datasets.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -281,11 +261,13 @@ Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
 \banosdataset dataset. Since the  memory footprint of the \naivebayes classifier was
 almost indistinguishable from the empty classifier, we used the two \naivebayes
 as a baseline for the two libraries. This enables us to remove the 1.2~MB overhead
-induced by StreamDM.
+induced by StreamDM. The StreamDM memory footprint matches the result
+in~\cite{StreamDM-CPP}, where the \hoeffdingtree shows a memory footprint of
+4.8MB.
 
 We observe that the memory footprints of the \mondrianforest and the
-\hoeffdingtree are substantially higher \TG{than what?} while the \mcnns and the \naivebayes are
-close to zero~KB.
+\hoeffdingtree are substantially higher than other the \mcnns and the
+\naivebayes which are close to zero~KB.
 Overall, memory footprints are similar across datasets, due to the
 fact that most algorithms follow a bounded memory policy or have a constant
 space complexity.  The only exception is the \hoeffdingtree that constantly
@@ -300,7 +282,9 @@ increase the memory footprint of the \hoeffdingtree.
 	\includegraphics[width=\linewidth]{figures/results/banos_6_memory.png}
 	\caption{Memory footprint of the classifiers relatively to the empty
 	classifier, measured on the \banosdataset dataset. The memory footprint of the empty
-	classifier is slightly above 3.439MB \TG{mention the baselines}.}
+	classifier is 3.439MB. The baselines are the two \naivebayes from OrpailleCC
+		and StreamDM. They respectively have a memory footprint of 3.44OMB and
+		4.743..}
 	\label{fig:memory}
 \end{figure}
 
