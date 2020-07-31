@@ -40,11 +40,26 @@ per element (latency). We consider six datasets in our benchmark, including
 three derived from the two most popular open datasets used for \har, and
 three simulated datasets.
 
+Compared to previous works, reviewed in Section~\ref{sec:related-work}, the contributions of our paper are the following:
+\begin{itemize}
+    \item We compare the most popular data stream classifiers on the specific case of \har;
+    \item We provide quantitative measurements of memory and power consumption, as well as runtime;
+    \item We implement data stream classifiers in a consistent software library meant for deployment on embedded systems.
+\end{itemize} 
+The subsequent sections present the materials, methods, and results of our benchmark.
 
 %NOTE: Keep the next three lines :D.
 %\cite{sensor-energy-consumption} (conclusion, second paragraph) communication uses more energy.
 %\cite{leach} and \cite{sensor-energy-model}(page 3, first column, check equations and values)
 %\cite{sensor-network-survey} : "Since the sensor nodes are often inaccessible, the lifetime of a sensor network depends on the lifetime of the power resources of the nodes"
+
+\section{Related Work}
+
+\label{sec:related-work}
+
+To the best of our knowledge, no previous study focused on the comparison
+of data stream classifiers for \har in the context of limited memory and
+available runtime that characterizes connected objects.
 
 % offline works
 Several studies evaluated classifiers for \har in an offline (non data stream)
@@ -56,42 +71,43 @@ and runtime, was also studied for offline classifiers, such as
 in~\cite{memory_consumption_machine_learning} for the particular case of the R
 programming language.
 
+\subsection{Comparisons of data stream classifiers}
+
 % data stream classifiers
-Data stream classifiers were also compared, in particular
-in~\cite{prasad2016stream, kaur2020,priya2020comprehensive, StreamDM-CPP}.
-\cite{prasad2016stream} draw an extensive list of classifiers, clusterers, and
-evaluator for data streams. In particular, it makes a comparison between the
-\hoeffdingtree, the \naivebayes, and the \knn. The paper reports an accuracy of
-92 for \knn and 80 for the \hoeffdingtree, whereas \naivebayes only reach 60.
-However, this study is limited to the dataset CoverType.
+Data stream classifiers were also compared, mostly using synthetic datasets
+or real but general-purpose ones (Electrical, CoverType, Poker) that are
+not representative of our use case. In addition, memory and runtime usage 
+are rarely reported, to the notable exception of~\cite{StreamDM-CPP}.
 
-\cite{kaur2020} make a comparison between four classifiers (Byesnet,
-\hoeffdingtree, \naivebayes, and Decision Stump) using MOA and the Hyperplane
-synthetic dataset. Results exhibit a similar accuracy of 90 for the Byesnet, the
-\hoeffdingtree, and \naivebayes, while the Decision Stump only reaches 65.  The
-Kappa statistics reported in the paper show a similar trend.  \cite{kaur2020}
-also report the runtime of each classifier. In particular, Bayesnet is the
-slowest model, four times slower than the \hoeffdingtree.  \naivebayes and
-Decision Stump show similar runtime and they are three time faster than the
-\hoeffdingtree.
+The work
+in~\cite{prasad2016stream} reviews an extensive list of classifiers for
+data streams, comparing the \hoeffdingtree, the \naivebayes, and the \knn
+online classifiers. The paper reports an accuracy of 92 for online \knn, 80
+for the \hoeffdingtree, and 60 for \naivebayes. The study is limited to a
+single dataset (CoverType). 
 
-\cite{priya2020comprehensive} runs a benchmark of ensemble classifiers on
-imbalanced data streams with concept drifts.  It implies three datasets
-(electrical, intrusion, and SEA) and six classifiers, including \naivebayes and
-the \hoeffdingtree. The study reports high F1 scores situated above 0.7 on the
-three datasets. In particular, the \hoeffdingtree is the second best classifier
-after the Accuracy Updated Ensemble.
+The work in ~\cite{kaur2020} compares four classifiers (Byesnet,
+\hoeffdingtree, \naivebayes, and Decision Stump) using synthetic datasets.
+It reports a similar accuracy of 90 for the Byesnet, the
+\hoeffdingtree, and \naivebayes classifiers, while the Decision Stump one
+only reaches 65. Regarding runtimes, Bayesnet is found to be four times
+slower than the \hoeffdingtree which is itself three times slower than
+\naivebayes and Decision Stump.
 
-\cite{StreamDM-CPP} describes the architecture of StreamDM-CPP. Additionally,
-the paper present an extensive benchmark of tree-based classifiers from three
-libraries, StreamDM-CPP, VFML, and MOA. The benchmark covers both runtime,
-memory, and accuracy. Finally, it shows that streamDM-C++ outperforms VFML
-implementation on most datasets.
+The work in~\cite{priya2020comprehensive} compares ensemble classifiers on
+imbalanced data streams with concept drifts, using two real datasets
+(Electrical, Intrusion), synthetic datasets, and six classifiers, including the
+\naivebayes and the \hoeffdingtree ones. The \hoeffdingtree is found to be
+the second most accurate classifier after the Accuracy Updated Ensemble.
 
-However, these studies remained limited to the generic datasets such as
-Electrical, CoverType, or Poker. Additionally, the benchmarks ignore the impact
-of memory limit on the classifiers. Finally, none of these comparison uses
-datasets made from wearable sensors.
+Finally, the work in~\cite{StreamDM-CPP} describes the architecture of
+StreamDM-CPP and presents an extensive benchmark of tree-based classifiers,
+covering runtime, memory, and accuracy. Compared to other tree-based
+classifiers, the \hoeffdingtree classifier is found to have the smallest
+memory footprint while the Hoeffding Adaptive Tree classifier is found be
+the most accurate on most of the datasets. 
+
+\subsection{Data stream classifiers for connected objects}
 
 Regarding connected objects, the work in~\cite{omid_2019} presents a
 wearable system capable of running pre-trained classifiers \TG{Martin,
@@ -107,13 +123,7 @@ Network~(FNN) over \knn. \TG{any other relevant study on connected objects?}
 % then, the stream was processed to extract features
 % and feed the classifier.
 
-Compared to these previous works, the contributions of our paper are the following:
-\begin{itemize}
-    \item We compare the most popular data stream classifiers on the specific case of \har;
-    \item We provide quantitative measurements of memory and power consumption, as well as runtime;
-    \item We implement data stream classifiers in a consistent software library meant for deployment on embedded systems.
-\end{itemize} 
-The subsequent sections present the materials, methods, and results of our benchmark.
+
 
 %Étendre related work, regarder les papiers qui ont cité ces papier
 %En particulier la référence Janidarmian_2017, pareil pour memory_consumption_machine_learning
