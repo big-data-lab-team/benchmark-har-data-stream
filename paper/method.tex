@@ -116,31 +116,24 @@ the feature space, similar to a regular decision tree.
 However, the feature used in the split and the
 value of the split are picked randomly. The
 probability to select a feature is proportional to
-its normalized range. The value for the split is
+its normalized range, and the value for the split is
 uniformly selected in the range of the feature.
 During prediction, a node combines its observed
-label count with its parent prediction. Since the
-Mondrian tree is able to reshape the internal
-structure of the tree, we expect the
-\mondrianforest to handle concept drift to a
-certain extent. In particular, it should be quite
-slow to recover a drift compare to \mcnn.
+label count with its parent prediction. Since the Mondrian tree is able to
+reshape the internal structure of the tree, we expect the \mondrianforest
+to recover from  concept drifts, although most likely slower than \mcnn.
 
 %Bounded memory discussion
-In OrpailleCC, the size allocated for the forest
-is set beforehand and it is shared by all
-the trees.  Therefore, the memory footprint of the
-classifier is constant.
-We call this implementation memory bounded.
-We differentiate it from constant space complexity because in the
-first case, a limited amount of memory may force the classifier to find a way
-around this lack of memory: stop growing or making space for new data.
-On the other hand, a constant space
-complexity is a feature of a classifier and its performances are not expected
-to change no  matter the amount of memory available. The classifier is simply
-supposed to fail without the required amount of memory. From the algorithm
-involved in this study, \mondrianforest has a bounded memory policy while
-\naivebayes is a classifier with a constant space complexity \TG{Writing to be fixed a bit.}.
+In OrpailleCC, the amount of memory allocated to the forest is predefined,
+and it is shared by all the trees in the forest, leading to a constant
+memory footprint for the classifier. This implementation is memory-bounded,
+meaning that the classifier can adjust to memory limitations, for instance
+by stopping tree growth or replacing existing nodes with new ones. This is
+different from an implementation with a constant space complexity, where
+the classifier would use the same amount of memory regardless of the
+amount of available memory. For instance, in our study, the \mondrianforest
+classifier is memory-bounded while \naivebayes classifier has a constant
+space complexity.
 
 Mondrian trees can be tuned using three
 parameters: the base count, the discount factor,
@@ -428,13 +421,12 @@ We measure the memory footprint by reading file
 \paragraph{Runtime}
 The runtime of a classifier is the time needed for
 the classifier to process the dataset. We
-collect the runtime reported at the end of the \textit{perf}
+collect the runtime reported by the \textit{perf}
 command\footnote{\textit{perf}
-\href{https://perf.wiki.kernel.org/index.php/Main_Page}{website}}. This measurement includes loading the
-binary in memory, setting up the data structures,
-and opening the file. Then we compare the runtime
-measured to an empty classifier.\TG{maybe naive but how do you measure runtime only at the end of
-the execution? Maybe reword that.}
+\href{https://perf.wiki.kernel.org/index.php/Main_Page}{website}}, which
+includes loading of the binary in memory, setting up data structures, and
+opening the dataset file. To remove these overheads from our measurements,
+we use the runtime of an empty classifier as baseline.
 
 \paragraph{Power} We measure the average power
 consumed by classification algorithms with the
