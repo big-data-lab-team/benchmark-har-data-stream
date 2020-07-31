@@ -61,23 +61,13 @@ To the best of our knowledge, no previous study focused on the comparison
 of data stream classifiers for \har in the context of limited memory and
 available runtime that characterizes connected objects.
 
-% offline works
-Several studies evaluated classifiers for \har in an offline (non data stream)
-setting. In particular, the work in~\cite{Janidarmian_2017} compared 293
-classifiers using various sensor placements and window sizes, concluding on the
-superiority of k nearest neighbors (\knn) and pointing out a trade-off between
-runtime and classification performance. Resource consumption, including memory
-and runtime, was also studied for offline classifiers, such as
-in~\cite{memory_consumption_machine_learning} for the particular case of the R
-programming language.
-
 \subsection{Comparisons of data stream classifiers}
 
 % data stream classifiers
-Data stream classifiers were also compared, mostly using synthetic datasets
-or real but general-purpose ones (Electrical, CoverType, Poker) that are
+Data stream classifiers were compared mostly using synthetic datasets
+or real but general-purpose ones (Electrical, CoverType, Poker), which is 
 not representative of our use case. In addition, memory and runtime usage 
-are rarely reported, to the notable exception of~\cite{StreamDM-CPP}.
+are rarely reported, with the notable exception of~\cite{StreamDM-CPP}.
 
 The work
 in~\cite{prasad2016stream} reviews an extensive list of classifiers for
@@ -88,7 +78,7 @@ single dataset (CoverType).
 
 The work in ~\cite{kaur2020} compares four classifiers (Byesnet,
 \hoeffdingtree, \naivebayes, and Decision Stump) using synthetic datasets.
-It reports a similar accuracy of 90 for the Byesnet, the
+It reports a similar accuracy of 90 for the Bayesnet, the
 \hoeffdingtree, and \naivebayes classifiers, while the Decision Stump one
 only reaches 65. Regarding runtimes, Bayesnet is found to be four times
 slower than the \hoeffdingtree which is itself three times slower than
@@ -100,6 +90,14 @@ imbalanced data streams with concept drifts, using two real datasets
 \naivebayes and the \hoeffdingtree ones. The \hoeffdingtree is found to be
 the second most accurate classifier after the Accuracy Updated Ensemble.
 
+The authors in~\cite{lopes2020evaluating} have analyzed the resources trade-off
+of six online decision trees applied to edge computing. Their results showed that the
+Very Fast Decision Tree and the Strict Very Fast Decision Tree were the most
+energy friendly, the latter having the smallest memory footprint. On the
+other hand, the best predictive performance were obtained in combination with
+OLBoost. In particular, the paper reports an accuracy of 89.6\% on the Electrical
+dataset, and 83.2\% on an Hyperplane dataset.
+
 Finally, the work in~\cite{StreamDM-CPP} describes the architecture of
 StreamDM-CPP and presents an extensive benchmark of tree-based classifiers,
 covering runtime, memory, and accuracy. Compared to other tree-based
@@ -107,32 +105,40 @@ classifiers, the \hoeffdingtree classifier is found to have the smallest
 memory footprint while the Hoeffding Adaptive Tree classifier is found be
 the most accurate on most of the datasets. 
 
-\subsection{Data stream classifiers for connected objects}
+\subsection{Offline and data stream classifiers for \har}
 
-Regarding connected objects, the work in~\cite{omid_2019} presents a wearable
-system capable of running pre-trained classifiers with high classification
+% offline works
+Several studies evaluated classifiers for \har in an offline (non data stream)
+setting. In particular, the work in~\cite{Janidarmian_2017} compared 293
+classifiers using various sensor placements and window sizes, concluding on the
+superiority of k nearest neighbors (\knn) and pointing out a trade-off between
+runtime and classification performance. Resource consumption, including memory
+and runtime, was also studied for offline classifiers, such as
+in~\cite{memory_consumption_machine_learning} for the particular case of the R
+programming language.
+
+In addition, the work in \cite{ugulino2012} achieved an offline accuracy of
+99.4\% on a five-class datasets of \har. The authors used AdaBoost, an
+ensemble method, with ten offline decision trees. The work in
+\cite{ahmed2019smartphone} proposes a Support Vector Machine enhanced with
+feature selection. Using smartphone data, the model showed above 90\%
+accuracy on day-to-day human activities. Finally, the work in
+\cite{san2018robust} applies three offline classifiers to smartphone and
+smartwatch human activity data. Results show that Convolutional Neural Network and Random
+Forest achieve F1 score of 0.98 with smartwatches and 0.99 with
+smartphones.
+
+%online/stream
+In a data stram (online) setting, the work in~\cite{omid_2019} presents a wearable
+system capable of running pre-trained classifiers on the chip with high classification
 accuracy. It shows the superiority of the proposed Feedforward Neural
 Network~(FNN) over \knn.
 
-The work in \cite{ugulino2012} achieved an offline accuracy of 99.4\% on a
-five-class datasets of \har. The authors used AdaBoost, an ensemble method, with
-ten offline decision trees.
 
-The author in \cite{lopes2020evaluating} have analyzed the resources trade-off
-of six online decision trees applied for edge computing. They shown that the
-Very Fast Decision Tree and the Strict Very Fast Decision Tree were the most
-energy friendly, with the second having the smallest memory footprint. On the
-other hand, the best predictive performance were obtained in combination with
-OLBoost. In particular, the paper reports an accuracy of 89.6\% on the Electrical
-dataset, and 83.2\% on an Hyperplane dataset.
 
-The work in \cite{ahmed2019smartphone} proposes a Support Vector Machine
-enhanced with feature selection. Using smartphone data, the model showed above
-90\% accuracy on day-to-day activities.
 
-The work in \cite{san2018robust} applies three offline classifiers to smartphone
-and smartwatch data. Results show that Convolutional Neural Network and Random
-Forest achieve F1 score of 0.98 with smartwatches and 0.99 with smartphones.
+
+
 %  It shows that a trained neural
 % network achieves high accuracy and performs better
 % than KNN. The dataset was acquired with the
