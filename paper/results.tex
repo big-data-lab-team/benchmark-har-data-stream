@@ -84,7 +84,7 @@ accuracy of 0.99 and the
 work in~\cite{behzad2019} reaches 0.65 while our benchmark only achieves
 0.40. This is most likely due to our use of data coming from a single
 sensor, consistently with our motivating use case, while the other works used
-mutiple ones (9 in the case of
+multiple ones (9 in the case of
 \banosdataset).
 
 % %One sensor
@@ -119,7 +119,7 @@ The \naivebayes and the \hoeffdingtree classifiers stand out on the two real dat
 (\banosdataset and \recofitdataset) even though the F1 scores observed remain
 low (0.6 and 0.35) compared to offline \knn (0.86 and 0.40). Additionally, the
 \hoeffdingtree performs outstandingly on the RandomTree dataset and
-\banosdataset dataset with a drift. Such good performances where expected on the
+\banosdataset dataset with a drift. Such good performances were expected on the
 RandomTree dataset because it was generated based on a tree structure, however
 
 %Explanation of their F1 score similarity
@@ -148,7 +148,7 @@ two real datasets.
 Surprisingly, a \mondrianforest with 50 trees performs worse than 5 or 10
 trees on most datasets. The only exception is the Hyperplane dataset where
 50 trees perform between 5 and 10 trees. This is due to the fact that
-our \mondrianforest implementation is memory bounded, which is
+our \mondrianforest implementation is memory-bounded, which is
 useful on connected objects but limits tree growth when the allocated memory is
 full. Because 50 trees fill the memory faster than 10 or 5 trees, the
 learning stops earlier, before the trees can learn learned enough from the
@@ -162,7 +162,7 @@ configuration with five times more memory than the initial configuration is
 shown (total of 3~MB).  The memory increase induces an F1 score difference
 greater than 0.1, except when only one tree is used, in
 which case the improvement caused by the memory is less than 0.05. Note that the
-selected memory bound may not be achievable on a connected object. Overall,
+selected memory-bound may not be achievable on a connected object. Overall,
 \mondrianforest seems to be a viable alternative to \naivebayes or the
 \hoeffdingtree for \har.
 
@@ -248,7 +248,7 @@ platform was  working at minimal power. To ensure no disturbance by a
 background process, we run the classifiers on an isolated cluster node with
 eight cores. Therefore, the power difference on one core is not noticeable.
 
-Another reason are the dataset sizes. Indeed, the slowest run is about
+Another reason is the dataset sizes. Indeed, the slowest run is about
 10 seconds with 50 Mondrian trees on \recofitdataset dataset. Such short
 executions do not leave time for the CPU to switch P-states because it
 barely warms a core. Further experiments would be required to check how 
@@ -269,7 +269,7 @@ substantially increases runtime.
 
 We observe that the runtime of StreamDM's \naivebayes is comparable to
 OrpailleCC's. This suggests that the performance of the two libraries is
-similar, which justifies our comparision of \hoeffdingtree and \mondrianforest.
+similar, which justifies our comparison of \hoeffdingtree and \mondrianforest.
 
 \begin{figure*}
 	\begin{subfigure}[t]{.49\linewidth}
@@ -312,8 +312,8 @@ makes its memory footprint constant.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/results/banos_6_memory.png}
-	\caption{Memory footprint of the classifiers relatively to the empty
-	classifier, measured on the \banosdataset dataset. The memory footprint of the empty
+	\caption{The memory footprint of classifiers with the empty
+	classifier as a baseline, measured on the \banosdataset dataset. The memory footprint of the empty
 	classifier is 3.439MB. The baselines are the two \naivebayes from OrpailleCC
 		and StreamDM. They respectively have a memory footprint of 3.44OMB and
 		4.743.}
@@ -325,7 +325,7 @@ makes its memory footprint constant.
 
 Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
 in the \mcnn classifiers with different cluster counts. The error
-threshold of \mcnn has little impact on the classification performance. For
+threshold of \mcnn has little impact on classification performance. For
 20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
 that a cluster may do 2 or 4 errors before being split. For 10 clusters,
 all error thresholds perform equally.
@@ -346,7 +346,7 @@ all error thresholds perform equally.
 		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_10.png}
 		 \caption{10 clusters}
 	 \end{subfigure}
-	\caption{Error threshold tuning of \mcnn with first subject of \banosdataset dataset.}
+	\caption{Error threshold tuning of \mcnn with the first subject of \banosdataset dataset.}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
 
@@ -382,7 +382,7 @@ performance; the best-performing value is 0.1.
 		 \caption{Impact of the discount factor with 10 trees, a budget of $1.0$, and a base count of $0.1$.}
 		 \label{fig:mondrian-discount}
 	 \end{subfigure}
-		\caption{Hyperparameters tuning for Mondrian with first subject of \banosdataset dataset.}
+		\caption{Hyperparameters tuning for Mondrian with the first subject of \banosdataset dataset.}
 		\label{fig:mondrian-tuning}
 \end{figure}
 
