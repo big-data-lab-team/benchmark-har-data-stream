@@ -53,7 +53,7 @@ well as the orientation in a quaternion format,
 producing a total of 13 values.  Sensors are
 sampled at 50~Hz, and each sample is associated
 with one of 33 activities. In addition to the 33
-activities, an extra activity labelled 0 indicates
+activities, an extra activity labeled 0 indicates
 no specific activity.
 
 We pre-process the \banosdataset dataset using
@@ -78,7 +78,7 @@ human activity dataset containing 94
 participants\footnote{\recofitdataset dataset
 available
 \href{https://msropendata.com/datasets/799c1167-2c8f-44c4-929c-227bf04e2b9a}{here}.}. Similarly to the \banosdataset
-dataset, the activity labelled 0 indicates no
+dataset, the activity labeled 0 indicates no
 specific activity.
 Since many of these activities are similar, we
 merged some of them together based on the table
@@ -188,7 +188,7 @@ cluster is removed. Given that the maximum number
 of clusters is fixed, this mechanism makes
 space for new clusters, and possibly
 helps adjust to concept drifts.  
-The space and time complexity of \mcnn are
+The space and time complexities of \mcnn are
 constant since the maximum number of clusters does
 not change.
 The reaction to concept drift is influenced by the
@@ -208,7 +208,7 @@ The second version (\mcnn OrpailleCC)
 removes the cluster with the lowest participation
 only when space is needed.  A cluster slot is
 needed when an existing cluster is split and there
-are no more slot available because the number of
+is no more slot available because the number of
 active clusters already reached the maximum defined
 by the user.
 
@@ -240,7 +240,7 @@ clusters.
 		\end{center}
 		\caption{Hyperparameters used for \mcnn. The
 		participation threshold was applied only to
-		\mcnn Original.}
+		\mcnn Origin.}
 		\label{table:hyperparameter-mcnn}
 \end{table}
 
@@ -284,7 +284,7 @@ information gain or the Gini
 index. However,  to estimate when a leaf should be
 split, the \hoeffdingtree relies on the
 Hoeffding bound, a measure of the score deviation
-of the splits. This measure allow the leaf to
+of the splits. This measure allows the leaf to
 decide when the best split is clearly better than
 the second best split based on the data observed
 from the stream. This mechanism prevents the tree
@@ -299,17 +299,17 @@ classifier as implemented in StreamDM-Cpp.  The
 \hoeffdingtree is common in data stream
 classification, however, the internal nodes are
 static and cannot be re-considered. Therefore, any
-concept drif adaption relies on the new leaves
+concept drift adaption relies on the new leaves
 that will be split.
 
 The \hoeffdingtree has three parameters: the
 confidence level, the grace period, and the leaf
-learner. The confidence level is probability that
+learner. The confidence level is the probability that
 the Hoeffding bound makes a wrong estimation of
 the deviation. The grace period is the number of
-processed data points before a leaf is evaluated for split.
+processed data points before a leaf is evaluated for a split.
  The leaf learner is the method used in the
-leaf to predict the label.  In this study we used
+leaf to predict the label.  In this study, we used
 a confidence level of $0.01$ with a grace period
 of 10 data points and \naivebayes as leaf
 learner.
@@ -341,7 +341,7 @@ perceptrons in the hidden layer, and 33 output
 perceptrons.
 Because a \FNN takes many epochs to update and
 converge it barely adapts to a concept drifts even
-though it trains with each new data points.
+though it trains with each new data point.
 
 In this study, we used histogram features
 from~\cite{omid_2019} instead of the ones
@@ -358,14 +358,11 @@ indicates by how much the weights should change
 during backpropagation.
 
 \subsubsection{Hyperparameters Tuning}
-For each classifier, we tune hyperparameters  using the first
-subject from the \banosdataset dataset.  The data from
-this subject is pre-processed as the rest of
-the \banosdataset dataset (window size of one second,
-average and standard deviation on the six
-axis of the right forearm sensor,
-$\ldots$). We do a grid search to test multiple values for the
-parameters.
+For each classifier, we tune hyperparameters  using the first subject from the
+\banosdataset dataset.  The data from this subject is pre-processed as the rest
+of the \banosdataset dataset (window size of one second, average and standard
+deviation on the six-axis of the right forearm sensor, $\ldots$). We do a grid
+search to test multiple values for the parameters.
 
 The classifiers start the prequential phase with
 no knowledge from the first subject.  We make an
@@ -426,14 +423,12 @@ command\footnote{\textit{perf}
 \href{https://perf.wiki.kernel.org/index.php/Main_Page}{website}}, which
 includes loading of the binary in memory, setting up data structures, and
 opening the dataset file. To remove these overheads from our measurements,
-we use the runtime of an empty classifier as baseline.
+we use the runtime of an empty classifier that always predict class 0 as a baseline.
 
-\paragraph{Power} We measure the average power
-consumed by classification algorithms with the
-\textit{perf} command. The power measurement is
-done multiple times in a minimal environment. To
-provide a baseline power usage, we also add an
-empty classifier that always predict class 0.
+\paragraph{Power} We measure the average power consumed by classification
+algorithms with the \textit{perf} command. The power measurement is done
+multiple times in a minimal environment. We use the empty classifier as a
+baseline.
 
 \subsection{Experimental Conditions}
 We automate our experiments with a Python script that defines
@@ -441,7 +436,7 @@ classifiers and their parameters, randomizes all
 the repetitions, and plots the
 resulting data. The datasets and output results are stored in memory
 through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
-We average metrics accross repetitions (same classifier, same parameters, and
+We average metrics across repetitions (same classifier, same parameters, and
 same dataset).
 
 The experiment is done with a single core of a
