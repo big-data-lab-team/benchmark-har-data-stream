@@ -1,8 +1,8 @@
 \section{Materials and Methods}
-We evaluate 5 classifiers implemented in either StreamDM-Cpp~\cite{StreamDM-CPP}
-or OrpailleCC~\cite{OrpailleCC}.  StreamDM-Cpp is a C++ implementation of
+We evaluate 5 classifiers implemented in either \streamdmcpp~\cite{StreamDM-CPP}
+or OrpailleCC~\cite{OrpailleCC}.  \streamdmcpp is a C++ implementation of
 StreamDM~\cite{StreamDM}, a software to mine big data streams using
-\href{https://spark.apache.org/streaming/}{Apache Spark Streaming}. StreamDM-Cpp
+\href{https://spark.apache.org/streaming/}{Apache Spark Streaming}. \streamdmcpp
 is usually faster than StreamDM in single-core environments, due to the overhead
 induced by Spark.
 
@@ -255,7 +255,7 @@ not biased toward the more recent data points, we
 expect \naivebayes to be slow to adapt if not
 ineffective.
 
-The implementation from StreamDM was used in this
+The implementation from \streamdmcpp was used in this
 benchmark. It uses a Gaussian
 fit for numerical attributes.
 
@@ -295,7 +295,7 @@ is sorted to a leaf, and a label is predicted by
 aggregating the labels of the training data points
 in that leaf, usually through majority voting or
 \naivebayes classification.  We used this
-classifier as implemented in StreamDM-Cpp.  The
+classifier as implemented in \streamdmcpp.  The
 \hoeffdingtree is common in data stream
 classification, however, the internal nodes are
 static and cannot be re-considered. Therefore, any
