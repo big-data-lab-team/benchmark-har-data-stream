@@ -62,7 +62,7 @@ consistent for all classifiers.
 The offline \knn classifier used as baseline achieves better F1 scores than
 all other classifiers, except for the \mondrianforest on the Hyperplane and
 the RandomRBF datasets. On the \banosdataset dataset, the difference of
-\TG{x} with the best stream classifier remains very substantial, which
+0.23 with the best stream classifier remains very substantial, which
 quantifies the remaining performance gap between data stream and offline
 classifiers. On the \recofitdataset dataset, the difference between stream
 and offline classifiers is lower, but the offline performance remains very
@@ -79,11 +79,13 @@ classifier on the real datasets are substantially lower than the values
 reported in the literature. On the \banosdataset dataset, the original
 study in~\cite{Banos_2014} reports an F1 score of 0.96, the work
 in~\cite{behzad2019} achieves 0.92, but our benchmark only achieves 0.86.
-Similarly, on the \recofitdataset dataset, \TG{check original study} the
+Similarly, on the \recofitdataset dataset, the original study reports an
+accuracy of 0.99 and the
 work in~\cite{behzad2019} reaches 0.65 while our benchmark only achieves
 0.40. This is most likely due to our use of data coming from a single
-sensor, consistently with our motivating use case, while the other works used mutiple ones (\TG{x} in the case of
-\banosdataset, \TG{y} in the case of \recofitdataset).
+sensor, consistently with our motivating use case, while the other works used
+mutiple ones (9 in the case of
+\banosdataset).
 
 % %One sensor
 % In this study, we focused on using one sensor rather than all the sensors
@@ -192,8 +194,7 @@ comparison with the other stream classifiers that do not require offline
 training (except for hyperparameter tuning, done on the first subject of
 the \banosdataset dataset). When we use a random sample of 10\% of the
 datapoints across all subjects for offline training, we reach an F1 score
-of 0.62 \TG{check value}, which is closer to the performance of the
-\naivebayes classifier.
+of 0.68, which is higher than the performance of the \naivebayes classifier.
 
 %FNN discussion
 %As explained in Section~\ref{sec:method-fnn}, the pre-training of the \FNN is
