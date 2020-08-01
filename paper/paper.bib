@@ -38,15 +38,16 @@
 	title = {Lightweight temporal compression of microclimate datasets [wireless sensor networks]},
 	booktitle = {29th Annual {IEEE} International Conference on Local Computer Networks}
 }
-@article{multi-ltc,
+@inproceedings{multi-ltc,
 	doi = {10.1109/bigdata.2018.8621946},
 	url = {https://doi.org/10.1109%2Fbigdata.2018.8621946},
 	year = 2018,
 	month = {dec},
+	pages = {2918-2923},
 	publisher = {{IEEE}},
 	author = {Bo Li and Omid Sarbishei and Hosein Nourani and Tristan Glatard},
-	title = {A multi-dimensional extension of the Lightweight Temporal Compression method},
-	booktitle = {2018 {IEEE} International Conference on Big Data (Big Data)}
+	title = {{A multi-dimensional extension of the Lightweight Temporal Compression method}},
+	booktitle = {2018 {IEEE} International Conference on Big Data}
 }
 @article{LZ77,
 	doi = {10.1109/tit.1977.1055714},
@@ -61,15 +62,25 @@
 	title = {A universal algorithm for sequential data compression},
 	journal = {{IEEE} Transactions on Information Theory}
 }
-@article{cuckoo,
-	doi = {10.1145/2674005.2674994},
-	url = {https://doi.org/10.1145%2F2674005.2674994},
-	year = 2014,
-	publisher = {{ACM} Press},
-	author = {Bin Fan and Dave G. Andersen and Michael Kaminsky and Michael D. Mitzenmacher},
-	title = {Cuckoo Filter},
-	booktitle = {Proceedings of the 10th {ACM} International on Conference on emerging Networking Experiments and Technologies - {CoNEXT} {\textquotesingle}14}
+
+@inproceedings{cuckoo,
+author = {Fan, Bin and Andersen, Dave G. and Kaminsky, Michael and Mitzenmacher, Michael D.},
+title = {{Cuckoo Filter: Practically Better Than Bloom}},
+year = {2014},
+isbn = {9781450332798},
+publisher = {{Association for Computing Machinery}},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2674005.2674994},
+doi = {10.1145/2674005.2674994},
+booktitle = {{P}roceedings of the 10th {ACM} {I}nternational on {C}onference on {E}merging {N}etworking {E}xperiments and {T}echnologies},
+pages = {75–88},
+numpages = {14},
+keywords = {bloom filters, compression, cuckoo hashing},
+location = {Sydney, Australia},
+series = {CoNEXT ’14}
 }
+
+
 @article{flajolet,
 	author	= "Philippe Flajolet",
 	title	= "Approximate Counting : a Detailed Analysis",
@@ -199,14 +210,16 @@
 	booktitle = {19th {IEEE} {I}nternational {C}onference on {T}ools with {A}rtificial {I}ntelligence({ICTAI} 2007)}
 }
 @incollection{mondrian2014,
-title = {Mondrian Forests: Efficient Online Random Forests},
-author = {Lakshminarayanan, Balaji and Roy, Daniel M and Teh, Yee Whye},
-booktitle = {Advances in Neural Information Processing Systems 27},
-editor = {Z. Ghahramani and M. Welling and C. Cortes and N. D. Lawrence and K. Q. Weinberger},
-pages = {3140--3148},
-year = {2014},
-publisher = {Curran Associates, Inc.},
-url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random-forests.pdf}
+	title = {{Mondrian Forests: Efficient Online Random Forests}},
+	author = {Lakshminarayanan, Balaji and Roy, Daniel M and Teh, Yee Whye},
+	booktitle = {Advances in Neural Information Processing Systems 27},
+	editor = {Z. Ghahramani and M. Welling and C. Cortes and N. D. Lawrence and K. Q. Weinberger},
+	pages = {3140--3148},
+	volume = {4},
+	month = {jun},
+	year = {2014},
+	publisher = {Curran Associates, Inc.},
+	url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random-forests.pdf}
 }
 @article{UFFT,
 	doi = {10.1145/967900.968033},
@@ -244,13 +257,14 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	journal = {Machine Learning}
 }
 @article{StreamDM-CPP,
+	author = {Bifet, Albert and Zhang, Jiajin and Fan, Wei and He, Cheng and Zhang, Jianfeng and Qian, Jianfeng and Holmes, Geoff and Pfahringer, Bernhard},
+	year = {2017},
+	month = {08},
+	pages = {1733-1742},
+	title = {{Extremely Fast Decision Tree Mining for Evolving Data Streams}},
 	doi = {10.1145/3097983.3098139},
-	url = {https://doi.org/10.1145%2F3097983.3098139},
-	year = 2017,
-	publisher = {{ACM} Press},
-	author = {Albert Bifet and Jiajin Zhang and Wei Fan and Cheng He and Jianfeng Zhang and Jianfeng Qian and Geoff Holmes and Bernhard Pfahringer},
-	title = {{E}xtremely {F}ast {D}ecision {T}ree {M}ining for {E}volving {D}ata {S}treams},
-	booktitle = {Proceedings of the 23rd {ACM} {SIGKDD} {I}nternational {C}onference on {K}nowledge {D}iscovery and {D}ata {M}ining  - {KDD} {\textquotesingle}17}
+	booktitle = {{Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining - KDD '17}},
+	publisher = {{ACM} Press}
 }
 @article{survey_supervised_ML,
   title={Supervised machine learning: A review of classification techniques},
@@ -290,15 +304,19 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
   publisher={Elsevier}
 }
 @inproceedings{naive_bayes,
-	doi = {10.1007/bfb0026666},
-	url = {https://doi.org/10.1007%2Fbfb0026666},
-	year = 1998,
-	publisher = {Springer Berlin Heidelberg},
+	author = {Lewis, David D.},
+	title = {Naive ({B}ayes) at {F}orty: {T}he {I}ndependence {A}ssumption in {I}nformation {R}etrieval},
+	year = {1998},
+	isbn = {3540644172},
+	publisher = {Springer-Verlag},
+	address = {Berlin, Heidelberg},
+	booktitle = {Proceedings of the 10th European Conference on Machine Learning},
 	pages = {4--15},
-	author = {David D. Lewis},
-	title = {Naive ({B}ayes) at forty: {T}he independence assumption in information retrieval},
-	booktitle = {Machine {L}earning: {ECML}-98}
+	numpages = {12},
+	series = {ECML ’98}
 }
+
+
 @book{SVM,
 	doi = {10.1007/978-1-4757-2440-0},
 	url = {https://doi.org/10.1007%2F978-1-4757-2440-0},
@@ -308,7 +326,7 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	title = {The Nature of Statistical Learning Theory}
 }
 @article{moa,
-  title={Moa: Massive online analysis},
+  title={{MOA: Massive Online Analysis}},
   author={Bifet, Albert and Holmes, Geoff and Kirkby, Richard and Pfahringer, Bernhard},
   journal={Journal of Machine Learning Research},
   volume={11},
@@ -366,14 +384,22 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
   publisher={Springer}
 }
 @inproceedings{issues_learning_from_stream,
+	author = {Gama, Jo\~{a}o and Sebasti\~{a}o, Raquel and Rodrigues, Pedro Pereira},
+	title = {{Issues in Evaluation of Stream Learning Algorithms}},
+	year = {2009},
+	isbn = {9781605584959},
+	publisher = {{A}ssociation for {C}omputing {M}achinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/1557019.1557060},
 	doi = {10.1145/1557019.1557060},
-	url = {https://doi.org/10.1145%2F1557019.1557060},
-	year = 2009,
-	publisher = {{ACM} Press},
-	author = {Jo{\~{a}}o Gama and Raquel Sebasti{\~{a}}o and Pedro Pereira Rodrigues},
-	title = {Issues in evaluation of stream learning algorithms},
-	booktitle = {Proceedings of the 15th {ACM} {SIGKDD} international conference on {K}nowledge discovery and data mining - {KDD} {\textquotesingle}09}
+	booktitle = {{P}roceedings of the 15th {ACM} {SIGKDD} {I}nternational {C}onference on {K}nowledge {D}iscovery and {D}ata {M}ining},
+	pages = {329–338},
+	numpages = {10},
+	keywords = {data streams, evaluation design},
+	location = {Paris, France},
+	series = {KDD ’09}
 }
+
 @inproceedings{rapid-miner,
 	doi = {10.1145/1150402.1150531},
 	url = {https://doi.org/10.1145%2F1150402.1150531},
@@ -415,15 +441,21 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	title = {New Options for Hoeffding Trees},
 	booktitle = {{AI} 2007: Advances in Artificial Intelligence}
 }
-@inproceedings{VFDT,
+@article{VFDT,
 	doi = {10.1145/347090.347107},
 	url = {https://doi.org/10.1145%2F347090.347107},
-	year = 2000,
+	year = {2002},
+	month = {11},
 	publisher = {{ACM} Press},
 	author = {Pedro Domingos and Geoff Hulten},
-	title = {Mining high-speed data streams},
-	booktitle = {Proceedings of the 6th {ACM} {SIGKDD} international conference on Knowledge discovery and data mining  - {KDD} {\textquotesingle}00}
+	title = {{Mining High-Speed Data Streams}},
+	journal = {{P}roceeding of the 6th {ACM} {SIGKDD} {I}nternational {C}onference on {K}nowledge {D}iscovery and {D}ata {M}ining}},
+	pages = {71–80},
+	numpages = {10},
+	keywords = {decision trees, subsampling, Hoeffding bounds, incremental learning, disk-based algorithms},
+	location = {Boston, Massachusetts, USA}
 }
+
 @inproceedings{optimal_counting, 
 	doi = {10.1145/1807085.1807094},
 	url = {https://doi.org/10.1145%2F1807085.1807094},
@@ -447,9 +479,9 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	journal = {Journal of {C}omputer and {S}ystem {S}ciences}
 }
 @article{sensor-network-survey,
-  title={Wireless sensor networks: a survey},
+  title={{Wireless Sensor Networks: a Survey}},
   author={Akyildiz, Ian F and Su, Weilian and Sankarasubramaniam, Yogesh and Cayirci, Erdal},
-  journal={Computer networks},
+  journal={{Computer Networks}},
   volume={38},
   number={4},
   pages={393--422},
@@ -470,7 +502,8 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	publisher = {{IEEE}},
 	author = {E.J. Duarte-Melo and  Mingyan Liu},
 	title = {Analysis of energy consumption and lifetime of heterogeneous wireless sensor networks},
-	booktitle = {Global Telecommunications Conference, 2002. {GLOBECOM} {\textquotesingle}02. {IEEE}}
+	year = {2002},
+	booktitle = {{Global Telecommunications Conference. GLOBECOM 02}}
 }
 @article{sensor-energy-consumption,
 	doi = {10.1109/35.925682},
@@ -571,14 +604,23 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
   publisher={IEEE {C}omputer {S}ociety}
 }
 @inproceedings{recofit,
+	author = {Morris, Dan and Saponas, T. Scott and Guillory, Andrew and Kelner, Ilya},
+	title = {{RecoFit: Using a Wearable Sensor to Find, Recognize, and Count Repetitive Exercises}},
+	year = {2014},
+	isbn = {9781450324731},
+	publisher = {{A}ssociation for {C}omputing {M}achinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/2556288.2557116},
 	doi = {10.1145/2556288.2557116},
-	url = {https://doi.org/10.1145%2F2556288.2557116},
-	year = 2014,
-	publisher = {{ACM} {P}ress},
-	author = {Dan Morris and T. Scott Saponas and Andrew Guillory and Ilya Kelner},
-	title = {{RecoFit}},
-	booktitle = {Proceedings of the 32nd annual {ACM} conference on {H}uman factors in computing systems - {CHI} {\textquotesingle}14}
+	booktitle = {Proceedings of the SIGCHI Conference on Human Factors in Computing Systems},
+	pages = {3225–3234},
+	numpages = {10},
+	keywords = {inertial sensors, machine learning, fitness},
+	location = {Toronto, Ontario, Canada},
+	series = {CHI ’14}
 }
+
+
 @inproceedings{outlier_detection_knn,
 	doi = {10.1109/iscid.2010.149},
 	url = {https://doi.org/10.1109%2Fiscid.2010.149},
@@ -774,11 +816,16 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
   publisher={ACM}
 }
 @inproceedings{OrpailleCC,
-  title={Orpaille{CC}: a Library for Data Stream Analysis on Embedded Systems},
+  title={{O}rpaille{CC}: a {L}ibrary for {D}ata {S}tream {A}nalysis on {E}mbedded {S}ystems},
   author={Martin Khannouz and Bo Li and Tristan Glatard},
   booktitle={The Journal of Open Source Software},
+  month = {07},
+  volume = {4},
+  pages = {1485},
+  doi = {10.21105/joss.01485},
   year={2019}
 }
+
 @article{perceptron,
 	doi = {10.1037/h0042519},
 	url = {https://doi.org/10.1037%2Fh0042519},
@@ -824,6 +871,7 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	volume = {85},
 	number = {1},
 	pages = {14-29},
+	month = {jan},
 	year  = {2015},
 	publisher = {Taylor & Francis},
 	doi = {10.1080/00949655.2014.925192},
@@ -873,7 +921,7 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	number = {4},
 	pages = {6474--6499},
 	author = {Oresti Banos and Juan-Manuel Galvez and Miguel Damas and Hector Pomares and Ignacio Rojas},
-	title = {Window Size Impact in Human Activity Recognition},
+	title = {{Window Size Impact in Human Activity Recognition}},
 	journal = {Sensors}
 }
 @book{Mining_Massive_Datasets,
@@ -894,12 +942,12 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	number = {3},
 	pages = {529},
 	author = {Majid Janidarmian and Atena Roshan Fekr and Katarzyna Radecka and Zeljko Zilic},
-	title = {A Comprehensive Analysis on Wearable Acceleration Sensors in Human Activity Recognition},
+	title = {{A Comprehensive Analysis on Wearable Acceleration Sensors in Human Activity Recognition}},
 	journal = {Sensors}
 }
 @article{stream_learning_review,
 	author = {Gomes, Heitor Murilo and Read, Jesse and Bifet, Albert and Barddal, Jean Paul and Gama, Jo\~{a}o},
-	title = {Machine Learning for Streaming Data: State of the Art, Challenges, and Opportunities},
+	title = {{Machine Learning for Streaming Data: State of the Art, Challenges, and Opportunities}},
 	year = {2019},
 	issue_date = {November 2019},
 	publisher = {Association for Computing Machinery},
@@ -915,51 +963,53 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	numpages = {17}
 }
 
-@INPROCEEDINGS{omid_2019,
+@inproceedings{omid_2019,
 	author={O. {Sarbishei}},
 	booktitle={2019 IEEE 5th World Forum on Internet of Things (WF-IoT)},
 	title={A Platform and Methodology Enabling Real-Time Motion Pattern Recognition on Low-Power Smart Devices},
+	month={April},
 	year={2019},
 	volume={},
 	number={},
 	pages={269-272},
+	booktitle = {2019 IEEE 5th World Forum on Internet of Things},
+	organization={IEEE},
 	keywords={feature extraction;feedforward neural nets;Internet of Things;mobile computing;pattern recognition;sensor fusion;low-power smart devices;TM system-on-module;sensor fusion algorithm;ARM Cortex M4F;inertial sensors;shock-aware segmentation;histogram feature extraction;Neblina's MPR framework;human fitness activity recognition;motion pattern recognition;Internet of Things;feedforward neural network;3D orientation tracking;power consumption;Histograms;Real-time systems;Motion segmentation;Hardware;Sports;Feature extraction;Microsoft Windows},
-	doi={10.1109/WF-IoT.2019.8767219},
-	ISSN={null},
-	month={April}
+	doi={10.1109/WF-IoT.2019.8767219}
 }
 @inproceedings{StreamDM,
 	author = {Bifet, Albert and Maniu, Silviu and Qian, Jianfeng and Tian, Guangjian and He, Cheng and Fan, Wei},
-	title = {StreamDM: Advanced Data Mining in Spark Streaming},
+	title = {{StreamDM: Advanced Data Mining in Spark Streaming}},
 	year = {2015},
 	isbn = {9781467384933},
 	publisher = {IEEE Computer Society},
 	address = {USA},
 	url = {https://doi.org/10.1109/ICDMW.2015.140},
 	doi = {10.1109/ICDMW.2015.140},
-	booktitle = {Proceedings of the 2015 IEEE International Conference on Data Mining Workshop (ICDMW)},
+	booktitle = {Proceedings of the 2015 IEEE International Conference on Data Mining Workshop},
 	pages = {1608–1611},
 	numpages = {4},
 	series = {ICDMW ’15}
 }
 @article{behzad2019,
-  title={A Quantitative Comparison of Overlapping and Non-Overlapping Sliding Windows for Human Activity Recognition Using Inertial Sensors},
+  title={{A Quantitative Comparison of Overlapping and Non-Overlapping Sliding Windows for Human Activity Recognition Using Inertial Sensors}},
   author={Dehghani, Akbar and Sarbishei, Omid and Glatard, Tristan and Shihab, Emad},
   journal={Sensors},
   volume={19},
   number={22},
   pages={5026},
   year={2019},
-  publisher={Multidisciplinary Digital Publishing Institute}
+  publisher={{Multidisciplinary Digital Publishing Institute}}
 }
 @article{prasad2016stream,
-  title={{S}tream data mining: platforms, algorithms, performance evaluators and research trends},
-  author={Prasad, Bakshi Rohit and Agarwal, Sonali},
-  journal={International journal of database theory and application},
-  volume={9},
-  number={9},
-  pages={201--218},
-  year={2016}
+author = {Prasad, Bakshi and Agarwal, Sonali},
+year = {2016},
+month = {09},
+pages = {201-218},
+title = {{Stream Data Mining: Platforms, Algorithms, Performance Evaluators and Research Trends}},
+volume = {9},
+journal = {International Journal of Database Theory and Application},
+doi = {10.14257/ijdta.2016.9.9.19}
 }
 @InProceedings{kaur2020,
 	author="Kaur, Amrinder
@@ -969,9 +1019,9 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 	and Poonia, Ramesh C.
 	and Kumar, Sandeep
 	and El-Medany, Wael M.",
-	title="A Comprehensive Analysis of Classification Methods for Big Data Stream",
-	booktitle="Advances in Computing and Intelligent Systems",
-	year="2020",
+	title={{A Comprehensive Analysis of Classification Methods for Big Data Stream}},
+	booktitle={{A}dvances in {C}omputing and {I}ntelligent {S}ystems},
+	year={2020},
 	publisher="Springer Singapore",
 	address="Singapore",
 	pages="213--222",
@@ -981,37 +1031,32 @@ url = {http://papers.nips.cc/paper/5234-mondrian-forests-efficient-online-random
 @article{priya2020comprehensive,
   title={Comprehensive analysis for class imbalance data with concept drift using ensemble based classification},
   author={Priya, S and Uthra, R Annie},
-  journal={JOURNAL OF AMBIENT INTELLIGENCE AND HUMANIZED COMPUTING},
+  journal={Journal of Ambient Intelligence and Humanized Computing},
+  month = {apr},
   year={2020},
+  doi = {10.1007/s12652-020-01934-y},
   publisher={Springer}
 }
 @InProceedings{ugulino2012,
-author="Ugulino, Wallace
-and Cardador, D{\'e}bora
-and Vega, Katia
-and Velloso, Eduardo
-and Milidi{\'u}, Ruy
-and Fuks, Hugo",
-editor="Barros, Leliane N.
-and Finger, Marcelo
-and Pozo, Aurora T.
-and Gimen{\'e}nez-Lugo, Gustavo A.
-and Castilho, Marcos",
-title="Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements",
-booktitle="Advances in Artificial Intelligence - SBIA 2012",
-year="2012",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="52--61",
-abstract="During the last 5 years, research on Human Activity Recognition (HAR) has reported on systems showing good overall recognition performance. As a consequence, HAR has been considered as a potential technology for e-health systems. Here, we propose a machine learning based HAR classifier. We also provide a full experimental description that contains the HAR wearable devices setup and a public domain dataset comprising 165,633 samples. We consider 5 activity classes, gathered from 4 subjects wearing accelerometers mounted on their waist, left thigh, right arm, and right ankle. As basic input features to our classifier we use 12 attributes derived from a time window of 150ms. Finally, the classifier uses a committee AdaBoost that combines ten Decision Trees. The observed classifier accuracy is 99.4{\%}.",
-isbn="978-3-642-34459-6"
+	author="Ugulino, Wallace and Cardador, D{\'e}bora and Vega, Katia and Velloso, Eduardo and Milidi{\'u}, Ruy and Fuks, Hugo",
+	title={{Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements}},
+	booktitle="Advances in Artificial Intelligence - SBIA 2012",
+	year="2012",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="52--61",
+	abstract="During the last 5 years, research on Human Activity Recognition (HAR) has reported on systems showing good overall recognition performance. As a consequence, HAR has been considered as a potential technology for e-health systems. Here, we propose a machine learning based HAR classifier. We also provide a full experimental description that contains the HAR wearable devices setup and a public domain dataset comprising 165,633 samples. We consider 5 activity classes, gathered from 4 subjects wearing accelerometers mounted on their waist, left thigh, right arm, and right ankle. As basic input features to our classifier we use 12 attributes derived from a time window of 150ms. Finally, the classifier uses a committee AdaBoost that combines ten Decision Trees. The observed classifier accuracy is 99.4{\%}.",
+	isbn="978-3-642-34459-6"
 }
 @article{lopes2020evaluating,
-  title={Evaluating the Four-way Performance Trade-off for Data Stream Classification in Edge Computing},
-  author={Lopes, Jessica Fernandes and Santana, Everton Jose and da Costa, Victor G Turrisi and Zarpel{\~a}o, Bruno Bogaz and Barbon, Sylvio},
-  journal={IEEE Transactions on Network and Service Management},
-  year={2020},
-  publisher={IEEE}
+author = {Fernandes, Jessica and Santana, Everton and Turrisi da Costa, Victor and Bogaz Zarpelão, Bruno and Barbon, Sylvio},
+year = {2020},
+month = {mar},
+pages = {1-1},
+title = {{Evaluating the Four-way Performance Trade-off for Data Stream Classification in Edge Computing}},
+volume = {PP},
+journal = {IEEE Transactions on Network and Service Management},
+doi = {10.1109/TNSM.2020.2983921}
 }
 @inproceedings{ahmed2019smartphone,
   title={Smartphone Sensor Based Physical Activity Identification by Using Hardware-Efficient Support Vector Machines for Multiclass Classification},
@@ -1031,11 +1076,21 @@ isbn="978-3-642-34459-6"
 %4 HAR datasets: PAMAP2, USC-HAD, Opportunity, Skoda.
 
 @article{san2018robust,
-  title={Robust Human Activity Recognition using smartwatches and smartphones},
-  author={San-Segundo, Rub{\'e}n and Blunck, Henrik and Moreno-Pimentel, Jos{\'e} and Stisen, Allan and Gil-Mart{\'\i}n, Manuel},
-  journal={Engineering Applications of Artificial Intelligence},
-  volume={72},
-  pages={190--202},
-  year={2018},
-  publisher={Elsevier}
+	author = {San-Segundo, Rubn and Blunck, Henrik and Moreno-Pimentel, Jos and Stisen, Allan and Gil-Martn, Manuel},
+	title = {{Robust Human Activity Recognition Using Smartwatches and Smartphones}},
+	year = {2018},
+	publisher = {Pergamon Press, Inc.},
+	address = {USA},
+	volume = {72},
+	number = {C},
+	issn = {0952-1976},
+	url = {https://doi.org/10.1016/j.engappai.2018.04.002},
+	doi = {10.1016/j.engappai.2018.04.002},
+	journal = {{Engineering Applications of Artificial Intelligence}},
+	month = jun,
+	pages = {190–202},
+	numpages = {13},
+	keywords = {Activity recognition, Convolutional Neural Networks, Wearable computing, Mobile sensing, Recurrent Neural Networks, Feature analysis, Hidden Markov Models, LongShort Term Memory}
 }
+
+
