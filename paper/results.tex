@@ -132,7 +132,7 @@ tree structure.  This occurs after a sufficient amount of elements, and the
 difference is more noticeable after a concept drift.
 
 %Naive Bayes and Naive Bayes
-Finally, we note that the StreamDM and OrpailleCC implementations of
+Finally, we note that the \streamdmcpp and OrpailleCC implementations of
 \naivebayes are indistinguishable from each other, which confirms our
 implementation in OrpailleCC.
 
@@ -267,7 +267,7 @@ classifiers are the fastest ones, with a runtime very close to the empty
 classifier. Note that allocating more memory to the \mondrianforest
 substantially increases runtime.
 
-We observe that the runtime of StreamDM's \naivebayes is comparable to
+We observe that the runtime of \streamdmcpp's \naivebayes is comparable to
 OrpailleCC's. This suggests that the performance of the two libraries is
 similar, which justifies our comparison of \hoeffdingtree and \mondrianforest.
 
@@ -294,7 +294,7 @@ Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
 not reported for brevity. Since the  memory footprint of the \naivebayes
 classifier was almost indistinguishable from the empty classifier, we used
 the two \naivebayes as a baseline for the two libraries. This enables us to
-remove the 1.2~MB overhead induced by StreamDM. The StreamDM memory
+remove the 1.2~MB overhead induced by \streamdmcpp. The \streamdmcpp memory
 footprint matches the result in~\cite{StreamDM-CPP}, where the
 \hoeffdingtree shows a memory footprint of 4.8MB.
 
@@ -315,7 +315,7 @@ makes its memory footprint constant.
 	\caption{The memory footprint of classifiers with the empty
 	classifier as a baseline, measured on the \banosdataset dataset. The memory footprint of the empty
 	classifier is 3.439MB. The baselines are the two \naivebayes from OrpailleCC
-		and StreamDM. They respectively have a memory footprint of 3.44OMB and
+		and \streamdmcpp. They respectively have a memory footprint of 3.44OMB and
 		4.743.}
 	\label{fig:memory}
 \end{figure}
