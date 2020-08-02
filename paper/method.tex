@@ -17,9 +17,9 @@ classifiers for the purpose of this benchmark.
 
 This benchmark includes five popular classification algorithms.  The
 \mondrianforest~\cite{mondrian2014} builds decision trees without immediate need
-for labels which is useful in situations where labels are
+for labels, which is useful in situations where labels are
 delayed~\cite{stream_learning_review}.  The Micro-Cluster Nearest
-Neighbors~\cite{mc-nn} is a compressed version of the k-nearest neighbor~(\knn)
+Neighbors~\cite{mc-nn} is a compressed version of the k-nearest neighbor~(\knn) \TG{introduce the acronym the first time you use it}
 that was shown to be among the most accurate classifiers for \har from wearable
 sensors~\cite{Janidarmian_2017}. The \naivebayes~\cite{naive_bayes} classifier
 builds a table of attribute occurrence to estimate class likelihoods.  The
@@ -81,13 +81,13 @@ available
 dataset, the activity labeled 0 indicates no
 specific activity.
 Since many of these activities are similar, we
-merged some of them together based on the table
+merged \TG{past tense, next paragraphs are present tense. To be harmonized.} some of them together based on the table
 in~\cite{behzad2019}. 
 
 We pre-process the dataset similarly to the
 \banosdataset one, using non-overlapping windows of
 one second, and only using 6 axes (acceleration
-and gyroscope)
+and gyroscope) \TG{and one sensor only?}
 . From these 6 axes, we use the average and the standard deviation
 over the window as features. We assign the most
 frequent label to the window.
@@ -148,10 +148,10 @@ Finally, the budget controls the tree depth.
 Table~\ref{table:hyperparameter-mondrian} shows
 the hyperparameters used for each number of trees.
 Additionally, the \mondrianforest is allocated
-with 600KB of memory unless specified otherwise.
+with 600~KB of memory unless specified otherwise.
 On the \banosdataset and \recofitdataset datasets,
-we also explore the \mondrianforest with 3MB of
-memory in order to observe any impact on
+we also explore the \mondrianforest with 3~MB of
+memory in order to observe the effect of available memory on
 performances (classification, runtime, and power).
 \begin{table}
 	\begin{center}
@@ -175,13 +175,13 @@ variant of k-nearest neighbors where data points
 are aggregated into clusters to reduce storage
 requirements.  During training, the algorithm
 merges a new data point to the closest cluster
-that shares the same label. If the closest cluster
-does not share the same label as the data point,
+with the same label as the data point. If the closest cluster
+does not have the same label as the data point,
 this closest cluster and the closest cluster with
-the same label are assigned an error. When a
+the same label as the data point are assigned an error. When a
 cluster receives too many errors, it is split.
-During classification, \mcnn returns the label of
-the closest cluster.  Regularly, the algorithm
+For classification, the algorithm returns the label of
+the closest cluster to the tested data point.  Regularly, the algorithm
 also assigns a participation score to each cluster
 and when this score gets below a threshold, the
 cluster is removed. Given that the maximum number
@@ -189,18 +189,17 @@ of clusters is fixed, this mechanism makes
 space for new clusters, and possibly
 helps adjust to concept drifts.  
 The space and time complexities of \mcnn are
-constant since the maximum number of clusters does
-not change.
+constant since the maximum number of clusters is fixed.
 The reaction to concept drift is influenced by the
 participation threshold and the error threshold.
-Higher participation threshold and lower error
+A higher participation threshold and a lower error
 threshold increase reaction speed to concept
-drift. Since the error threshold used in this
+drift. Since the error thresholds used in this
 study are small, we expect \mcnn to react quite
 fast and efficiently to concept drifts.
 
 We implemented two versions of \mcnn in
-OrpailleCC, which differ in the way they remove
+OrpailleCC, differing in the way they remove
 clusters during training. The first version (\mcnn
 Origin) is similar to the mechanism described
 in~\cite{mc-nn}, based on participation scores.
@@ -212,14 +211,13 @@ is no more slot available because the number of
 active clusters already reached the maximum defined
 by the user.
 
-\mcnn OrpailleCC has one
+\mcnn OrpailleCC has only one
 parameter, the error threshold after which a
 cluster is split.  \mcnn Origin has two
 parameters: the error threshold and the
 participation threshold. The participation
 threshold is the limit below which a cluster is
 removed.
-
 Table~\ref{table:hyperparameter-mcnn} shows
 the hyperparameters used for each number of
 clusters. 
@@ -252,12 +250,13 @@ score for each label depending on how the data
 point to predict compares to the values observed
 during the training phase. Since the counters are
 not biased toward the more recent data points, we
-expect \naivebayes to be slow to adapt if not
-ineffective.
+expect \naivebayes to be slow to adapt to concept drifts. 
 
 The implementation from \streamdmcpp was used in this
 benchmark. It uses a Gaussian
-fit for numerical attributes.
+fit for numerical attributes. \TG{You should say that this was also reimplemented in OrpailleCC and explain why: 
+Two implementations were used, the OrpailleCC one and the StreamDM one. We used two implementations 
+to provide a comparison reference between the two libraries.}
 
 In a \naivebayes classifier, the smoothing parameter is the
 default counter given to an attribute value that
@@ -289,7 +288,7 @@ decide when the best split is clearly better than
 the second best split based on the data observed
 from the stream. This mechanism prevents the tree
 from waiting until the end of the stream
-to ensure a split is the best.
+to ensure that a split is the best.
 During classification, a data point
 is sorted to a leaf, and a label is predicted by
 aggregating the labels of the training data points
@@ -298,7 +297,7 @@ in that leaf, usually through majority voting or
 classifier as implemented in \streamdmcpp.  The
 \hoeffdingtree is common in data stream
 classification, however, the internal nodes are
-static and cannot be re-considered. Therefore, any
+static and cannot be updated. Therefore, any
 concept drift adaption relies on the new leaves
 that will be split.
 
@@ -311,7 +310,7 @@ processed data points before a leaf is evaluated for a split.
  The leaf learner is the method used in the
 leaf to predict the label.  In this study, we used
 a confidence level of $0.01$ with a grace period
-of 10 data points and \naivebayes as leaf
+of 10 data points and the \naivebayes classifier as leaf
 learner.
 
 \subsubsection{\FNN}
@@ -340,8 +339,8 @@ We used a 3-layer network with 120 inputs, 30
 perceptrons in the hidden layer, and 33 output
 perceptrons.
 Because a \FNN takes many epochs to update and
-converge it barely adapts to a concept drifts even
-though it trains with each new data point.
+converge, it barely adapts to concept drifts even
+though it is trained with each new data point.
 
 In this study, we used histogram features
 from~\cite{omid_2019} instead of the ones
@@ -358,6 +357,7 @@ indicates by how much the weights should change
 during backpropagation.
 
 \subsubsection{Hyperparameters Tuning}
+\TG{here the text shifts from past tense to present tense, this should be harmonized}
 For each classifier, we tune hyperparameters  using the first subject from the
 \banosdataset dataset.  The data from this subject is pre-processed as the rest
 of the \banosdataset dataset (window size of one second, average and standard
