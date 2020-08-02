@@ -104,7 +104,7 @@ multiple ones (9 in the case of
 
 %Concept drift
 The \hoeffdingtree appears to be the most robust to concept drifts
-(\banosdataset (with drift)), while the \mondrianforest and \naivebayes
+(\banosdataset with drift), while the \mondrianforest and \naivebayes
 classifiers are the most impacted. \mcnn classifiers are marginally impacted.
 The low resilience of \mondrianforest to concept drifts can be attributed to
 two factors. First, existing nodes in trees of a \mondrianforest cannot be updated.
@@ -120,7 +120,7 @@ The \naivebayes and the \hoeffdingtree classifiers stand out on the two real dat
 low (0.6 and 0.35) compared to offline \knn (0.86 and 0.40). Additionally, the
 \hoeffdingtree performs outstandingly on the RandomTree dataset and
 \banosdataset dataset with a drift. Such good performances were expected on the
-RandomTree dataset because it was generated based on a tree structure, however
+RandomTree dataset because it was generated based on a tree structure.
 
 %Explanation of their F1 score similarity
 Except for the \banosdataset dataset, the \hoeffdingtree performs better
@@ -133,14 +133,14 @@ difference is more noticeable after a concept drift.
 
 %Naive Bayes and Naive Bayes
 Finally, we note that the \streamdmcpp and OrpailleCC implementations of
-\naivebayes are indistinguishable from each other, which confirms our
+\naivebayes are indistinguishable from each other, which confirms the correctness of our
 implementation in OrpailleCC.
 
 \subsection{\mondrianforest}
 
 %Mondrian when at best
 On two synthetic datasets, Hyperplane and RandomRBF, the \mondrianforest (RAM x
-1.0) with 10 trees achieves the best performance (F1$>$0.95), above the offline
+1.0) with 10 trees achieves the best performance (F1$>$0.95), above offline
 \knn.  Additionally, the \mondrianforest with 5 or 10 trees ranks third on the
 two real datasets. 
 
@@ -151,18 +151,18 @@ trees on most datasets. The only exception is the Hyperplane dataset where
 our \mondrianforest implementation is memory-bounded, which is
 useful on connected objects but limits tree growth when the allocated memory is
 full. Because 50 trees fill the memory faster than 10 or 5 trees, the
-learning stops earlier, before the trees can learn learned enough from the
+learning stops earlier, before the trees can learn enough from the
 data. It can also be noted that the variance of the F1 score decreases with
 the number of trees, as expected.
 
 %Mondrian RAMx5
-This dependency of the \mondrianforest to memory allocation is shown in
+The dependency of the \mondrianforest to memory allocation is shown in
 \banosdataset and \recofitdataset datasets, where an additional
-configuration with five times more memory than the initial configuration is
-shown (total of 3~MB).  The memory increase induces an F1 score difference
+configuration with five times more memory than the initial configuration was run
+ (total of 3~MB).  The memory increase induces an F1 score difference
 greater than 0.1, except when only one tree is used, in
-which case the improvement caused by the memory is less than 0.05. Note that the
-selected memory-bound may not be achievable on a connected object. Overall,
+which case the improvement caused by the memory is less than 0.05. Naturally, the
+selected memory bound may not be achievable on a connected object. Overall,
 \mondrianforest seems to be a viable alternative to \naivebayes or the
 \hoeffdingtree for \har.
 
@@ -170,10 +170,10 @@ selected memory-bound may not be achievable on a connected object. Overall,
 \subsection{\mcnn}
 
 %MCNN observations
-The \mcnn OrpailleCC stands out on \banosdataset (with drift) dataset where it
+The \mcnn OrpailleCC stands out on the \banosdataset (with drift) dataset where it
 ranks second thanks to its adaptation to the concept drift.  On other datasets,
 \mcnn OrpailleCC ranks below the \mondrianforest and the \hoeffdingtree, but
-above \mcnn Original. This difference between the two \mcnns is presumably due
+above \mcnn Original. This difference between the two \mcnn implementations is presumably due
 to the fact that \mcnn Origin removes clusters with low participation too early.
 On the real datasets (\banosdataset and \recofitdataset), we notice that the
 \mcnn OrpailleCC appears to be learning faster than the \mondrianforest,
@@ -296,7 +296,7 @@ classifier was almost indistinguishable from the empty classifier, we used
 the two \naivebayes as a baseline for the two libraries. This enables us to
 remove the 1.2~MB overhead induced by \streamdmcpp. The \streamdmcpp memory
 footprint matches the result in~\cite{StreamDM-CPP}, where the
-\hoeffdingtree shows a memory footprint of 4.8MB.
+\hoeffdingtree shows a memory footprint of 4.8~MB.
 
 We observe that the memory footprints of the \mondrianforest and the
 \hoeffdingtree are substantially higher than for the other classifiers, which makes 
@@ -312,11 +312,11 @@ makes its memory footprint constant.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/results/banos_6_memory.png}
-	\caption{The memory footprint of classifiers with the empty
+	\caption{Memory footprint of classifiers with the empty
 	classifier as a baseline, measured on the \banosdataset dataset. The memory footprint of the empty
-	classifier is 3.439MB. The baselines are the two \naivebayes from OrpailleCC
-		and \streamdmcpp. They respectively have a memory footprint of 3.44OMB and
-		4.743.}
+	classifier is 3.44~MB. The baselines are the two \naivebayes from OrpailleCC
+		and \streamdmcpp. Their respective memory footprints are 3.44~MB and
+		4.74~MB. \TG{Fix issue with caption}}
 	\label{fig:memory}
 \end{figure}
 

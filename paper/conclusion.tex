@@ -7,7 +7,7 @@ remains quite low compared to an offline \knn classifier, and it varies
 substantially between datasets. Noticeably, the \hoeffdingtree and the
 \mcnns classifiers are more resilient to concept drift that the other ones.
 
-Regarding memory consumption, only the \mcnns and \naivebayes classifiers
+Regarding memory consumption, only the \mcnn and \naivebayes classifiers
 were found to have a negligible memory footprint, in the order of a few
 kilobytes, which is compatible with connected objects. Conversely, the
 memory consumed by a \mondrianforest, a \FNN or a \hoeffdingtree is in the
@@ -21,7 +21,7 @@ The amount of energy consumed by classifiers is mostly impacted by their
 runtime, as all power consumptions were found comparable. The
 \hoeffdingtree and \mondrianforest are substantially slower than the other
 classifiers, with runtimes in the order of 0.35~ms/element, a performance not compatible 
-with common sampling frequencies of wearable sensors. 
+with common sampling frequencies of wearable sensors \TG{add a sentence to mention that in the results paragraph on runtime.}. 
 
 Future research will focus on reducing the memory requirements and runtime
 of the \hoeffdingtree and the \mondrianforest classifiers. In addition to
