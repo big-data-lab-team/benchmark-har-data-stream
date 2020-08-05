@@ -375,10 +375,7 @@ def process_output(output_filename, run_output_filename, model_filename):
         key = str(int(row['model_id']))
         name = models[key]['name']
         if name == 'Mondrian':
-            if models[key]['memory_size'] == '600000':
-                return name + ' ' + models[key]['tree_count'] + ' tree(s)'
-            else:
-                return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + str(int(models[key]['memory_size']) / 600000) + ')'
+            return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + str(int(models[key]['memory_size']) / 600000) + ')'
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return 'MCNN Origin ' + models[key]['cluster_count'] + ' clusters'
@@ -497,11 +494,8 @@ def print_results(output, output_runs, models, output_directory="."):
     def add_key(key):
         name = models[key]['name']
         if name == 'Mondrian':
-            if models[key]['memory_size'] == '600000':
-                return (name + ' ' + models[key]['tree_count'] + ' tree(s)', key, (name, int(models[key]['tree_count'])))
-            else:
-                ram_count = str(int(models[key]['memory_size']) / 600000)
-                return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + ram_count + ')', key, (name + ' (RAM x' + ram_count + ')', int(models[key]['tree_count'])))
+            ram_count = str(int(models[key]['memory_size']) / 600000)
+            return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + ram_count + ')', key, (name + ' (RAM x' + ram_count + ')', int(models[key]['tree_count'])))
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
                 return ('MCNN Origin ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Origin', int(models[key]['cluster_count'])))
@@ -529,7 +523,7 @@ def print_results(output, output_runs, models, output_directory="."):
     print(colors)
     print(markers)
     print(styles)
-    plt.rcParams.update({'font.size': 27})
+    plt.rcParams.update({'font.size': 26})
     list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'banos_6', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
@@ -588,7 +582,7 @@ def print_results(output, output_runs, models, output_directory="."):
         if dataset_name in knn_offline_f1:
             x = [a for a in daty[daty.fullname == name]['element_count']]
             y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
-            plt.plot(x, y, color='#000000', linestyle='-.', label='KNN Offline')
+            plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
 
         plt.ylim(0,1)
         plt.ylabel("F1")
@@ -608,6 +602,7 @@ def print_results(output, output_runs, models, output_directory="."):
             # for name, color, marker, style in zip(names, colors, markers, styles):
                 # plt.plot(x, zeross, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
 
+            # plt.plot(x, zeross, color='#000000', linestyle='-.', label='kNN Offline')
             # plt.legend(prop={"size":23}, ncol=3)
             # plt.ylim(0,1)
             # plt.tight_layout()
@@ -621,11 +616,11 @@ def print_results(output, output_runs, models, output_directory="."):
             y1 = daty[daty.fullname == name]['f1'] - daty_std[daty_std.fullname == name]['f1']
             y2 = daty[daty.fullname == name]['f1'] + daty_std[daty_std.fullname == name]['f1']
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-            plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.2)
+            plt.fill_between(daty_std[daty_std.fullname == name]['element_count'], y1, y2, color=color, linestyle=style, alpha=0.15)
         if dataset_name in knn_offline_f1:
             x = [a for a in daty[daty.fullname == name]['element_count']]
             y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
-            plt.plot(x, y, color='#000000', linestyle='-.', label='KNN Offline')
+            plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
         # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             # plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
@@ -649,7 +644,9 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
 
-        print('\t- Memory ' + str(daty[daty.fullname == 'Empty']['memory'][0]))
+        print(daty[daty.fullname == 'NaiveBayes']['memory'])
+        print(daty[daty.fullname == 'StreamDM NaiveBayes']['memory'])
+        print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
 
@@ -752,6 +749,8 @@ def print_calibration(output, output_runs, models, output_directory="."):
     plt.savefig(output_directory + "/calibration_mondrian_base.png")
     plt.clf()
 
+    markers = {'10': 's', '20': 'o', '40': '*'}
+    fig = plt.figure(figsize=(23.38582, 16.53544))
     for cluster_count in ['10', '20', '40']:
         daty = output[output.file.str.contains(dataset_name)]
         daty = daty[['model_id', 'element_count', 'f1', 'accuracy', 'memory']].groupby(['model_id', 'element_count']).mean().reset_index()
@@ -759,17 +758,16 @@ def print_calibration(output, output_runs, models, output_directory="."):
         m = daty['model_id'].isin(keys)
         daty = daty[m]
         model_ids = daty.model_id.unique()
-        fig = plt.figure(figsize=(23.38582, 16.53544))
         for model_id in model_ids:
             sub = daty[daty.model_id == model_id]
-            plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='MCNN ' + models[str(model_id)]['error_threshold'])
-        plt.legend(prop={"size":25}, ncol=3)
-        plt.ylim(0,1)
-        plt.ylabel("F1")
-        plt.xlabel("Element")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/calibration_mcnn_" + cluster_count + ".png")
-        plt.clf()
+            plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='MCNN ' + cluster_count + ' clusters (' + models[str(model_id)]['error_threshold'] + ')', marker=markers[cluster_count], markevery=0.1, markersize=15)
+    plt.legend(prop={"size":25}, ncol=3)
+    plt.ylim(0,1)
+    plt.ylabel("F1")
+    plt.xlabel("Element")
+    plt.tight_layout()
+    plt.savefig(output_directory + "/calibration_mcnn.png")
+    plt.clf()
 
     print("look best of")
     daty = output[output.file.str.contains(dataset_name)]
@@ -931,10 +929,9 @@ if len(sys.argv) > 1:
     if sys.argv[1] == "latex":
         latex()
     if sys.argv[1] == "process":
-        # results = process_output("calibration/output", "calibration/output_runs", "calibration/models.csv")
-        directory = "results_9/"
+        directory = "calibration_6/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
-        print_results(output, output_runs, models)
-        # print_calibration(output, output_runs, models)
+        # print_results(output, output_runs, models)
+        print_calibration(output, output_runs, models)
 

@@ -210,32 +210,12 @@ of 0.68, which is higher than the performance of the \naivebayes classifier.
 %subject of \banosdataset dataset, we could not apply the same neural network
 %structure on other datasets.
 
-\begin{figure*}
-	\begin{subfigure}[t]{.49\linewidth}
+\begin{figure}
 		\includegraphics[width=\linewidth]{figures/results/banos_3_watt.png}
-		\caption{\banosdataset}
-		\label{fig:power-banos}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/drift_6_watt.png}
-		\caption{\banosdataset with drift.}
-		\label{fig:power-drift}
-	\end{subfigure}\\
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_6_watt.png}
-		\caption{\recofitdataset}
-		\label{fig:power-recofit}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/dataset_3_watt.png}
-		\caption{RandomTree}
-		\label{fig:power-dataset_3}
-	\end{subfigure}
-	\caption{Power usage for four datasets.}
-	\label{fig:power}
-\end{figure*}
+		\caption{Power usage for the \banosdataset dataset. Results are similar across
+		datasets.}
+		\label{fig:power}
+\end{figure}
 \subsection{Power}
 \label{sec:result-power}
 Figure~\ref{fig:power} shows the power usage of each classifier on four
@@ -271,21 +251,12 @@ We observe that the runtime of \streamdmcpp's \naivebayes is comparable to
 OrpailleCC's. This suggests that the performance of the two libraries is
 similar, which justifies our comparison of \hoeffdingtree and \mondrianforest.
 
-\begin{figure*}
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
-		\caption{\banosdataset}
-		\label{fig:runtime-banos}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{.49\linewidth}
-		\includegraphics[width=\linewidth]{figures/results/recofit_6_runtime.png}
-		\caption{\recofitdataset}
-		\label{fig:runtime-recofit}
-	\end{subfigure}
-	\caption{Runtime with the two real datasets (20 repetitions).}
+\begin{figure}
+	\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
+	\caption{Runtime with the \banosdataset dataset (20 repetitions). Runtime
+		results are similar across datasets.}
 	\label{fig:runtime}
-\end{figure*}
+\end{figure}
 
 \subsection{Memory}
 \label{sec:result-memory}
@@ -331,22 +302,9 @@ that a cluster may do 2 or 4 errors before being split. For 10 clusters,
 all error thresholds perform equally.
 
 \begin{figure}
-	 \begin{subfigure}[b]{0.49\textwidth}
-		 \centering
-		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_40.png}
-		 \caption{40 clusters}
-	 \end{subfigure}
-	 \begin{subfigure}[b]{0.49\textwidth}
-		 \centering
-		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_20.png}
-		 \caption{20 clusters}
-	 \end{subfigure}
-	 \begin{subfigure}[b]{0.49\textwidth}
-		 \centering
-		 \includegraphics[width=\linewidth]{figures/calibration_mcnn_10.png}
-		 \caption{10 clusters}
-	 \end{subfigure}
-	\caption{Error threshold tuning of \mcnn with the first subject of \banosdataset dataset.}
+  \includegraphics[width=\linewidth]{figures/calibration_mcnn.png}
+	\caption{Error threshold tuning of \mcnn with the first subject of
+		\banosdataset dataset. Error threshold in parenthesis.}
 	\label{fig:mcnn-tuning-error}
 \end{figure}
 
