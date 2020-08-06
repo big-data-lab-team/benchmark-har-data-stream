@@ -10,7 +10,7 @@ reduces data privacy risks, it also raises important processing challenges due
 to the modest computing capacity of connected objects. Indeed, it is not
 uncommon for wearable devices and other smart objects to include a processing
 memory of less than 100~KB, little to no storage memory, a slow CPU, and no
-operating system. With multiple sensors producing data at high frequencies,
+operating system. With multiple sensors producing data at a high frequency,
 typically 50~Hz to 800~Hz, processing speed and memory consumption become
 critical properties of data analyses. 
 
@@ -19,7 +19,7 @@ infinite sequences of data elements with reduced amounts of working memory.
 Several classes of stream processing algorithms were developed in the past
 decades, such as filtering, counting, or sampling
 algorithms~\cite{kejariwal2015}.  These algorithms must follow multiple
-constraints such as a constant time per data processed or a constant space
+constraints such as a constant processing time per data element, or a constant space
 complexity~\cite{issues_learning_from_stream}.  Our study focuses on supervised
 classification, a key component of contemporary data models.
 
@@ -37,10 +37,10 @@ We evaluate existing classifiers from the complementary angles of (1)
 classification performance, including in the presence of concept drift, and
 (2) resource consumption, including memory usage and classification time
 per element (latency). We consider six datasets in our benchmark, including
-three derived from the two most popular open datasets used for \har, and
+three that are derived from the two most popular open datasets used for \har, and
 three simulated datasets.
 
-Compared to previous works, reviewed in Section~\ref{sec:related-work}, the contributions of our paper are the following:
+Compared to the previous works reviewed in Section~\ref{sec:related-work}, the contributions of our paper are the following:
 \begin{itemize}
     \item We compare the most popular data stream classifiers on the specific case of \har;
     \item We provide quantitative measurements of memory and power consumption, as well as runtime;
@@ -76,7 +76,7 @@ online classifiers. The paper reports an accuracy of 92 for online \knn, 80
 for the \hoeffdingtree, and 60 for \naivebayes. The study is limited to a
 single dataset (CoverType). 
 
-The work in ~\cite{kaur2020} compares four classifiers (Byesnet,
+The work in ~\cite{kaur2020} compares four classifiers (Bayesnet,
 \hoeffdingtree, \naivebayes, and Decision Stump) using synthetic datasets.
 It reports a similar accuracy of 90 for the Bayesnet, the
 \hoeffdingtree, and \naivebayes classifiers, while the Decision Stump one
@@ -90,7 +90,7 @@ imbalanced data streams with concept drifts, using two real datasets
 \naivebayes and the \hoeffdingtree ones. The \hoeffdingtree is found to be
 the second most accurate classifier after the Accuracy Updated Ensemble.
 
-The authors in~\cite{lopes2020evaluating} have analyzed the resources trade-off
+The authors in~\cite{lopes2020evaluating} have analyzed the resource trade-offs
 of six online decision trees applied to edge computing. Their results showed that the
 Very Fast Decision Tree and the Strict Very Fast Decision Tree were the most
 energy-friendly, the latter having the smallest memory footprint. On the
