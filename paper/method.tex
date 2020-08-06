@@ -110,7 +110,7 @@ classifiers.
 In this section, we describe the algorithms used in the benchmark, their
 hyperparameters, and relevant implementation details. 
 
-\subsubsection{\mondrianforest~\cite{mondrian2014}}
+\subsubsection{Mondrian forest~(\mondrianforest)~\cite{mondrian2014}}
 Each tree in a \mondrianforest recursively splits
 the feature space, similar to a regular decision tree.
 However, the feature used in the split and the
@@ -118,10 +118,6 @@ value of the split are picked randomly. The
 probability to select a feature is proportional to
 its normalized range, and the value for the split is
 uniformly selected in the range of the feature.
-During prediction, a node combines its observed
-label count with its parent prediction. Since the Mondrian tree is able to
-reshape the internal structure of the tree, we expect the \mondrianforest
-to recover from  concept drifts, although most likely slower than \mcnn.
 
 %Bounded memory discussion
 In OrpailleCC, the amount of memory allocated to the forest is predefined,
@@ -145,49 +141,19 @@ discount factor closer to one makes the prediction
 of a node closer to the prediction of its parent.
 Finally, the budget controls the tree depth.
 
-Table~\ref{table:hyperparameter-mondrian} shows
-the hyperparameters used for each number of trees.
+Hyperparameters used for \mondrianforest are available in the
+\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository readme}.
 Additionally, the \mondrianforest is allocated
 with 600~KB of memory unless specified otherwise.
 On the \banosdataset and \recofitdataset datasets,
 we also explore the \mondrianforest with 3~MB of
 memory in order to observe the effect of available memory on
 performances (classification, runtime, and power).
-\begin{table}
-	\begin{center}
-		\begin{tabular}{|| r | c | c | c ||} 
-			\hline
-			Number of trees &  Base count & Discount & Budget \\ [0.5ex] 
-			\hline\hline
-			1 & 0.0 & 1.0 & 1.0 \\
-			5 & 0.0 & 1.0 & 0.4 \\
-			10 & 0.0 & 1.0 & 0.4 \\
-			50 & 0.0 & 1.0 & 0.2 \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Hyperparameters used for \mondrianforest.}
-		\label{table:hyperparameter-mondrian}
-\end{table}
 \subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
 The Micro Cluster Nearest Neighbor~(\mcnn) is a
 variant of k-nearest neighbors where data points
 are aggregated into clusters to reduce storage
-requirements.  During training, the algorithm
-merges a new data point to the closest cluster
-with the same label as the data point. If the closest cluster
-does not have the same label as the data point,
-this closest cluster and the closest cluster with
-the same label as the data point are assigned an error. When a
-cluster receives too many errors, it is split.
-For classification, the algorithm returns the label of
-the closest cluster to the tested data point.  Regularly, the algorithm
-also assigns a participation score to each cluster
-and when this score gets below a threshold, the
-cluster is removed. Given that the maximum number
-of clusters is fixed, this mechanism makes
-space for new clusters, and possibly
-helps adjust to concept drifts.  
+requirements.  
 The space and time complexities of \mcnn are
 constant since the maximum number of clusters is fixed.
 The reaction to concept drift is influenced by the
@@ -218,39 +184,16 @@ parameters: the error threshold and the
 participation threshold. The participation
 threshold is the limit below which a cluster is
 removed.
-Table~\ref{table:hyperparameter-mcnn} shows
-the hyperparameters used for each number of
-clusters. 
-\begin{table}
-		\begin{center}
-			\begin{tabular}{|| r | c | c ||} 
-				\hline
-					Number of &  Error & Participation\\ [0.5ex] 
-					clusters & threshold & threshold\\[0.5ex]
-				\hline\hline
-					10 & 2 & 10\\
-					20 & 10 & 10\\
-					33 & 16 & 10\\
-					40 & 8 & 10\\
-					50 & 2 & 10\\
-				\hline
-			\end{tabular}
-		\end{center}
-		\caption{Hyperparameters used for \mcnn. The
-		participation threshold was applied only to
-		\mcnn Origin.}
-		\label{table:hyperparameter-mcnn}
-\end{table}
+Hyperparameters used for \mcnn are available in the
+\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository readme}.
 
-\subsubsection{\naivebayes~\cite{naive_bayes}}
+\subsubsection{Naïve Bayes~(\naivebayes)~\cite{naive_bayes}}
 The \naivebayes algorithm keeps a table of
 counters for each feature value and each label.
 During prediction, the algorithm assigns a
 score for each label depending on how the data
 point to predict compares to the values observed
-during the training phase. Since the counters are
-not biased toward the more recent data points, we
-expect \naivebayes to be slow to adapt to concept drifts. 
+during the training phase. 
 
 The implementation from \streamdmcpp was used in this
 benchmark. It uses a Gaussian
@@ -258,47 +201,14 @@ fit for numerical attributes. \TG{You should say that this was also reimplemente
 Two implementations were used, the OrpailleCC one and the StreamDM one. We used two implementations 
 to provide a comparison reference between the two libraries.}
 
-In a \naivebayes classifier, the smoothing parameter is the
-default counter given to an attribute value that
-has not been seen. It is meant to avoid scores of zeros.
-We do not use any smoothing since our datasets
-only contain numerical
-attributes. Therefore, as long as there is one data
-point to train with, there will be a Gaussian
-fit for each attribute.
-
-\subsubsection{\hoeffdingtree~\cite{VFDT}}
-%\begin{itemize}
-	%\item Reserved size with a given size.
-	%\item Binary tree.
-	%\item Focus on real numbers features.
-	%\item The number of split considered by features is given by the user.
-	%\item Split are determined by forming a boxes and spliting these boxes.
-	%\item Majority vote at the leaves.
-	%\item All floating point values are double and all counters are int.
-%\end{itemize}
-Similar to a decision tree, the \hoeffdingtree
-recursively splits the feature space to maximize a metric, often the
-information gain or the Gini
-index. However,  to estimate when a leaf should be
-split, the \hoeffdingtree relies on the
-Hoeffding bound, a measure of the score deviation
-of the splits. This measure allows the leaf to
-decide when the best split is clearly better than
-the second best split based on the data observed
-from the stream. This mechanism prevents the tree
-from waiting until the end of the stream
-to ensure that a split is the best.
-During classification, a data point
-is sorted to a leaf, and a label is predicted by
-aggregating the labels of the training data points
-in that leaf, usually through majority voting or
-\naivebayes classification.  We used this
-classifier as implemented in \streamdmcpp.  The
-\hoeffdingtree is common in data stream
-classification, however, the internal nodes are
-static and cannot be updated. Therefore, any
-concept drift adaption relies on the new leaves
+\subsubsection{Hoeffding Tree~(\hoeffdingtree)~\cite{VFDT}}
+Similar to a decision tree, the \hoeffdingtree recursively splits the feature
+space to maximize a metric, often the information gain or the Gini index.
+However,  to estimate when a leaf should be split, the \hoeffdingtree relies on
+the Hoeffding bound, a measure of the score deviation of the splits. We used
+this classifier as implemented in \streamdmcpp.  The \hoeffdingtree is common in
+data stream classification, however, the internal nodes are static and cannot be
+re-considered. Therefore, any concept drift adaption relies on the new leaves
 that will be split.
 
 The \hoeffdingtree has three parameters: the
@@ -313,34 +223,17 @@ a confidence level of $0.01$ with a grace period
 of 10 data points and the \naivebayes classifier as leaf
 learner.
 
-\subsubsection{\FNN}
+\subsubsection{Feedforward Neural Network~(\FNN)}
 \label{sec:method-fnn}
 %We need a citation there
-A neural network is a combination of artificial
-neurons, also known as perceptrons, that all have input weights and an
-activation function. To predict a class label, the
-perceptron applies the activation function to the weighted sum
-of its input values. The output
-value of the perceptron is the result of this
-activation function. This prediction phase is also
-called feed-forward. To train the neural network,
-feed-forward is applied first, then the error between the
-prediction and the expected result is used in the
-backpropagation process to adjust the weights of
-the input values.  A neural network combines
-multiple perceptrons by connecting perceptron outputs
-to inputs of other perceptrons.  In
-this benchmark, we used a fully-connected \FNN, 
-that is, a network where perceptrons are organized in
-layers and all output
-values from perceptrons of layer $n-1$ serve as
-input values for perceptrons of layer $n$. 
-We used a 3-layer network with 120 inputs, 30
-perceptrons in the hidden layer, and 33 output
-perceptrons.
-Because a \FNN takes many epochs to update and
-converge, it barely adapts to concept drifts even
-though it is trained with each new data point.
+A neural network is a combination of artificial neurons, also known as
+perceptrons, that all have input weights and an activation function. In this
+benchmark, we used a fully-connected \FNN, that is, a network where perceptrons
+are organized in layers and all output values from perceptrons of layer $n-1$
+serve as input values for perceptrons of layer $n$.  We used a 3-layer network
+with 120 inputs, 30 perceptrons in the hidden layer, and 33 output perceptrons.
+Because a \FNN takes many epochs to update and converge it barely adapts to a
+concept drifts even though it trains with each new data point.
 
 In this study, we used histogram features
 from~\cite{omid_2019} instead of the ones
