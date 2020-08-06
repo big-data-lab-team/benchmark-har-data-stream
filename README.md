@@ -69,13 +69,13 @@ Hyperparameters used for Mondrian:
 +-----------------|------------|----------|--------+
 
 Impact of the base count with 10 trees, a budget of 1.0, and a discount factor of 0.2.
-![](paper/calibration_mondrian_base.png)
+![](paper/figures/calibration_mondrian_base.png)
 
 Impact of the budget with 10 trees, a base count of 0.1, and discount factor of 0.2.
-![](paper/calibration_mondrian_discount.png)
+![](paper/figures/calibration_mondrian_discount.png)
 
 Impact of the discount factor with 10 trees, a budget of 1.0, and a base count of 0.1.
-![](paper/calibration_mondrian_lifetime.png)
+![](paper/figures/calibration_mondrian_lifetime.png)
 
 *** MCNN
 
