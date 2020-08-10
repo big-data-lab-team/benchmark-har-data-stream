@@ -16,17 +16,18 @@ Lightweight Temporal Compression~\cite{multi-ltc}. We extended it with a few
 classifiers for the purpose of this benchmark.
 
 This benchmark includes five popular classification algorithms.  The
-\mondrianforest~\cite{mondrian2014} builds decision trees without immediate need
+Mondrian forest~(\mondrianforest)~\cite{mondrian2014} builds decision trees without immediate need
 for labels, which is useful in situations where labels are
 delayed~\cite{stream_learning_review}.  The Micro-Cluster Nearest
-Neighbors~\cite{mc-nn} is a compressed version of the k-nearest neighbor~(\knn) \TG{introduce the acronym the first time you use it}
+Neighbors~\cite{mc-nn} is a compressed version of the k-nearest neighbor~(\knn)
 that was shown to be among the most accurate classifiers for \har from wearable
 sensors~\cite{Janidarmian_2017}. The \naivebayes~\cite{naive_bayes} classifier
 builds a table of attribute occurrence to estimate class likelihoods.  The
 \hoeffdingtree~\cite{VFDT} builds a decision tree using the Hoeffding Bound to
 estimate when the best split is found.  Finally, Neural Network classifiers have
 become popular by reaching or even exceeding human performance in many fields
-such as image recognition or game playing. We use a \FNN with one hidden layer,
+such as image recognition or game playing. We use a Feedforward Neural
+Network~(\FNN) with one hidden layer,
 as described in~\cite{omid_2019} for the recognition of fitness activities on a
 low-power platform.
 
@@ -80,16 +81,16 @@ available
 \href{https://msropendata.com/datasets/799c1167-2c8f-44c4-929c-227bf04e2b9a}{here}.}. Similarly to the \banosdataset
 dataset, the activity labeled 0 indicates no
 specific activity.
-Since many of these activities are similar, we
-merged \TG{past tense, next paragraphs are present tense. To be harmonized.} some of them together based on the table
+Since many of these activities were similar, we
+merged  some of them together based on the table
 in~\cite{behzad2019}. 
 
-We pre-process the dataset similarly to the
+We pre-processed the dataset similarly to the
 \banosdataset one, using non-overlapping windows of
 one second, and only using 6 axes (acceleration
-and gyroscope) \TG{and one sensor only?}
-. From these 6 axes, we use the average and the standard deviation
-over the window as features. We assign the most
+and gyroscope) from one sensor.
+. From these 6 axes, we used the average and the standard deviation
+over the window as features. We assigned the most
 frequent label to the window.
 
 \subsubsection{MOA dataset}
@@ -197,9 +198,8 @@ during the training phase.
 
 The implementation from \streamdmcpp was used in this
 benchmark. It uses a Gaussian
-fit for numerical attributes. \TG{You should say that this was also reimplemented in OrpailleCC and explain why: 
-Two implementations were used, the OrpailleCC one and the StreamDM one. We used two implementations 
-to provide a comparison reference between the two libraries.}
+fit for numerical attributes. Two implementations were used, the OrpailleCC one and the StreamDM one. We used two implementations 
+to provide a comparison reference between the two libraries.
 
 \subsubsection{Hoeffding Tree~(\hoeffdingtree)~\cite{VFDT}}
 Similar to a decision tree, the \hoeffdingtree recursively splits the feature
@@ -250,15 +250,14 @@ indicates by how much the weights should change
 during backpropagation.
 
 \subsubsection{Hyperparameters Tuning}
-\TG{here the text shifts from past tense to present tense, this should be harmonized}
-For each classifier, we tune hyperparameters  using the first subject from the
-\banosdataset dataset.  The data from this subject is pre-processed as the rest
+For each classifier, we tuned hyperparameters  using the first subject from the
+\banosdataset dataset.  The data from this subject was pre-processed as the rest
 of the \banosdataset dataset (window size of one second, average and standard
-deviation on the six-axis of the right forearm sensor, $\ldots$). We do a grid
+deviation on the six-axis of the right forearm sensor, $\ldots$). We did a grid
 search to test multiple values for the parameters.
 
 The classifiers start the prequential phase with
-no knowledge from the first subject.  We make an
+no knowledge from the first subject.  We made an
 exception for the \FNN because we noticed that it
 performed poorly with random weights and it needed
 many epochs to achieve better performances than a
@@ -267,21 +266,21 @@ pre-train the \FNN and re-use the weights as a
 starting point for the prequential phase.
 
 For other classifiers, only the 
-hyperparameters are taken from the tuning phase.
-We select the hyperparameters that 
+hyperparameters were taken from the tuning phase.
+We selected the hyperparameters that 
 maximized the F1 score on the first subject.
 
 \subsubsection{Offline Comparison}
-We compare data stream algorithms with an offline \knn. The value of $k$ is
+We compared data stream algorithms with an offline \knn. The value of $k$ were
 selected using a grid search.
 
 \subsection{Evaluation}
-We compute four metrics: the F1 score, the memory
+We computed four metrics: the F1 score, the memory
 footprint, the runtime, and the power usage.
 The F1 score and the memory
-footprint are computed periodically during the
+footprint were computed periodically during the
 execution of a classifier. The
-power consumption and the runtime are collected
+power consumption and the runtime were collected
 at the end of each execution.
 
 %Time to process one element.
@@ -324,15 +323,15 @@ multiple times in a minimal environment. We use the empty classifier as a
 baseline.
 
 \subsection{Experimental Conditions}
-We automate our experiments with a Python script that defines
+We automated our experiments with a Python script that defines
 classifiers and their parameters, randomizes all
 the repetitions, and plots the
-resulting data. The datasets and output results are stored in memory
+resulting data. The datasets and output results were stored in memory
 through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
-We average metrics across repetitions (same classifier, same parameters, and
+We averaged metrics across repetitions (same classifier, same parameters, and
 same dataset).
 
-The experiment is done with a single core of a
+The experiment was done with a single core of a
 cluster node with two Intel(R) Xeon(R)
 Gold 6130 CPUs and a main memory of 250G.
 
