@@ -238,13 +238,15 @@ connected objects.
 
 Figure~\ref{fig:runtime} shows the classifier runtimes for the two real
 datasets. The \mondrianforest is the slowest classifier, in particular for 50
-trees. The second slowest classifier is the \hoeffdingtree, with a runtime
-comparable to the \mondrianforest with 10 trees. The \hoeffdingtree is followed
-by the two \naivebayes implementations, which is not surprising since
-\naivebayes classifiers are used in the leaves of the \hoeffdingtree. The \mcnn
-classifiers are the fastest ones, with a runtime very close to the empty
-classifier. Note that allocating more memory to the \mondrianforest
-substantially increases runtime.
+trees which reaches 2 seconds on \banosdataset dataset. This represents roughly
+0.35~ms/element with a slower CPU. The second slowest classifier is the
+\hoeffdingtree, with a runtime comparable to the \mondrianforest with 10 trees.
+The \hoeffdingtree is followed by the two \naivebayes implementations, which is
+not surprising since \naivebayes classifiers are used in the leaves of the
+\hoeffdingtree. The \mcnn classifiers are the fastest ones, with a runtime very
+close to the empty classifier. Note that allocating more memory to the
+\mondrianforest substantially increases runtime.
+ 
 
 We observe that the runtime of \streamdmcpp's \naivebayes is comparable to
 OrpailleCC's. This suggests that the performance of the two libraries is
@@ -286,61 +288,8 @@ makes its memory footprint constant.
 	classifier as a baseline, measured on the \banosdataset dataset. The memory footprint of the empty
 	classifier is 3.44~MB. The baselines are the two \naivebayes from OrpailleCC
 		and \streamdmcpp. Their respective memory footprints are 3.44~MB and
-		4.74~MB. \TG{Fix issue with caption}}
+		4.74~MB.}
 	\label{fig:memory}
-\end{figure}
-
-
-\subsection{Hyperparameter tuning}
-
-Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
-in the \mcnn classifiers with different cluster counts. The error
-threshold of \mcnn has little impact on classification performance. For
-20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
-that a cluster may do 2 or 4 errors before being split. For 10 clusters,
-all error thresholds perform equally.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/calibration_mcnn.png}
-	\caption{Error threshold tuning of \mcnn with the first subject of
-		\banosdataset dataset. Error threshold in parenthesis.}
-	\label{fig:mcnn-tuning-error}
-\end{figure}
-
-Figure~\ref{fig:mondrian-tuning} shows the impact of the \mondrianforest hyperparameters on
-the classification performance. 
-The base count hyperparameter (Figure~\ref{fig:mondrian-base-count}) has a
-very substantial impact on classification performance; the smallest value
-(0.0) results in the best performance. On the contrary, the
-budget hyperparameter (Figure~\ref{fig:mondrian-budget}) only has a
-moderate impact on classification; the best value is 0.2. Finally, the discount hyperparameter
-(Figure~\ref{fig:mondrian-discount}) has a negligible impact on the
-performance; the best-performing value is 0.1.
-
-\begin{figure}
-	 \centering
-	 \begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/calibration_mondrian_base.png}
-		\caption{Impact of the base count with 10 trees, a budget of $1.0$, and a discount factor of $0.2$.} 
-		\label{fig:mondrian-base-count}
-	\end{subfigure}
-	\hfill
-	 \begin{subfigure}[b]{0.49\textwidth}
-		 \centering
-		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_lifetime.png}
-		 \caption{Impact of the budget with 10 trees, a base count of $0.1$, and discount factor of $0.2$.}
-		 \label{fig:mondrian-budget}
-	 \end{subfigure}
-	 \hfill
-	 \begin{subfigure}[b]{0.49\textwidth}
-		 \centering
-		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_discount.png}
-		 \caption{Impact of the discount factor with 10 trees, a budget of $1.0$, and a base count of $0.1$.}
-		 \label{fig:mondrian-discount}
-	 \end{subfigure}
-		\caption{Hyperparameters tuning for Mondrian with the first subject of \banosdataset dataset.}
-		\label{fig:mondrian-tuning}
 \end{figure}
 
 
