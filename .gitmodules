@@ -1,6 +1,3 @@
 [submodule "rapl-tools"]
 	path = rapl-tools
 	url = https://github.com/kentcz/rapl-tools.git
-[submodule "OrpailleCC"]
-	path = OrpailleCC
-	url = https://github.com/big-data-lab-team/OrpailleCC.git
