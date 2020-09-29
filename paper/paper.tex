@@ -1,7 +1,4 @@
-%\documentclass{article}
-\documentclass[journal]{IEEEtran}
-% \usepackage{geometry} TG: not sure why this was used: it increases the margins,
-% and I don't think the IEEE template allows for that.
+\documentclass[journal,article,submit,moreauthors,pdftex]{Definitions/mdpi} 
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{url}
@@ -30,31 +27,103 @@
 \pgfmathparse{random(#1)}\pgfmathresult }
 
 \newcommand{\TG}[1]{\noindent{\color{blue}[\textsc{From Tristan:} #1]}}
-%\newcommand{\TG}[1]{}
 \newcommand{\english}[1]{\uwave{#1}} % Indicates that the sentence has syntax errors or uses weird words
 \newcommand{\writing}[1]{\color{red}#1\color{black}} % Indicates that the sentence is unlcear, heavy, or has too many words
-%\newcommand{\english}[1]{#1}
 \newcommand{\MK}[1]{\noindent{\color{red}[\textsc{M.Khannouz:} #1]}}
 \newcommand{\banosdataset}[0]{Banos \textit{et al}\xspace}
 \newcommand{\recofitdataset}[0]{Recofit\xspace}
-\newcommand{\hoeffdingtree}[0]{HT\xspace}
-\newcommand{\mondrianforest}[0]{MF\xspace}
+\newcommand{\hoeffdingtree}[0]{Hoeffding Tree\xspace}
+\newcommand{\mondrianforest}[0]{Mondrian forest\xspace}
 \newcommand{\mondriantree}[0]{Mondrian tree\xspace}
 \newcommand{\mondriantrees}[0]{Mondrian trees\xspace}
-\newcommand{\naivebayes}[0]{NB\xspace}
-\newcommand{\FNN}[0]{FNN\xspace}
+\newcommand{\naivebayes}[0]{Naïve Bayes\xspace}
+\newcommand{\FNN}[0]{Feedforward Neural Network\xspace}
 \newcommand{\mcnn}[0]{MCNN\xspace}
 \newcommand{\mcnns}[0]{MCNNs\xspace}
 \newcommand{\har}[0]{HAR\xspace}
 \newcommand{\knn}[0]{\textit{k}-NN\xspace}
 \newcommand{\streamdmcpp}[0]{StreamDM-C++\xspace}
 
-\title{A benchmark of data stream classification
+\Title{{A benchmark of data stream classification
 for human activity recognition
-on connected objects}
-\author{Martin Khannouz and Tristan Glatard\\Department of Computer Science and Software Engineering\\
-Concordia University, Montreal, Canada}
+on connected objects}}
 
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{5}
+\pubyear{2020}
+\copyrightyear{2020}
+%\externaleditor{Academic Editor: name}
+\history{Received: date; Accepted: date; Published: date}
+
+% Author Orchid ID: enter ID or remove command
+\newcommand{\orcidauthorA}{0000-0003-2129-5517} % Add \orcidA{} behind the author's name
+\newcommand{\orcidauthorB}{0000-0003-2620-5883} % Add \orcidB{} behind the author's name
+
+% Authors, for the paper (add full first names)
+\Author{Martin Khannouz$\orcidA{}, Tristan Glatard$\orcidB{}}
+
+
+% Authors, for metadata in PDF
+\AuthorNames{Martin Khannouz and Tristan Glatard}
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{$^{1}$ \quad Department of Computer Science and Software Engineering, Concordia University}
+
+% Contact information of the corresponding author
+\corres{Correspondence: martin.khannouz@gmail.com, tristan.glatard@concordia.ca}
+
+% Current address and/or shared authorship
+%\firstnote{Current address: Affiliation 3} 
+%\secondnote{These authors contributed equally to this work.}
+% The commands \thirdnote{} till \eighthnote{} are available for further notes
+
+%\simplesumm{} % Simple summary
+
+\abstract{
+This paper evaluates data stream classifiers from
+the perspective of connected devices, focusing on
+the use case of Human Activity Recognition. We
+measure both classification performance and
+resource consumption (runtime, memory, and power)
+of five usual stream classification algorithms,
+implemented in a consistent library, and applied
+to two real human activity datasets and to three
+synthetic datasets.  Regarding classification
+performance, results show an overall superiority
+of the Hoeffding Tree, the Mondrian forest, and
+the Naïve Bayes classifiers over the Feedforward
+Neural Network and the Micro Cluster Nearest
+Neighbor classifiers on 4 datasets out of 6,
+including the real ones. In addition, the
+Hoeffding Tree, and to some extent the Micro
+Cluster Nearest Neighbor, are the only classifiers
+that can recover from a concept drift. Overall,
+the three leading classifiers still perform
+substantially lower than an offline classifier on
+the real datasets. Regarding resource consumption,
+the Hoeffding Tree and the Mondrian forest are the
+most memory intensive and have the longest
+runtime, however, no difference in power
+consumption is found between classifiers. We
+conclude that stream learning for Human Activity
+Recognition on connected objects is challenged by
+two factors which could lead to interesting future
+work: a high memory consumption and low F1 scores
+overall.
+}
+
+% Keywords
+\keyword{
+Application Platform; Data Management and
+Analytics; Smart Environment; Data
+Streams; Classification; Power; Memory Footprint;
+Benchmark; Human Activity
+Recognition; MCNN; Mondrian; Hoeffding Tree;}
 \begin{document}
 \maketitle
 \input{abstract.tex}
@@ -63,7 +132,8 @@ Concordia University, Montreal, Canada}
 \input{results.tex}
 \input{conclusion.tex}
 
-\bibliographystyle{plain}
+\externalbibliography{yes}
+%\bibliographystyle{plain}
 \bibliography{paper}
 \end{document}
 

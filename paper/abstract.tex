@@ -1,28 +1,4 @@
 
-\begin{abstract}
-% Data stream analyses have an important role to play in the
-% Internet of Things, through the potential impact of decentralized architectures on both user privacy and
-% energy consumption. 
-This paper evaluates data stream classifiers from the
-perspective of connected devices, focusing on the use case of
-\har. We measure both classification performance and
-resource consumption (runtime, memory, and power) of five usual stream
-classification algorithms, implemented in a consistent library, and applied
-to two real human activity datasets and to three synthetic datasets.
-Regarding classification performance, results show an overall superiority
-of the \hoeffdingtree, the \mondrianforest, and the \naivebayes classifiers
-over the \FNN and the Micro Cluster Nearest Neighbor (\mcnn) classifiers on
-4 datasets out of 6, including the real ones. In addition, the
-\hoeffdingtree, and to some extent \mcnn, are the only classifiers that can
-recover from a concept drift. Overall, the three leading classifiers still
-perform substantially lower than an offline classifier on the real
-datasets. Regarding resource consumption, the \hoeffdingtree and the
-\mondrianforest are the most memory intensive and have the longest runtime, however,
-no difference in power consumption is found between classifiers. We
-conclude that stream learning for \har on connected objects is challenged
-by two factors which could lead to interesting future work: a high
-memory consumption and low F1 scores overall.
-\end{abstract}
 
 
 % vim: tw=80 ts=2
