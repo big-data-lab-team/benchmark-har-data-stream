@@ -112,13 +112,14 @@ In this section, we describe the algorithms used in the benchmark, their
 hyperparameters, and relevant implementation details. 
 
 \subsubsection{Mondrian forest~(\mondrianforest)~\cite{mondrian2014}}
-Each tree in a \mondrianforest recursively splits
-the feature space, similar to a regular decision tree.
-However, the feature used in the split and the
-value of the split are picked randomly. The
-probability to select a feature is proportional to
-its normalized range, and the value for the split is
-uniformly selected in the range of the feature.
+Each tree in a \mondrianforest recursively splits the feature space, similar to
+a regular decision tree.  However, the feature used in the split and the value
+of the split are picked randomly. The probability to select a feature is
+proportional to its normalized range, and the value for the split is uniformly
+selected in the range of the feature.  During prediction, a node combines its
+observed label count with its parent prediction. Since the Mondrian tree is able
+to reshape the internal structure of the tree, we expect the Mondrian forest to
+recover from concept drifts, although most likely slower than MCNN.
 
 %Bounded memory discussion
 In OrpailleCC, the amount of memory allocated to the forest is predefined,
@@ -132,121 +133,119 @@ amount of available memory. For instance, in our study, the \mondrianforest
 classifier is memory-bounded while \naivebayes classifier has a constant
 space complexity.
 
-Mondrian trees can be tuned using three
-parameters: the base count, the discount factor,
-and the budget. The base count is used to
-initialize the prediction for the root. The
-discount factor influences the nodes on how much
-they should use their parent prediction. A
-discount factor closer to one makes the prediction
-of a node closer to the prediction of its parent.
-Finally, the budget controls the tree depth.
+Mondrian trees can be tuned using three parameters: the base count, the discount
+factor, and the budget. The base count is used to initialize the prediction for
+the root. The discount factor influences the nodes on how much they should use
+their parent prediction. A discount factor closer to one makes the prediction of
+a node closer to the prediction of its parent.  Finally, the budget controls the
+tree depth.
 
 Hyperparameters used for \mondrianforest are available in the
-\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository readme}.
-Additionally, the \mondrianforest is allocated
-with 600~KB of memory unless specified otherwise.
-On the \banosdataset and \recofitdataset datasets,
-we also explore the \mondrianforest with 3~MB of
-memory in order to observe the effect of available memory on
-performances (classification, runtime, and power).
+\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository
+readme}.  Additionally, the \mondrianforest is allocated with 600~KB of memory
+unless specified otherwise.  On the \banosdataset and \recofitdataset datasets,
+we also explore the \mondrianforest with 3~MB of memory in order to observe the
+effect of available memory on performances (classification, runtime, and power).
+
 \subsubsection{Micro Cluster Nearest Neighbor~\cite{mc-nn}}
-The Micro Cluster Nearest Neighbor~(\mcnn) is a
-variant of k-nearest neighbors where data points
-are aggregated into clusters to reduce storage
-requirements.  
-The space and time complexities of \mcnn are
-constant since the maximum number of clusters is fixed.
-The reaction to concept drift is influenced by the
-participation threshold and the error threshold.
-A higher participation threshold and a lower error
-threshold increase reaction speed to concept
-drift. Since the error thresholds used in this
-study are small, we expect \mcnn to react quite
-fast and efficiently to concept drifts.
+The Micro Cluster Nearest Neighbor~(\mcnn) is a variant of k-nearest neighbors
+where data points are aggregated into clusters to reduce storage requirements.
+During training, the algorithm merges a new data point to the closest cluster
+that shares the same label. If the closest cluster does not share the same label
+as the data point, this closest cluster and the closest cluster with the same
+label are assigned an error. When a cluster receives too many errors, it is
+split. During classification, \mcnn returns the label of the closest cluster.
+Regularly, the algorithm also assigns a participation score to each cluster and
+when this score gets below a threshold, the cluster is removed.  Given that the
+maximum number of clusters is fixed, this mechanism makes space for new
+clusters, and possibly helps adjust to concept drifts.  The space and time
+complexities of \mcnn are constant since the maximum number of clusters is
+fixed.  The reaction to concept drift is influenced by the participation
+threshold and the error threshold.  A higher participation threshold and a lower
+error threshold increase reaction speed to concept drift. Since the error
+thresholds used in this study are small, we expect \mcnn to react quite fast and
+efficiently to concept drifts.
 
-We implemented two versions of \mcnn in
-OrpailleCC, differing in the way they remove
-clusters during training. The first version (\mcnn
-Origin) is similar to the mechanism described
-in~\cite{mc-nn}, based on participation scores.
-The second version (\mcnn OrpailleCC)
-removes the cluster with the lowest participation
-only when space is needed.  A cluster slot is
-needed when an existing cluster is split and there
-is no more slot available because the number of
-active clusters already reached the maximum defined
-by the user.
+We implemented two versions of \mcnn in OrpailleCC, differing in the way they
+remove clusters during training. The first version (\mcnn Origin) is similar to
+the mechanism described in~\cite{mc-nn}, based on participation scores.  The
+second version (\mcnn OrpailleCC) removes the cluster with the lowest
+participation only when space is needed.  A cluster slot is needed when an
+existing cluster is split and there is no more slot available because the number
+of active clusters already reached the maximum defined by the user.
 
-\mcnn OrpailleCC has only one
-parameter, the error threshold after which a
-cluster is split.  \mcnn Origin has two
-parameters: the error threshold and the
-participation threshold. The participation
-threshold is the limit below which a cluster is
-removed.
-Hyperparameters used for \mcnn are available in the
-\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository readme}.
+\mcnn OrpailleCC has only one parameter, the error threshold after which a
+cluster is split.  \mcnn Origin has two parameters: the error threshold and the
+participation threshold. The participation threshold is the limit below which a
+cluster is removed.  Hyperparameters used for \mcnn are available in the
+\href{https://github.com/azazel7/paper-benchmark/blob/master/README.md}{repository
+readme}. Additionally, they both implementations have the cluster count as their
+last parameter.
 
 \subsubsection{Naïve Bayes~(\naivebayes)~\cite{naive_bayes}}
-The \naivebayes algorithm keeps a table of
-counters for each feature value and each label.
-During prediction, the algorithm assigns a
-score for each label depending on how the data
-point to predict compares to the values observed
-during the training phase. 
+The \naivebayes algorithm keeps a table of counters for each feature value and
+each label. During prediction, the algorithm assigns a score for each label
+depending on how the data point to predict compares to the values observed
+during the training phase. Since the counters are not biased toward the more
+recent data points, we expect \naivebayes to be slow to adapt if not ineffective
+in a concept drift situation.
 
-The implementation from \streamdmcpp was used in this
-benchmark. It uses a Gaussian
-fit for numerical attributes. Two implementations were used, the OrpailleCC one and the StreamDM one. We used two implementations 
-to provide a comparison reference between the two libraries.
+The implementation from \streamdmcpp was used in this benchmark. It uses a
+Gaussian fit for numerical attributes. Two implementations were used, the
+OrpailleCC one and the StreamDM one. We used two implementations to provide a
+comparison reference between the two libraries.
 
 \subsubsection{Hoeffding Tree~(\hoeffdingtree)~\cite{VFDT}}
 Similar to a decision tree, the \hoeffdingtree recursively splits the feature
 space to maximize a metric, often the information gain or the Gini index.
 However,  to estimate when a leaf should be split, the \hoeffdingtree relies on
-the Hoeffding bound, a measure of the score deviation of the splits. We used
-this classifier as implemented in \streamdmcpp.  The \hoeffdingtree is common in
-data stream classification, however, the internal nodes are static and cannot be
+the Hoeffding bound, a measure of the score deviation of the splits.  This
+measure allows the leaf to decide when the best split is clearly better than the
+second best split based on the data observed from the stream. This mechanism
+prevents the tree from waiting until the end of the stream to ensure a split is
+the best. During classification, a data point is sorted to a leaf, and a label
+is predicted by aggregating the labels of the training data points in that leaf,
+usually through majority voting or \naivebayes classification.  We used this
+classifier as implemented in \streamdmcpp.  The \hoeffdingtree is common in data
+stream classification, however, the internal nodes are static and cannot be
 re-considered. Therefore, any concept drift adaption relies on the new leaves
 that will be split.
 
-The \hoeffdingtree has three parameters: the
-confidence level, the grace period, and the leaf
-learner. The confidence level is the probability that
-the Hoeffding bound makes a wrong estimation of
-the deviation. The grace period is the number of
-processed data points before a leaf is evaluated for a split.
- The leaf learner is the method used in the
-leaf to predict the label.  In this study, we used
-a confidence level of $0.01$ with a grace period
-of 10 data points and the \naivebayes classifier as leaf
-learner.
+The \hoeffdingtree has three parameters: the confidence level, the grace period,
+and the leaf learner. The confidence level is the probability that the Hoeffding
+bound makes a wrong estimation of the deviation. The grace period is the number
+of processed data points before a leaf is evaluated for a split.  The leaf
+learner is the method used in the leaf to predict the label.  In this study, we
+used a confidence level of $0.01$ with a grace period of 10 data points and the
+\naivebayes classifier as leaf learner.
 
 \subsubsection{Feedforward Neural Network~(\FNN)}
 \label{sec:method-fnn}
 %We need a citation there
 A neural network is a combination of artificial neurons, also known as
-perceptrons, that all have input weights and an activation function. In this
-benchmark, we used a fully-connected \FNN, that is, a network where perceptrons
-are organized in layers and all output values from perceptrons of layer $n-1$
-serve as input values for perceptrons of layer $n$.  We used a 3-layer network
-with 120 inputs, 30 perceptrons in the hidden layer, and 33 output perceptrons.
-Because a \FNN takes many epochs to update and converge it barely adapts to a
-concept drifts even though it trains with each new data point.
+perceptrons, that all have input weights and an activation function.  To predict
+a class label, the perceptron applies the activation function to the weighted
+sum of its input values. The output value of the perceptron is the result of
+this activation function.  This prediction phase is also called feed-forward. To
+train the neural network, feed-forward is applied first, then the error between
+the prediction and the expected result is used in the backpropagation process to
+adjust the weights of the input values. A neural network combines multiple
+perceptrons by connecting perceptron outputs to inputs of other perceptrons.  In
+this benchmark, we used a fully-connected \FNN, that is, a network where
+perceptrons are organized in layers and all output values from perceptrons of
+layer $n-1$ serve as input values for perceptrons of layer $n$.  We used a
+3-layer network with 120 inputs, 30 perceptrons in the hidden layer, and 33
+output perceptrons.  Because a \FNN takes many epochs to update and converge it
+barely adapts to a concept drifts even though it trains with each new data
+point.
 
-In this study, we used histogram features
-from~\cite{omid_2019} instead of the ones
-presented in Section~\ref{sec:method-dataset}
-because the network performed
-poorly with these features. The histogram features
-produce 20 bins per axis.
+In this study, we used histogram features from~\cite{omid_2019} instead of the
+ones presented in Section~\ref{sec:method-dataset} because the network performed
+poorly with these features. The histogram features produce 20 bins per axis.
 
-This neural network can be tuned by changing the
-number of layers and the size of each layer.
-Additionally, the activation function and the
-learning ratio can be changed. The learning ratio
-indicates by how much the weights should change
+This neural network can be tuned by changing the number of layers and the size
+of each layer.  Additionally, the activation function and the learning ratio can
+be changed. The learning ratio indicates by how much the weights should change
 during backpropagation.
 
 \subsubsection{Hyperparameters Tuning}
@@ -256,19 +255,15 @@ of the \banosdataset dataset (window size of one second, average and standard
 deviation on the six-axis of the right forearm sensor, $\ldots$). We did a grid
 search to test multiple values for the parameters.
 
-The classifiers start the prequential phase with
-no knowledge from the first subject.  We made an
-exception for the \FNN because we noticed that it
-performed poorly with random weights and it needed
-many epochs to achieve better performances than a
-random  classifier. Therefore, we decided to
-pre-train the \FNN and re-use the weights as a
-starting point for the prequential phase.
+The classifiers start the prequential phase with no knowledge from the first
+subject.  We made an exception for the \FNN because we noticed that it performed
+poorly with random weights and it needed many epochs to achieve better
+performances than a random  classifier. Therefore, we decided to pre-train the
+\FNN and re-use the weights as a starting point for the prequential phase.
 
-For other classifiers, only the 
-hyperparameters were taken from the tuning phase.
-We selected the hyperparameters that 
-maximized the F1 score on the first subject.
+For other classifiers, only the hyperparameters were taken from the tuning
+phase.  We selected the hyperparameters that maximized the F1 score on the first
+subject.
 
 \subsubsection{Offline Comparison}
 We compared data stream algorithms with an offline \knn. The value of $k$ were
@@ -323,16 +318,13 @@ multiple times in a minimal environment. We use the empty classifier as a
 baseline.
 
 \subsection{Experimental Conditions}
-We automated our experiments with a Python script that defines
-classifiers and their parameters, randomizes all
-the repetitions, and plots the
-resulting data. The datasets and output results were stored in memory
-through a memfs filesystem mounted on \texttt{/tmp}, to reduce the impact of I/O time.
-We averaged metrics across repetitions (same classifier, same parameters, and
-same dataset).
+We automated our experiments with a Python script that defines classifiers and
+their parameters, randomizes all the repetitions, and plots the resulting data.
+The datasets and output results were stored in memory through a memfs filesystem
+mounted on \texttt{/tmp}, to reduce the impact of I/O time.  We averaged metrics
+across repetitions (same classifier, same parameters, and same dataset).
 
-The experiment was done with a single core of a
-cluster node with two Intel(R) Xeon(R)
-Gold 6130 CPUs and a main memory of 250G.
+The experiment was done with a single core of a cluster node with two Intel(R)
+Xeon(R) Gold 6130 CPUs and a main memory of 250G.
 
 % vim: tw=80 ts=2
