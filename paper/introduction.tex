@@ -1,9 +1,3 @@
-\begin{IEEEkeywords}
-Application Platform, Data Management and Analytics, Smart Environment, Data
-Streams, Classification, Power, Memory Footprint, Benchmark, Human Activity
-Recognition, MCNN, Mondrian, Hoeffding Tree.
-\end{IEEEkeywords}
-
 \section{Introduction}
 \label{sec:introduction}
 
@@ -70,49 +64,46 @@ available runtime that characterizes connected objects.
 \subsection{Comparisons of data stream classifiers}
 
 % data stream classifiers
-Data stream classifiers were compared mostly using synthetic datasets
-or real but general-purpose ones (Electrical, CoverType, Poker), which is 
-not representative of our use case. In addition, memory and runtime usage 
-are rarely reported, with the notable exception of~\cite{StreamDM-CPP}.
+Data stream classifiers were compared mostly using synthetic datasets or real
+but general-purpose ones (Electrical, CoverType, Poker), which is not
+representative of our use case. In addition, memory and runtime usage are rarely
+reported, with the notable exception of~\cite{StreamDM-CPP}.
 
-The work
-in~\cite{prasad2016stream} reviews an extensive list of classifiers for
-data streams, comparing the Hoeffding Tree~(\hoeffdingtree), the Naïve Bayes~(\naivebayes), and the k-nearest neighbor~(\knn)
-online classifiers. The paper reports an accuracy of 92 for online \knn, 80
-for the \hoeffdingtree, and 60 for \naivebayes. The study is limited to a
-single dataset (CoverType). 
+The work in~\cite{prasad2016stream} reviews an extensive list of classifiers for
+data streams, comparing the \hoeffdingtree, the \naivebayes, and the k-nearest
+neighbor~(\knn) online classifiers. The paper reports an accuracy of 92 for
+online \knn, 80 for the \hoeffdingtree, and 60 for \naivebayes. The study is
+limited to a single dataset (CoverType). 
 
 The work in ~\cite{kaur2020} compares four classifiers (Bayesnet,
-\hoeffdingtree, \naivebayes, and Decision Stump) using synthetic datasets.
-It reports a similar accuracy of 90 for the Bayesnet, the
-\hoeffdingtree, and \naivebayes classifiers, while the Decision Stump one
-only reaches 65. Regarding runtimes, Bayesnet is found to be four times
-slower than the \hoeffdingtree which is itself three times slower than
-\naivebayes and Decision Stump.
+\hoeffdingtree, \naivebayes, and Decision Stump) using synthetic datasets.  It
+reports a similar accuracy of 90 for the Bayesnet, the \hoeffdingtree, and
+\naivebayes classifiers, while the Decision Stump one only reaches 65. Regarding
+runtimes, Bayesnet is found to be four times slower than the \hoeffdingtree
+which is itself three times slower than \naivebayes and Decision Stump.
 
 The work in~\cite{priya2020comprehensive} compares ensemble classifiers on
 imbalanced data streams with concept drifts, using two real datasets
 (Electrical, Intrusion), synthetic datasets, and six classifiers, including the
-\naivebayes and the \hoeffdingtree ones. The \hoeffdingtree is found to be
-the second most accurate classifier after the Accuracy Updated Ensemble.
+\naivebayes and the \hoeffdingtree ones. The \hoeffdingtree is found to be the
+second most accurate classifier after the Accuracy Updated Ensemble.
 
 The authors in~\cite{lopes2020evaluating} have analyzed the resource trade-offs
-of six online decision trees applied to edge computing. Their results showed that the
-Very Fast Decision Tree and the Strict Very Fast Decision Tree were the most
-energy-friendly, the latter having the smallest memory footprint. On the
+of six online decision trees applied to edge computing. Their results showed
+that the Very Fast Decision Tree and the Strict Very Fast Decision Tree were the
+most energy-friendly, the latter having the smallest memory footprint. On the
 other hand, the best predictive performances were obtained in combination with
-OLBoost. In particular, the paper reports an accuracy of 89.6\% on the Electrical
-dataset, and 83.2\% on an Hyperplane dataset.
+OLBoost. In particular, the paper reports an accuracy of 89.6\% on the
+Electrical dataset, and 83.2\% on an Hyperplane dataset.
 
 Finally, the work in~\cite{StreamDM-CPP} describes the architecture of
 \streamdmcpp and presents an extensive benchmark of tree-based classifiers,
 covering runtime, memory, and accuracy. Compared to other tree-based
-classifiers, the \hoeffdingtree classifier is found to have the smallest
-memory footprint while the Hoeffding Adaptive Tree classifier is found to be
-the most accurate on most of the datasets. 
+classifiers, the \hoeffdingtree classifier is found to have the smallest memory
+footprint while the Hoeffding Adaptive Tree classifier is found to be the most
+accurate on most of the datasets. 
 
 \subsection{Offline and data stream classifiers for \har}
-
 % offline works
 Several studies evaluated classifiers for \har in an offline (non data stream)
 setting. In particular, the work in~\cite{Janidarmian_2017} compared 293
@@ -124,39 +115,19 @@ in~\cite{memory_consumption_machine_learning} for the particular case of the R
 programming language.
 
 In addition, the work in \cite{ugulino2012} achieved an offline accuracy of
-99.4\% on a five-class dataset of \har. The authors used AdaBoost, an
-ensemble method, with ten offline decision trees. The work in
-\cite{ahmed2019smartphone} proposes a Support Vector Machine enhanced with
-feature selection. Using smartphone data, the model showed above 90\%
-accuracy on day-to-day human activities. Finally, the work in
-\cite{san2018robust} applies three offline classifiers to smartphone and
-smartwatch human activity data. Results show that Convolutional Neural Network and Random
-Forest achieve F1 score of 0.98 with smartwatches and 0.99 with
-smartphones.
+99.4\% on a five-class dataset of \har. The authors used AdaBoost, an ensemble
+method, with ten offline decision trees. The work in \cite{ahmed2019smartphone}
+proposes a Support Vector Machine enhanced with feature selection. Using
+smartphone data, the model showed above 90\% accuracy on day-to-day human
+activities. Finally, the work in \cite{san2018robust} applies three offline
+classifiers to smartphone and smartwatch human activity data. Results show that
+Convolutional Neural Network and Random Forest achieve F1 score of 0.98 with
+smartwatches and 0.99 with smartphones.
 
 %online/stream
-In a data stream (online) setting, the work in~\cite{omid_2019} presents a wearable
-system capable of running pre-trained classifiers on the chip with high classification
-accuracy. It shows the superiority of the proposed Feedforward Neural
-Network~(\FNN) over \knn.
-
-
-
-
-
-
-%  It shows that a trained neural
-% network achieves high accuracy and performs better
-% than KNN. The dataset was acquired with the
-% Neblina, a wearable sensor placed on the right
-% forearm. The data from the Neblina was merged to
-% send to the computer a stream of 9-axis. Only
-% then, the stream was processed to extract features
-% and feed the classifier.
-
-
-
-%Étendre related work, regarder les papiers qui ont cité ces papier
-%En particulier la référence Janidarmian_2017, pareil pour memory_consumption_machine_learning
+In a data stream (online) setting, the work in~\cite{omid_2019} presents a
+wearable system capable of running pre-trained classifiers on the chip with high
+classification accuracy. It shows the superiority of the proposed \FNN over
+\knn.
 
 % vim: tw=80 ts=2
