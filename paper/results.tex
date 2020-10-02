@@ -1,6 +1,6 @@
-\begin{figure*}
+\begin{figure}
 	\centering
-	\includegraphics[width=0.8\linewidth]{figures/legend.png}
+	\includegraphics[width=\linewidth]{figures/legend.png}
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/banos_6_f1_std.png}
 		\caption{\banosdataset}
@@ -10,7 +10,8 @@
 		\includegraphics[width=\linewidth]{figures/results/drift_6_f1_std.png}
 		\caption{\banosdataset (with Drift)}
 		\label{fig:f1-drift}
-	\end{subfigure}\\
+	\end{subfigure}
+		\vskip 0.1cm
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_1_f1_std.png}
 		\caption{Hyperplane (MOA)}
@@ -20,7 +21,8 @@
 		\includegraphics[width=\linewidth]{figures/results/dataset_2_f1_std.png}
 		\caption{RandomRBF (MOA)}
 		\label{fig:f1-dataset_2}
-	\end{subfigure}\\
+	\end{subfigure}
+		\vskip 0.1cm
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/dataset_3_f1_std.png}
 		\caption{RandomTree (MOA)}
@@ -31,18 +33,18 @@
 		\caption{\recofitdataset}
 		\label{fig:f1-recofit}
 	\end{subfigure}
+		\vskip 0.1cm
 	\caption{F1 scores for the six datasets (average over 20 repetitions).
 		The horizontal dashed black line indicates the offline \knn F1
 		score (the value of k was obtained by grid search in [2, 20]). The
 		blue shades represent a $\pm\sigma$ interval of the \mondrianforest
 		classifier across repetitions.}
 	\label{fig:f1}
-\end{figure*}
+\end{figure}
 
 \section{Results}
 This section presents our benchmark results and the corresponding
 hyperparameter tunning experiments.
-
 
 \subsection{Overall classification performance}
 
@@ -211,10 +213,19 @@ of 0.68, which is higher than the performance of the \naivebayes classifier.
 %structure on other datasets.
 
 \begin{figure}
-		\includegraphics[width=\linewidth]{figures/results/banos_3_watt.png}
+	\centering
+	\begin{subfigure}[t]{.49\linewidth}
+		\includegraphics[width=\linewidth]{figures/results/banos_6_watt.png}
 		\caption{Power usage for the \banosdataset dataset. Results are similar across
 		datasets.}
 		\label{fig:power}
+	\end{subfigure}
+	\begin{subfigure}[t]{.49\linewidth}
+	\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
+	\caption{Runtime with the \banosdataset dataset (20 repetitions). Runtime
+		results are similar across datasets.}
+	\label{fig:runtime}
+	\end{subfigure}
 \end{figure}
 \subsection{Power}
 \label{sec:result-power}
@@ -252,13 +263,6 @@ We observe that the runtime of \streamdmcpp's \naivebayes is comparable to
 OrpailleCC's. This suggests that the performance of the two libraries is
 similar, which justifies our comparison of \hoeffdingtree and \mondrianforest.
 
-\begin{figure}
-	\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
-	\caption{Runtime with the \banosdataset dataset (20 repetitions). Runtime
-		results are similar across datasets.}
-	\label{fig:runtime}
-\end{figure}
-
 \subsection{Memory}
 \label{sec:result-memory}
 Figure~\ref{fig:memory} shows the evolution of the memory footprint for the
@@ -292,5 +296,58 @@ makes its memory footprint constant.
 	\label{fig:memory}
 \end{figure}
 
+
+\subsection{Hyperparameter tuning}
+
+Figure~\ref{fig:mcnn-tuning-error} shows the impact of the error threshold
+in the \mcnn classifiers with different cluster counts. The error
+threshold of \mcnn has little impact on classification performance. For
+20 and 40 clusters, the best-performing threshold is either 2 or 4, meaning
+that a cluster may do 2 or 4 errors before being split. For 10 clusters,
+all error thresholds perform equally.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/calibration_mcnn.png}
+	\caption{Error threshold tuning of \mcnn with the first subject of
+		\banosdataset dataset. Error threshold in parenthesis.}
+	\label{fig:mcnn-tuning-error}
+\end{figure}
+
+Figure~\ref{fig:mondrian-tuning} shows the impact of the \mondrianforest hyperparameters on
+the classification performance. 
+The base count hyperparameter (Figure~\ref{fig:mondrian-base-count}) has a
+very substantial impact on classification performance; the smallest value
+(0.0) results in the best performance. On the contrary, the
+budget hyperparameter (Figure~\ref{fig:mondrian-budget}) only has a
+moderate impact on classification; the best value is 0.2. Finally, the discount hyperparameter
+(Figure~\ref{fig:mondrian-discount}) has a negligible impact on the
+performance; the best-performing value is 0.1.
+
+\begin{figure}
+	 \centering
+	 \begin{subfigure}[b]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/calibration_mondrian_base.png}
+		\caption{Impact of the base count with 10 trees, a budget of $1.0$, and a discount factor of $0.2$.} 
+		\label{fig:mondrian-base-count}
+	\end{subfigure}
+	\hfill
+	 \begin{subfigure}[b]{0.49\textwidth}
+		 \centering
+		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_lifetime.png}
+		 \caption{Impact of the budget with 10 trees, a base count of $0.1$, and discount factor of $0.2$.}
+		 \label{fig:mondrian-budget}
+	 \end{subfigure}
+	 \hfill
+		\vskip 0.15cm
+	 \begin{subfigure}[b]{0.49\textwidth}
+		 \centering
+		 \includegraphics[width=\textwidth]{figures/calibration_mondrian_discount.png}
+		 \caption{Impact of the discount factor with 10 trees, a budget of $1.0$, and a base count of $0.1$.}
+		 \label{fig:mondrian-discount}
+	 \end{subfigure}
+		\caption{Hyperparameters tuning for Mondrian with the first subject of \banosdataset dataset.}
+		\label{fig:mondrian-tuning}
+\end{figure}
 
 % vim: tw=80 ts=2

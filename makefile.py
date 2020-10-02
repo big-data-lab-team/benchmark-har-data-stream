@@ -523,8 +523,8 @@ def print_results(output, output_runs, models, output_directory="."):
     print(colors)
     print(markers)
     print(styles)
-    plt.rcParams.update({'font.size': 26})
-    list_datastets = ['dataset_2', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'banos_6', 'recofit_6']
+    plt.rcParams.update({'font.size': 33})
+    list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'dataset_2', 'recofit_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
         print('\t- Energy')
@@ -649,7 +649,6 @@ def print_results(output, output_runs, models, output_directory="."):
         print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
-
             if 'StreamDM' in name:
                 base = [x for x in daty[daty.fullname == 'StreamDM NaiveBayes']['memory']]
             else:
@@ -658,7 +657,7 @@ def print_results(output, output_runs, models, output_directory="."):
                 y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], base)]
                 plt.plot(daty[daty.fullname == name]['element_count'], y, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
         if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":26}, ncol=3)
+            plt.legend(prop={"size":24}, ncol=3)
         plt.ylabel("KB")
         plt.xlabel("Element")
         plt.tight_layout()
@@ -692,7 +691,7 @@ def print_calibration(output, output_runs, models, output_directory="."):
             return True
         return False
 
-    plt.rcParams.update({'font.size': 26})
+    plt.rcParams.update({'font.size': 43})
     dataset_name = "processed_subject1_ideal_shuf.log"
 
     daty = output[output.file.str.contains(dataset_name)]
@@ -705,7 +704,7 @@ def print_calibration(output, output_runs, models, output_directory="."):
     for model_id in model_ids:
         sub = daty[daty.model_id == model_id]
         plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['lifetime'])
-    plt.legend(prop={"size":25}, ncol=3)
+    plt.legend(prop={"size":40}, ncol=3)
     plt.ylim(0,1)
     plt.ylabel("F1")
     plt.xlabel("Element")
@@ -723,7 +722,7 @@ def print_calibration(output, output_runs, models, output_directory="."):
     for model_id in model_ids:
         sub = daty[daty.model_id == model_id]
         plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['discount'])
-    plt.legend(prop={"size":25}, ncol=3)
+    plt.legend(prop={"size":40}, ncol=3)
     plt.ylim(0,1)
     plt.ylabel("F1")
     plt.xlabel("Element")
@@ -741,7 +740,7 @@ def print_calibration(output, output_runs, models, output_directory="."):
     for model_id in model_ids:
         sub = daty[daty.model_id == model_id]
         plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='Mondrian ' + models[str(model_id)]['base'])
-    plt.legend(prop={"size":25}, ncol=3)
+    plt.legend(prop={"size":40}, ncol=3)
     plt.ylim(0,1)
     plt.ylabel("F1")
     plt.xlabel("Element")
@@ -761,7 +760,7 @@ def print_calibration(output, output_runs, models, output_directory="."):
         for model_id in model_ids:
             sub = daty[daty.model_id == model_id]
             plt.plot(sub['element_count'], sub['f1'], color=hashStringToColor(str(model_id)), label='MCNN ' + cluster_count + ' clusters (' + models[str(model_id)]['error_threshold'] + ')', marker=markers[cluster_count], markevery=0.1, markersize=15)
-    plt.legend(prop={"size":25}, ncol=3)
+    plt.legend(prop={"size":28}, ncol=3)
     plt.ylim(0,1)
     plt.ylabel("F1")
     plt.xlabel("Element")
@@ -929,6 +928,7 @@ if len(sys.argv) > 1:
     if sys.argv[1] == "latex":
         latex()
     if sys.argv[1] == "process":
+        directory = "results_9/"
         directory = "calibration_6/"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         # print_results(output[output.element_count%50 == 0],  output_runs, models)
