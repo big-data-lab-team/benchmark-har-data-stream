@@ -216,16 +216,15 @@ of 0.68, which is higher than the performance of the \naivebayes classifier.
 	\centering
 	\begin{subfigure}[t]{.49\linewidth}
 		\includegraphics[width=\linewidth]{figures/results/banos_6_watt.png}
-		\caption{Power usage for the \banosdataset dataset. Results are similar across
-		datasets.}
+		\caption{Power}
 		\label{fig:power}
 	\end{subfigure}
 	\begin{subfigure}[t]{.49\linewidth}
 	\includegraphics[width=\linewidth]{figures/results/banos_6_runtime.png}
-	\caption{Runtime with the \banosdataset dataset (20 repetitions). Runtime
-		results are similar across datasets.}
+	\caption{Runtime}
 	\label{fig:runtime}
 	\end{subfigure}
+		\caption{Power usage and Runtime (20 repetitions) for the \banosdataset dataset. Results are similar across datasets.}
 \end{figure}
 \subsection{Power}
 \label{sec:result-power}
@@ -287,7 +286,8 @@ makes its memory footprint constant.
 % increase the memory footprint of the \hoeffdingtree.
 
 \begin{figure}
-	\includegraphics[width=\linewidth]{figures/results/banos_6_memory.png}
+		\center
+	\includegraphics[width=0.8\linewidth]{figures/results/banos_6_memory.png}
 	\caption{Memory footprint of classifiers with the empty
 	classifier as a baseline, measured on the \banosdataset dataset. The memory footprint of the empty
 	classifier is 3.44~MB. The baselines are the two \naivebayes from OrpailleCC
@@ -307,7 +307,8 @@ that a cluster may do 2 or 4 errors before being split. For 10 clusters,
 all error thresholds perform equally.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/calibration_mcnn.png}
+		\center
+  \includegraphics[width=0.8\linewidth]{figures/calibration_mcnn.png}
 	\caption{Error threshold tuning of \mcnn with the first subject of
 		\banosdataset dataset. Error threshold in parenthesis.}
 	\label{fig:mcnn-tuning-error}
