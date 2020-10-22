@@ -280,29 +280,20 @@ at the end of each execution.
 
 %Time to process one element.
 %Explain the concept drift recovery time.
-\paragraph{Classification Performance}
-We monitor the true positives, false positives,
-true negatives, and false negatives using the
-prequential evaluation, meaning that with each new
-data point the model is first tested and then
-trained.  From these counts, we compute the
-F1 score every 50 elements. We do not apply any
-fading factor to attenuate errors throughout the
-stream.  We compute the F1 score in a
-one-versus-all fashion for each class, averaged
-across all classes (macro-average, code available
+To compute the F1 score, we monitor the true positives, false positives, true
+negatives, and false negatives using the prequential evaluation, meaning that
+with each new data point the model is first tested and then trained.  From these
+counts, we compute the F1 score every 50 elements. We do not apply any fading
+factor to attenuate errors throughout the stream.  We compute the F1 score in a
+one-versus-all fashion for each class, averaged across all classes
+(macro-average, code available
 \href{https://github.com/azazel7/paper-benchmark/blob/9adb1039c5a65a00a66d554f0e870d14d3fff7cb/main.cpp\#L82}{here}).
-When a class has not been encountered yet, its
-F1 score is ignored. We use the F1 score rather
-than the accuracy because the real data sets are
-imbalanced.
+When a class has not been encountered yet, its F1 score is ignored. We use the
+F1 score rather than the accuracy because the real data sets are imbalanced.
 
-
-\paragraph{Memory}
 We measure the memory footprint by reading file
 \texttt{/proc/self/statm} every 50 data points.
 
-\paragraph{Runtime}
 The runtime of a classifier is the time needed for
 the classifier to process the dataset. We
 collect the runtime reported by the \textit{perf}
@@ -312,12 +303,12 @@ includes loading of the binary in memory, setting up data structures, and
 opening the dataset file. To remove these overheads from our measurements,
 we use the runtime of an empty classifier that always predict class 0 as a baseline.
 
-\paragraph{Power} We measure the average power consumed by classification
+We measure the average power consumed by classification
 algorithms with the \textit{perf} command. The power measurement is done
 multiple times in a minimal environment. We use the empty classifier as a
 baseline.
 
-\subsection{Experimental Conditions}
+\subsection{Experimental Conditions \revision{and Requirements}}
 We automated our experiments with a Python script that defines classifiers and
 their parameters, randomizes all the repetitions, and plots the resulting data.
 The datasets and output results were stored in memory through a memfs filesystem
@@ -325,6 +316,15 @@ mounted on \texttt{/tmp}, to reduce the impact of I/O time.  We averaged metrics
 across repetitions (same classifier, same parameters, and same dataset).
 
 The experiment was done with a single core of a cluster node with two Intel(R)
-Xeon(R) Gold 6130 CPUs and a main memory of 250G.
+Xeon(R) Gold 6130 CPUs and a main memory of 250G. \revision{The operating system of the
+node was Linux.}
+
+\revision{
+The experiment requires the following software to run properly. \textit{Git} to download
+the repository and its submodule. \textit{gcc} or any C++ compiler in combination with
+\textit{make} to compile the benchmark binaries and \streamdmcpp. The run were
+organized with plain Python code and the plots were generated using
+\textit{Seaborn}, \textit{Matplotlib}, and \textit{Panda}.
+}
 
 % vim: tw=80 ts=2

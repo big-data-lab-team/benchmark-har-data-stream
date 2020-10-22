@@ -46,13 +46,50 @@
 This section presents our benchmark results and the corresponding
 hyperparameter tunning experiments.
 
+\begin{table}
+\begin{center}
+\begin{tabular}{ r c c c c c c }
+& Hyperplane & RandomRBF & RandomTree & \recofitdataset & \banosdataset & \banosdataset (drift)\\ 
+\hline
+Empty													 & 0.382 & 0.434 & 0.058 & 0.000 & 0.024 & 0.004\\ 
+\mcnn Origin 10 clusters       & 0.918 & 0.624 & 0.238 & 0.194 & 0.249 & 0.163\\
+\mcnn Origin 20 clusters       & 0.918 & 0.620 & 0.218 & 0.227 & 0.457 & 0.262\\
+\mcnn Origin 33 clusters       & 0.918 & 0.610 & 0.234 & 0.227 & 0.457 & 0.270\\
+\mcnn Origin 40 clusters       & 0.918 & 0.611 & 0.227 & 0.227 & 0.457 & 0.268\\
+\mcnn Origin 50 clusters       & 0.918 & 0.616 & 0.280 & 0.273 & 0.457 & 0.210\\
+\mcnn OrpailleCC 10 clusters   & 0.918 & 0.694 & 0.183 & 0.186 & 0.397 & 0.185\\
+\mcnn OrpailleCC 20 clusters   & 0.918 & 0.707 & 0.225 & 0.218 & 0.495 & 0.339\\
+\mcnn OrpailleCC 33 clusters   & 0.918 & 0.733 & 0.255 & 0.218 & 0.535 & 0.487\\ 
+\mcnn OrpailleCC 40 clusters   & 0.918 & 0.728 & 0.246 & 0.218 & 0.535 & 0.501\\
+\mcnn OrpailleCC 50 clusters   & 0.918 & 0.717 & 0.286 & 0.285 & 0.535 & 0.485\\
+Mondrian 1 tree(s) (RAM x1.0)  & 0.827 & 0.961 & 0.282 & 0.183 & 0.506 & 0.302\\
+Mondrian 5 tree(s) (RAM x1.0)  & 0.907 & 0.978 & 0.190 & 0.157 & 0.588 & 0.345\\ 
+Mondrian 10 tree(s) (RAM x1.0) & 0.919 & 0.994 & 0.218 & 0.110 & 0.566 & 0.336\\
+Mondrian 50 tree(s) (RAM x1.0) & 0.957 & 0.942 & 0.121 & 0.099 & 0.402 & 0.244\\
+NaiveBayes 										 & 0.876 & 0.547 & 0.228 & 0.311 & 0.662 & 0.416\\
+StreamDM HoeffdingTree 				 & 0.931 & 0.759 & 0.617 & 0.362 & 0.659 & 0.650\\ 
+StreamDM NaiveBayes 					 & 0.875 & 0.547 & 0.229 & 0.311 & 0.662 & 0.416\\
+Mondrian 1 tree(s) (RAM x5.0)  &       &       &       & 0.230 & 0.536 & \\ 
+Mondrian 5 tree(s) (RAM x5.0)  &       &       &       & 0.241 & 0.717 & \\
+Mondrian 10 tree(s) (RAM x5.0) &       &       &       & 0.212 & 0.726 & \\
+Mondrian 50 tree(s) (RAM x5.0) &       &       &       & 0.128 & 0.593 & \\
+\FNN                           &       &       &       &       & 0.600 & 0.360 \\ 
+\end{tabular}                                                          
+\end{center}
+\caption{\revision{Result from the result. Contains the best F1 score for each dataset,
+except for the \banosdataset dataset (with drift) which shows only the last
+data point.}}
+\label{tab:f1}
+\end{table}
 \subsection{Overall classification performance}
 
 %General description
 Figure~\ref{fig:f1} compares the F1 scores obtained by all classifiers on
 the six datasets. The graphs also show the standard deviation of the
 \mondrianforest classifier observed across all repetitions (the other
-classifiers do not involve any randomness). 
+classifiers do not involve any randomness). \revision{Table~\ref{tab:f1} also shows the
+best F1 scores except for the \banosdataset datasets (drift) where we only
+kept the last F1 score.} 
 
 F1 scores vary greatly across the datasets. While the highest
 observed F1 score is above 0.95 on the Hyperplane and RandomRBF datasets,

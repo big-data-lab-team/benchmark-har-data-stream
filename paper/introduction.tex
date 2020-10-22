@@ -66,7 +66,16 @@ available runtime that characterizes connected objects.
 % data stream classifiers
 Data stream classifiers were compared mostly using synthetic datasets or real
 but general-purpose ones (Electrical, CoverType, Poker), which is not
-representative of our use case. In addition, memory and runtime usage are rarely
+representative of our use case. \revision{There was also comparisons made with
+daily human activities such as cooking or cleaning~\cite{HAR_daily_1,
+HAR_daily_3, HAR_daily_2}. These studies describe how they have collected
+datasets from heterogeneous sensor networks located in appartments. Except for
+the Opportunity datasets shown in~\cite{HAR_daily_2}, the data were collected
+from sensor placed in various daily objects such as the entrance door or the
+cupboard. The Opportunity dataset have, in addition, wearable sensors placed on
+the subjects. These papers also provide a baseline F1-score with popular
+classifiers (\naivebayes, \knn, and neural network).
+} In addition, memory and runtime usage are rarely
 reported, with the notable exception of~\cite{StreamDM-CPP}.
 
 The work in~\cite{prasad2016stream} reviews an extensive list of classifiers for
@@ -130,4 +139,16 @@ wearable system capable of running pre-trained classifiers on the chip with high
 classification accuracy. It shows the superiority of the proposed \FNN over
 \knn.
 
+\revision{
+\subsection{Limitation of this study}
+This study shows some limitations compare to the state of the art. It studies
+\har related to sports activities such as push-up, pull-up, or squat, which
+exclude daily activities and the field of Ambient Assisted Living. Additionally,
+the study focuses on wearable sensors worn on the forearm. Also, the sensor
+count is not important compares to papers with more than 50
+sensors~\cite{HAR_daily_1, HAR_daily_3, HAR_daily_2}. Finally, the experiment is
+run on a regular computer, so even though we can compare algorithm together, we
+may miss behavior related to the device's environment, especially, regarding the
+power usage.
+}
 % vim: tw=80 ts=2
