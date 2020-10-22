@@ -15,6 +15,7 @@
 \usepackage{grffile} %Used to allow filename with many dots 
 \usepackage{float} %Used to force figure placement
 \usepackage{xspace} %Used in \banosdataset
+\usepackage{xcolor}
 % Fix link colors
 \hypersetup{
     colorlinks = true,
@@ -43,6 +44,9 @@
 \newcommand{\har}[0]{HAR\xspace}
 \newcommand{\knn}[0]{\textit{k}-NN\xspace}
 \newcommand{\streamdmcpp}[0]{StreamDM-C++\xspace}
+\definecolor{revcolor}{RGB}{255,225,255}
+\newcommand{\revision}[1]{\colorbox{revcolor} {\parbox{\textwidth}{#1}}}
+
 
 \Title{{A benchmark of data stream classification
 for human activity recognition
@@ -65,7 +69,7 @@ on connected objects}}
 \newcommand{\orcidauthorB}{0000-0003-2620-5883} % Add \orcidB{} behind the author's name
 
 % Authors, for the paper (add full first names)
-\Author{Martin Khannouz$\orcidA{}, Tristan Glatard$\orcidB{}}
+\Author{Martin Khannouz$^1$\orcidA{}, Tristan Glatard$^1$\orcidB{}}
 
 
 % Authors, for metadata in PDF
