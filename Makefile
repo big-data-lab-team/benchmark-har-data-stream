@@ -1,5 +1,6 @@
-OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
+OrpailleCC_DIR=$(shell pwd)/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
+StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=/home/magoa/phd/moa
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 ifndef LABEL_COUNT
@@ -62,23 +63,23 @@ naive_bayes: src/naive_bayes.cpp src/main.cpp
 
 streamdm_ht: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-I/home/magoa/phd/streamDM-Cpp/code \
+		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
-		-L/home/magoa/phd/streamDM-Cpp \
+		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -o bin/$@ 
 streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-I/home/magoa/phd/streamDM-Cpp/code \
+		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
-		-L/home/magoa/phd/streamDM-Cpp \
+		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_naive_bayes.cpp\"" -o bin/$@ 
 streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-I/home/magoa/phd/streamDM-Cpp/code \
+		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
-		-L/home/magoa/phd/streamDM-Cpp \
+		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o bin/$@ 
 
