@@ -100,6 +100,8 @@ run:
 rerun: 
 	rm -f /tmp/output /tmp/output_runs models.csv
 	python makefile.py run
+calibration: 
+	python makefile.py calibration
 moa:
 	cd $(MOA_DIR)
 	#We set the random seed to 888
@@ -112,6 +114,8 @@ moa:
 	 cp dataset_*.log /tmp
 process:
 	PYTHONHASHSEED=0 python makefile.py process
+process_calibration:
+	PYTHONHASHSEED=0 python makefile.py process_calibration
 clean:
 	rm -rf bin/mondrian_t* bin/empty_classifier bin/previous_classifier bin/mcnn_* bin/streamdm_ht bin/streamdm_perceptron bin/streamdm_naive_bayes bin/naive_bayes
 fullclean: clean
