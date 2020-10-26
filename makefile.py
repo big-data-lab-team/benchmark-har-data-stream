@@ -276,13 +276,14 @@ def final_list(commands):
             model_id = get_model_id("FNN," + filename + ",0.1,30")
             commands.append(["bin/" + dataset_name + "/mlp_3", filename, seed, model_id, run_id, "0.1", "weights_" + dataset_name, "30"])
 
-def run(output_filename, run_output_filename):
+def run(output_filename, run_output_filename, calibration=False):
     output_file = open(output_filename, "w")
     run_output_file = open(run_output_filename, "w")
     commands = []
-    calibration_list(commands)
-    # final_list(commands)
-    # memory_list(commands)
+    if calibration:
+        calibration_list(commands)
+    else:
+        final_list(commands)
 
     shuffle(commands)
 
@@ -644,8 +645,6 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
 
-        print(daty[daty.fullname == 'NaiveBayes']['memory'])
-        print(daty[daty.fullname == 'StreamDM NaiveBayes']['memory'])
         print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
@@ -923,15 +922,19 @@ if len(sys.argv) > 1:
         compile()
     if sys.argv[1] == "run":
         run("/tmp/output", "/tmp/output_runs")
+    if sys.argv[1] == "calibration":
+        run("/tmp/output", "/tmp/output_runs", True)
     if sys.argv[1] == "dataset":
         dataset_banos()
     if sys.argv[1] == "latex":
         latex()
     if sys.argv[1] == "process":
-        directory = "results_9/"
-        directory = "calibration_6/"
+        directory = "./"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
-        # print_results(output[output.element_count%50 == 0],  output_runs, models)
-        # print_results(output, output_runs, models)
+        print_results(output, output_runs, models)
+        # print_calibration(output, output_runs, models)
+    if sys.argv[1] == "process_calibration":
+        directory = "./"
+        output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         print_calibration(output, output_runs, models)
 
