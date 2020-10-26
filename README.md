@@ -1,11 +1,43 @@
 paper-benchmark
 ===============
 
-Downloading the repository
+Setup the repository
 --------------------------
+First we clone the repository and we initialize the submodules.
+```
+git clone https://github.com/azazel7/paper-benchmark.git benchmark
+cd benchmark
+git submodule init
+git submodule update
+```
+
+Then we compile streamDM-Cpp. To get a static library, we patch the Makefile.
+```
+patch streamDM-Cpp/makefile streamdm_patch
+cd streamDM-Cpp
+make static
+cd ..
+```
+
+Then we compile all the binary to run the experiment.
+```
+mkdir bin
+./setup.sh
+```
+The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
 
 ```
-git clone --recursive git@github.com:azazel7/paper-benchmark.git
+tar xf datasets.tar.xz
+cp *.log /tmp
+rm -rf results_9
+mkdir results_9
+make run
+cp models.csv /tmp/output /tmp/output_runs .
+```
+
+```
+make process
+make process_calibration
 ```
 
 Generating latex
@@ -59,14 +91,12 @@ Hyperparameters
 
 Hyperparameters used for Mondrian:
 
-+-----------------|------------|----------|--------+
 | Number of trees | Base count | Discount | Budget |
-+-----------------|------------|----------|--------+
+|-----------------|------------|----------|--------|
 | 1               | 0.0        | 1.0      | 1.0    |
 | 5               | 0.0        | 1.0      | 0.4    |
 | 10              | 0.0        | 1.0      | 0.4    |
 | 50              | 0.0        | 1.0      | 0.2    |
-+-----------------|------------|----------|--------+
 
 Impact of the base count with 10 trees, a budget of 1.0, and a discount factor of 0.2.
 ![](paper/figures/calibration_mondrian_base.png)
@@ -80,15 +110,13 @@ Impact of the discount factor with 10 trees, a budget of 1.0, and a base count o
 *** MCNN
 
 Hyperparameters used for MCNN:
-+--------------------|-----------------|-------------------------+
 | Number of clusters | Error threshold | Participation threshold |
-+--------------------|-----------------|-------------------------+
+|--------------------|-----------------|-------------------------|
 | 10                 | 2               | 10                      |
 | 20                 | 10              | 10                      |
 | 33                 | 16              | 10                      |
 | 40                 | 8               | 10                      |
 | 50                 | 2               | 10                      |
-+--------------------|-----------------|-------------------------+
 
 Error threshold tuning of \mcnn with the first subject of Banos et al dataset. Error threshold in parenthesis.
 ![](paper/calibration_mcnn.png)

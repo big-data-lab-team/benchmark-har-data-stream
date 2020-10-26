@@ -578,6 +578,9 @@ def print_results(output, output_runs, models, output_directory="."):
 
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
+            if len(daty[daty.fullname == name]['f1']) > 0:
+                i = len(daty[daty.fullname == name]['f1'])
+                print(name + " " + str(list(daty[daty.fullname == name]['f1'])[i-1]))
         # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
             # plt.legend(prop={"size":27}, ncol=3)
         if dataset_name in knn_offline_f1:
@@ -932,9 +935,7 @@ if len(sys.argv) > 1:
         directory = "./"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         print_results(output, output_runs, models)
-        # print_calibration(output, output_runs, models)
     if sys.argv[1] == "process_calibration":
         directory = "./"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         print_calibration(output, output_runs, models)
-
