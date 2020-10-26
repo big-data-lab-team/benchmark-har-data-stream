@@ -645,8 +645,6 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
 
-        print(daty[daty.fullname == 'NaiveBayes']['memory'])
-        print(daty[daty.fullname == 'StreamDM NaiveBayes']['memory'])
         print('\t- Memory')
         fig = plt.figure(figsize=(23.38582, 16.53544))
         for name, color, marker, style in zip(names, colors, markers, styles):
