@@ -83,6 +83,34 @@ Notes
 Turn datafile into ARRF file.
 sed 's/\(.*\)\..*/\1/' a.log | ag -v ',0$' > final_a.log
 
+Result Structure
+----------------
+The results are split in three files:
+- models.csv
+- output 
+- output_runs
+
+The models.csv file contains information about the runs.
+- model_id :: a primary key that identify each models (algorithm+parameter+dataset).
+- name :: the algorithm's name.
+- file :: the dataset used.
+- parameters :: the other field are the parameter of the algorithm.
+
+The file output_runs contains information about each repetition:
+- model_id :: the id of the model.
+- run_id :: the id of the repetition.
+- time :: the runtime in seconds.
+- energy :: the energy used in joules.
+- power :: the power consumption in watts.
+
+The file output is a CSV file split in these columns:
+- model_id :: the id of the model seen in models.csv.
+- run_id :: the id of the repetition, which is often a number between 0 and the number of repetitions.
+- element_count :: the number of data point seen so far.
+- seed :: the seed used for that repetition.
+- accuracy :: the accuracy updated with the last data point.
+- f1 :: the F1 score updated with the last data point.
+- memory :: The amount of memory used.
 
 Hyperparameters
 ---------------
