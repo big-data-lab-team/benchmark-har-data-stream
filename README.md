@@ -1,8 +1,15 @@
 paper-benchmark
 ===============
 
+Requirements
+------------
+This benchmark requires the following software:
+- Git:: To download the source codes, the modules, and the datasets.
+- gcc:: To compile.
+- Panda, Seaborn, Matplotlib:: Used plot the figures.
+
 Setup the repository
---------------------------
+--------------------
 First we clone the repository and we initialize the submodules.
 ```
 git clone https://github.com/azazel7/paper-benchmark.git benchmark
@@ -26,15 +33,21 @@ mkdir bin
 ```
 The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
 
+Then we extract the datasets and we place the dataset in memory.
 ```
 tar xf datasets.tar.xz
 cp *.log /tmp
-rm -rf results_9
-mkdir results_9
+```
+
+To run the experiment, we rely on the make command, then we collect the result
+on the current directory. Note that `make run` can be replaced by `make
+calibration` to run an extensive search on the parameter.
+```
 make run
 cp models.csv /tmp/output /tmp/output_runs .
 ```
 
+Finally, we can either use `make process` or `make process_calibration` to plot the figures from the three output files.
 ```
 make process
 make process_calibration
@@ -57,26 +70,6 @@ make
 ```
 
 
-Setup on rapl-tool
-------------------
-This procedure works for both Ubuntu and Archlinux.
-Before using rapl-tool, you will need to load the msr module and adjust the permissions.
-
-```
-# Install and load the msr module
-sudo apt-get install msr-tools
-sudo modprobe msr
-
-# Set permissions
-sudo chmod o+rw /dev/cpu/0/msr
-```
-
-Recent versions of the linux kernel require special permission to access the msr.
-```
-sudo apt-get install libcap2-bin
-sudo setcap cap_sys_rawio+ep ./AppPowerMeter
-sudo setcap cap_sys_rawio+ep ./PowerMonitor
-```
 
 Notes
 -----
