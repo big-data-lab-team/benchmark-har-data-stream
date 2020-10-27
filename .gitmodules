@@ -1,6 +1,3 @@
-[submodule "OrpailleCC"]
-	path = OrpailleCC
-	url = https://github.com/azazel7/OrpailleCC.git
 [submodule "streamDM-Cpp"]
 	path = streamDM-Cpp
 	url = https://github.com/huawei-noah/streamDM-Cpp.git
