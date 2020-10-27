@@ -580,9 +580,6 @@ def print_results(output, output_runs, models, output_directory="."):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
             if len(daty[daty.fullname == name]['f1']) > 0:
                 i = len(daty[daty.fullname == name]['f1'])
-                print(name + " " + str(list(daty[daty.fullname == name]['f1'])[i-1]))
-        # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            # plt.legend(prop={"size":27}, ncol=3)
         if dataset_name in knn_offline_f1:
             x = [a for a in daty[daty.fullname == name]['element_count']]
             y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
@@ -625,8 +622,6 @@ def print_results(output, output_runs, models, output_directory="."):
             x = [a for a in daty[daty.fullname == name]['element_count']]
             y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
             plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
-        # if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            # plt.legend(prop={"size":25}, ncol=3)
         plt.ylim(0,1)
         plt.ylabel("F1")
         plt.xlabel("Element")
