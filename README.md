@@ -6,6 +6,7 @@ Requirements
 This benchmark requires the following software:
 - Git:: To download the source codes, the modules, and the datasets.
 - gcc:: To compile.
+- perf: to evaluate the resource usage, in particular, the runtime and the energy.
 - Panda, Seaborn, Matplotlib:: Used plot the figures.
 - log4cpp :: log4cpp is a requirement for streamDM-Cpp.
 
@@ -23,7 +24,7 @@ Then we compile streamDM-Cpp. To get a static library, we patch the Makefile.
 ```
 patch streamDM-Cpp/makefile streamdm_patch
 cd streamDM-Cpp
-make static
+make -j 8 static
 cd ..
 ```
 
