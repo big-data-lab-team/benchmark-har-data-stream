@@ -1,7 +1,7 @@
 OrpailleCC_DIR=$(shell pwd)/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
-MOA_DIR=/home/magoa/phd/moa
+MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 ifndef LABEL_COUNT
 LABEL_COUNT=33
