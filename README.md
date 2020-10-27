@@ -7,6 +7,7 @@ This benchmark requires the following software:
 - Git:: To download the source codes, the modules, and the datasets.
 - gcc:: To compile.
 - Panda, Seaborn, Matplotlib:: Used plot the figures.
+- log4cpp :: log4cpp is a requirement for streamDM-Cpp.
 
 Setup the repository
 --------------------
