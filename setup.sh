@@ -104,4 +104,3 @@ cp bin/empty_classifier bin/mcnn_* bin/mondrian_* bin/mlp_* bin/naive_bayes bin/
 make LABEL_COUNT=33 FEATURES_COUNT=120 BANOS=1 -j 8 #Banos 6 axis
 cp bin/empty_classifier bin/mcnn_* bin/mondrian_* bin/mlp_* bin/naive_bayes bin/streamdm_* bin/banos_6_histogram
 
-cp *.log /tmp
