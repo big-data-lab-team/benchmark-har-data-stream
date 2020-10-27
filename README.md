@@ -54,28 +54,17 @@ make process
 make process_calibration
 ```
 
-Generating latex
-----------------
+Regenerating MOA datasets
+-------------------------
 
-The latex code to compile the skeleton for the benchmark.
+Eventually, the MOA dataset can be regenerated with the command `make moa` even
+though they are also sotred in datasets.tar.xz.  MOA archive is available
+[here](https://sourceforge.net/projects/moa-datastream/). You can download it
+and place it in the repository under the name *moa* or you can modify the
+variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
+to remove the header and change the tabulation into commas and rename the class
+name to actual numbers starting at zero.
 
-```
-python makefile.py latex
-```
-
-or
-
-```
-cd paper
-make
-```
-
-
-
-Notes
------
-Turn datafile into ARRF file.
-sed 's/\(.*\)\..*/\1/' a.log | ag -v ',0$' > final_a.log
 
 Result Structure
 ----------------
