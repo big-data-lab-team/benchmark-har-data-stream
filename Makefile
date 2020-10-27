@@ -29,7 +29,7 @@ endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(DEBUG_FLAGS) 
 
-ALL_TARGET = AppPowerMeter empty_classifier previous_classifier \
+ALL_TARGET = empty_classifier previous_classifier \
 			 streamdm_ht streamdm_naive_bayes streamdm_perceptron\
 			 mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t20 mondrian_t50 mondrian_t100 \
 			 mcnn_c10 mcnn_c20 mcnn_c32 mcnn_c33 mcnn_c34 mcnn_c40 mcnn_c50 \
@@ -86,10 +86,6 @@ streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
 mlp_%: src/neural_network.cpp src/main.cpp
 	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"neural_network.cpp\"" -DLAYER_COUNT=$* -o bin/$@
-AppPowerMeter:
-	$(MAKE) -C rapl-tools
-	cp rapl-tools/AppPowerMeter rapl-tools/PowerMonitor .
-
 latex:
 	python makefile.py latex
 dataset:
@@ -118,6 +114,3 @@ process_calibration:
 	PYTHONHASHSEED=0 python makefile.py process_calibration
 clean:
 	rm -rf bin/mondrian_t* bin/empty_classifier bin/previous_classifier bin/mcnn_* bin/streamdm_ht bin/streamdm_perceptron bin/streamdm_naive_bayes bin/naive_bayes
-fullclean: clean
-	$(MAKE) -C rapl-tools clean
-	rm -f AppPowerMeter PowerMonitor
