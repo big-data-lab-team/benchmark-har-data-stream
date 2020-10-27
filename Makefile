@@ -65,6 +65,7 @@ streamdm_ht: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
+		-pthread \
 		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -o bin/$@ 
@@ -72,6 +73,7 @@ streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
+		-pthread \
 		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_naive_bayes.cpp\"" -o bin/$@ 
@@ -79,6 +81,7 @@ streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
+		-pthread \
 		-L$(StreamDM_DIR) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o bin/$@ 
