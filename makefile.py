@@ -215,10 +215,10 @@ def memory_list(commands):
             commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
 
 def final_list(commands):
-    # for dataset_name in ['banos']:
+    repetition_count = 30
     for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = "/tmp/" + dataset_name + ".log"
-        for run_id in map(str,range(1)):
+        for run_id in map(str,range(repetition_count)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
             commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
@@ -578,8 +578,9 @@ def print_results(output, output_runs, models, output_directory="."):
 
         for name, color, marker, style in zip(names, colors, markers, styles):
             plt.plot(daty[daty.fullname == name]['element_count'], daty[daty.fullname == name]['f1'], color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-            if len(daty[daty.fullname == name]['f1']) > 0:
-                i = len(daty[daty.fullname == name]['f1'])
+            # if len(daty[daty.fullname == name]['f1']) > 0:
+                # print(name+" - " + str(list(daty[daty.fullname == name]['f1'])[-1]))
+
         if dataset_name in knn_offline_f1:
             x = [a for a in daty[daty.fullname == name]['element_count']]
             y = [knn_offline_f1[dataset_name] for a in daty[daty.fullname == name]['element_count']]
