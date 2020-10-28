@@ -54,10 +54,13 @@ make run
 cp models.csv /tmp/output /tmp/output_runs .
 ```
 
-Finally, we can either use `make plot_results` or `make plot_hyperparameters` to plot the figures from the three output files.
-
+From the experiment results, we generate the plots (Figure 1-3) with the following command:
 ```
 make plot_results
+```
+
+From the calibration results, we generate the plots (Figure 4,5) with this command:
+```
 make plot_hyperparameters
 ```
 
