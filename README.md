@@ -1,20 +1,25 @@
-paper-benchmark
-===============
+A benchmark of data stream classification for human activity recognition on connected objects
+=============================================================================================
+
+This repository contains the script, the datasets, and the source code to
+conduct a benchmark of data stream classifiers. The original study was proposed
+in [here](https://arxiv.org/abs/2008.11880). The results were obtained with the
+version 1.0 of this repository.
 
 Requirements
 ------------
 This benchmark requires the following software:
-- Git: To download the source codes, the modules, and the datasets.
-- gcc: To compile.
+- git: to download the source codes, the modules, and the datasets.
+- gcc: to compile.
 - perf: to evaluate the resource usage, in particular, the runtime and the energy.
-- Panda, Seaborn, Matplotlib: Used plot the figures.
+- pandas, seaborn, matplotlib: to plot the figures.
 - log4cpp: log4cpp is a requirement for streamDM-Cpp.
 
 Setup the repository
 --------------------
 First we clone the repository and we initialize the submodules.
 ```
-git clone https://github.com/azazel7/paper-benchmark.git benchmark
+git clone https://github.com/big-data-lab-team/benchmark-har-data-stream.git benchmark
 cd benchmark
 git submodule init
 git submodule update
@@ -49,17 +54,18 @@ make run
 cp models.csv /tmp/output /tmp/output_runs .
 ```
 
-Finally, we can either use `make process` or `make process_calibration` to plot the figures from the three output files.
+Finally, we can either use `make plot_results` or `make plot_hyperparameters` to plot the figures from the three output files.
+
 ```
-make process
-make process_calibration
+make plot_results
+make plot_hyperparameters
 ```
 
 Regenerating MOA datasets
 -------------------------
 
-Eventually, the MOA dataset can be regenerated with the command `make moa` even
-though they are also sotred in datasets.tar.xz.  MOA archive is available
+The MOA dataset can be regenerated with the command `make moa` even
+though they are also stored in datasets.tar.xz.  MOA archive is available
 [here](https://sourceforge.net/projects/moa-datastream/). You can download it
 and place it in the repository under the name *moa* or you can modify the
 variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
@@ -96,8 +102,8 @@ The file output is a CSV file split in these columns:
 - f1: the F1 score updated with the last data point.
 - memory: The amount of memory used.
 
-Adding a datasets
------------------
+Adding a dataset
+----------------
 To add a new dataset, you need a CSV file where each line is a data point and
 the last field of that line is an integer that represents the class of the data
 point.  Then you need to add a make command in the script *setup.sh* to have
@@ -107,8 +113,8 @@ should be the name of the dataset file.
 Then, you'll need to modify the function *final_list* in *makefile.py* to
 append the name of the new dataset to the list.
 
-Adding a new classifier
------------------------
+Adding a classifier
+-------------------
 To add a new classifier, you need to code a C++ file that defines the function
 *get_classifier* and that returns a classifier object. This object must implement
 two functions: train and predict. The file *empty.cpp* is an example.

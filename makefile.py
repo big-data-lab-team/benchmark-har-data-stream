@@ -927,11 +927,11 @@ if len(sys.argv) > 1:
         dataset_banos()
     if sys.argv[1] == "latex":
         latex()
-    if sys.argv[1] == "process":
+    if sys.argv[1] == "plot_results":
         directory = "./"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         print_results(output, output_runs, models)
-    if sys.argv[1] == "process_calibration":
+    if sys.argv[1] == "plot_hyperparameters":
         directory = "./"
         output, output_runs, models = process_output(directory + "output", directory + "output_runs", directory + "models.csv")
         print_calibration(output, output_runs, models)
