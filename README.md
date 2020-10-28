@@ -4,11 +4,11 @@ paper-benchmark
 Requirements
 ------------
 This benchmark requires the following software:
-- Git:: To download the source codes, the modules, and the datasets.
-- gcc:: To compile.
+- Git: To download the source codes, the modules, and the datasets.
+- gcc: To compile.
 - perf: to evaluate the resource usage, in particular, the runtime and the energy.
-- Panda, Seaborn, Matplotlib:: Used plot the figures.
-- log4cpp :: log4cpp is a requirement for streamDM-Cpp.
+- Panda, Seaborn, Matplotlib: Used plot the figures.
+- log4cpp: log4cpp is a requirement for streamDM-Cpp.
 
 Setup the repository
 --------------------
@@ -75,26 +75,50 @@ The results are split in three files:
 - output_runs
 
 The models.csv file contains information about the runs.
-- model_id :: a primary key that identify each models (algorithm+parameter+dataset).
-- name :: the algorithm's name.
-- file :: the dataset used.
-- parameters :: the other field are the parameter of the algorithm.
+- model_id: a primary key that identify each models (algorithm+parameter+dataset).
+- name: the algorithm's name.
+- file: the dataset used.
+- parameters: the other field are the parameter of the algorithm.
 
 The file output_runs contains information about each repetition:
-- model_id :: the id of the model.
-- run_id :: the id of the repetition.
-- time :: the runtime in seconds.
-- energy :: the energy used in joules.
-- power :: the power consumption in watts.
+- model_id: the id of the model.
+- run_id: the id of the repetition.
+- time: the runtime in seconds.
+- energy: the energy used in joules.
+- power: the power consumption in watts.
 
 The file output is a CSV file split in these columns:
-- model_id :: the id of the model seen in models.csv.
-- run_id :: the id of the repetition, which is often a number between 0 and the number of repetitions.
-- element_count :: the number of data point seen so far.
-- seed :: the seed used for that repetition.
-- accuracy :: the accuracy updated with the last data point.
-- f1 :: the F1 score updated with the last data point.
-- memory :: The amount of memory used.
+- model_id: the id of the model seen in models.csv.
+- run_id: the id of the repetition, which is often a number between 0 and the number of repetitions.
+- element_count: the number of data point seen so far.
+- seed: the seed used for that repetition.
+- accuracy: the accuracy updated with the last data point.
+- f1: the F1 score updated with the last data point.
+- memory: The amount of memory used.
+
+Adding a datasets
+-----------------
+To add a new dataset, you need a CSV file where each line is a data point and
+the last field of that line is an integer that represents the class of the data
+point.  Then you need to add a make command in the script *setup.sh* to have
+the binary files place in the proper directory. The name of that directory
+should be the name of the dataset file.
+
+Then, you'll need to modify the function *final_list* in *makefile.py* to
+append the name of the new dataset to the list.
+
+Adding a new classifier
+-----------------------
+To add a new classifier, you need to code a C++ file that defines the function
+*get_classifier* and that returns a classifier object. This object must implement
+two functions: train and predict. The file *empty.cpp* is an example.
+
+Once you have written the classifier code, you need to modify the Makefile so
+it compiles it depending on the parameter provided to *make* such as
+the number of features or the number of classes.
+
+Finally, you will need to modify the function *final_list* in *makefile.py* to
+add the classifier to each dataset.
 
 Hyperparameters
 ---------------
