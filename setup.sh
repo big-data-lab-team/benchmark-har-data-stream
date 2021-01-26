@@ -1,3 +1,4 @@
+#!/bin/bash
 rm -rf bin
 mkdir bin
 mkdir bin/banos_3 bin/banos_6 bin/recofit_3 bin/recofit_6 bin/dataset_1 bin/dataset_2 bin/dataset_3 bin/banos_3_histogram bin/banos_6_histogram bin/drift_3 bin/drift_6
