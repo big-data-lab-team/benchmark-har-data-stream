@@ -3,6 +3,7 @@ OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
+PYTHON_COMMAND=python
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif
@@ -28,10 +29,6 @@ DEBUG_FLAGS=-Os -O3
 endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(DEBUG_FLAGS) 
-log4cpp=
-ifdef LOG4CPP_HOME
-log4cpp=-L$(LOG4CPP_HOME)/lib
-endif
 
 ALL_TARGET = empty_classifier previous_classifier \
 			 streamdm_ht streamdm_naive_bayes streamdm_perceptron\
@@ -97,17 +94,17 @@ mlp_%: src/neural_network.cpp src/main.cpp
 	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"neural_network.cpp\"" -DLAYER_COUNT=$* -o bin/$@
 latex:
-	python makefile.py latex
+	$(PYTHON_COMMAND) makefile.py latex
 dataset:
-	python makefile.py dataset
+	$(PYTHON_COMMAND) makefile.py dataset
 	shuf /tmp/processed_subject1_ideal.log > /tmp/processed_subject1_ideal_shuf.log
 run:
-	python makefile.py run
+	$(PYTHON_COMMAND) makefile.py run
 rerun: 
 	rm -f /tmp/output /tmp/output_runs models.csv
-	python makefile.py run
+	$(PYTHON_COMMAND) makefile.py run
 calibration: 
-	python makefile.py calibration
+	$(PYTHON_COMMAND) makefile.py calibration
 moa:
 	cd $(MOA_DIR)
 	#We set the random seed to 888
@@ -119,8 +116,8 @@ moa:
 	 sed 's/,class10,/,9/g' dataset_3.arff | sed 's/,class1,/,0/g' | sed 's/,class2,/,1/g' | sed 's/,class3,/,2/g' | sed 's/,class4,/,3/g' | sed 's/,class5,/,4/g' | sed 's/,class6,/,5/g' | sed 's/,class7,/,6/g' | sed 's/,class8,/,7/g' | sed 's/,class9,/,8/g' | sed 's/,/	/g' > dataset_3.log
 	 cp dataset_*.log /tmp
 plot_results:
-	PYTHONHASHSEED=0 python makefile.py plot_results
+	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_hyperparameters:
-	PYTHONHASHSEED=0 python makefile.py plot_hyperparameters
+	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_hyperparameters
 clean:
 	rm -rf bin/mondrian_t* bin/empty_classifier bin/previous_classifier bin/mcnn_* bin/streamdm_ht bin/streamdm_perceptron bin/streamdm_naive_bayes bin/naive_bayes
