@@ -294,7 +294,7 @@ def run(output_filename, run_output_filename, calibration=False):
     #Run every commands
     for i in range(len(commands)):
         #insert energy measurement
-        command = ['sudo', 'perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
+        command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
         command.extend(commands[i])
         print(" ".join(command))
 
@@ -314,13 +314,17 @@ def run(output_filename, run_output_filename, calibration=False):
                     joule_index = line.find(' Joules')
                     second_index = line.find(' seconds')
                     if joule_index > 0:
-                        joules += float(line[0:joule_index].replace(',', ''))
+                        try:
+                            joules += float(line[0:joule_index].replace(',', ''))
+                        except:
+                            print("Joule not supported")
                     if second_index > 0:
                         seconds += float(line[0:second_index].replace(',', ''))
                 else:
                     output_file.write(line + "\n")
 
         run_output_file.write(commands[i][3] + ',' + commands[i][4] + ',' + str(seconds) + ',' + str(joules) + ',' + str(joules/seconds) + '\n')
+        run_output_file.flush()
 
         print(str(i) + "/" + str(len(commands)))
 
