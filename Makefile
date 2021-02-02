@@ -45,16 +45,19 @@ mcnn_%: src/main.cpp src/mcnn.cpp
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mcnn.cpp\"" \
 		-DMAX_CLUSTERS=$(clusters) -o bin/$@
 
-mondrian_t%: src/mond.cpp src/main.cpp
-#	$* contains everything within "%" of the target
-	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
-
+#******************************************************************************************************************************************************************
 #mondrian_t%: src/mond.cpp src/main.cpp
 #	$* contains everything within "%" of the target
 #	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 #		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
-\
+
+#Alternative Mondrian, verificarlo run.
+mondrian_t%: src/mond.cpp src/main.cpp
+	verificarlo-c++ src/main.cpp -o ./src/main $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
+	VFC_BACKENDS="libinterflop_mca.so --precision-binary64=50" ./src/main
+
+
 empty_classifier: src/empty.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -o bin/$@
