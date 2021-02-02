@@ -3,11 +3,9 @@
 2,Mondrian,/tmp/banos_6.log,0.4,0.0,1.0,10,600000
 3,Mondrian,/tmp/banos_6.log,0.2,0.0,1.0,50,600000
 4,StreamDM HoeffdingTree,/tmp/banos_6.log,0,0.01,10
-5,NaiveBayes,/tmp/banos_6.log
-6,StreamDM NaiveBayes,/tmp/banos_6.log
-7,Mondrian,/tmp/banos_6.log,1.0,0.0,1.0,1,3000000
-8,Mondrian,/tmp/banos_6.log,0.4,0.0,1.0,5,3000000
-9,Mondrian,/tmp/banos_6.log,0.4,0.0,1.0,10,3000000
-10,Mondrian,/tmp/banos_6.log,0.2,0.0,1.0,50,3000000
-11,FNN,/tmp/banos_3_histogram.log,0.1,30
-12,FNN,/tmp/banos_6_histogram.log,0.1,30
+5,Mondrian,/tmp/banos_6.log,1.0,0.0,1.0,1,3000000
+6,Mondrian,/tmp/banos_6.log,0.4,0.0,1.0,5,3000000
+7,Mondrian,/tmp/banos_6.log,0.4,0.0,1.0,10,3000000
+8,Mondrian,/tmp/banos_6.log,0.2,0.0,1.0,50,3000000
+9,FNN,/tmp/banos_3_histogram.log,0.1,30
+10,FNN,/tmp/banos_6_histogram.log,0.1,30

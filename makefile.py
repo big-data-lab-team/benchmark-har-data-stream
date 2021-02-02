@@ -253,11 +253,11 @@ def final_list(commands):
             model_id = get_model_id("Mondrian," + filename + ",0.2,0.0,1.0,50,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.2", "0.0", "1.0"])
             model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
-            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
-            model_id = get_model_id("NaiveBayes," + filename)
-            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
-            model_id = get_model_id("StreamDM NaiveBayes," + filename)
-            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
+#            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
+#            model_id = get_model_id("NaiveBayes," + filename)
+#            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
+#            model_id = get_model_id("StreamDM NaiveBayes," + filename)
+#            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
             if dataset_name == 'banos_6' or dataset_name == 'recofit_6':
             	model_id = get_model_id('Mondrian,' + filename + ',1.0,0.0,1.0,1,3000000')
@@ -295,8 +295,8 @@ def run(output_filename, run_output_filename, calibration=False):
     #Run every commands
     for i in range(len(commands)):
         #insert energy measurement
-        command = ['sudo', 'perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
-        #command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
+        #command = ['sudo', 'perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
+        command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
         command.extend(commands[i])
         print(" ".join(command))
 
@@ -316,18 +316,18 @@ def run(output_filename, run_output_filename, calibration=False):
                     joule_index = line.find(' Joules')
                     second_index = line.find(' seconds')
                     if joule_index > 0:
-                    	joules += float(line[0:joule_index].replace(',', ''))
-                       #try:
-                       #	joules += float(line[0:joule_index].replace(',', ''))
-                       #except:
-                       #	print("Joule not supported")
+                    	#joules += float(line[0:joule_index].replace(',', ''))
+                       try:
+                       	joules += float(line[0:joule_index].replace(',', ''))
+                       except:
+                       	print("Joule not supported")
                     if second_index > 0:
                         seconds += float(line[0:second_index].replace(',', ''))
                 else:
                     output_file.write(line + "\n")
 
         run_output_file.write(commands[i][3] + ',' + commands[i][4] + ',' + str(seconds) + ',' + str(joules) + ',' + str(joules/seconds) + '\n')
-        #run_output_file.flush()
+        run_output_file.flush()
         
         print(str(i) + "/" + str(len(commands)))
 
