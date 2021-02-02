@@ -312,7 +312,7 @@ def run(output_filename, run_output_filename, calibration=False):
                 if line[0] not in {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}:
                     line = line.strip()
                     joule_index = line.find(' Joules')
-                    second_index = line.find(' seconds')
+                    second_index = line.find(' seconds time elapsed')
                     if joule_index > 0:
                         try:
                             joules += float(line[0:joule_index].replace(',', ''))
