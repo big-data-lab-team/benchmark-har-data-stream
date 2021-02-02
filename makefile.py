@@ -328,7 +328,6 @@ def run(output_filename, run_output_filename, calibration=False):
 
         run_output_file.write(commands[i][3] + ',' + commands[i][4] + ',' + str(seconds) + ',' + str(joules) + ',' + str(joules/seconds) + '\n')
         run_output_file.flush()
-        
         print(str(i) + "/" + str(len(commands)))
 
 def read_models(filename):
