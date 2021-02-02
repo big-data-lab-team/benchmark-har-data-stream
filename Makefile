@@ -3,7 +3,7 @@ OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
-PYTHON_COMMAND=python
+PYTHON_COMMAND=python3
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif
@@ -50,6 +50,11 @@ mondrian_t%: src/mond.cpp src/main.cpp
 	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
 
+#mondrian_t%: src/mond.cpp src/main.cpp
+#	$* contains everything within "%" of the target
+#	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
+#		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
+\
 empty_classifier: src/empty.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -o bin/$@
@@ -64,6 +69,7 @@ naive_bayes: src/naive_bayes.cpp src/main.cpp
 
 streamdm_ht: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-L/home/mark/log4cpp/install/lib\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
 		-pthread \
@@ -73,8 +79,10 @@ streamdm_ht: src/streamdm_ht.cpp src/main.cpp
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -o bin/$@ 
 streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-L/home/mark/log4cpp/install/lib\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
+		-L/home/mark/log4cpp/install/lib\
 		-pthread \
 		-L$(StreamDM_DIR) \
 		$(log4cpp) \
@@ -82,11 +90,12 @@ streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_naive_bayes.cpp\"" -o bin/$@ 
 streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
 	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+		-I/home/mark/log4cpp/install/include \
 		-I$(StreamDM_DIR)/code \
+		-L/home/mark/log4cpp/install/lib \
+		-L$(StreamDM_DIR) \
 		-llog4cpp \
 		-pthread \
-		-L$(StreamDM_DIR) \
-		$(log4cpp) \
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o bin/$@ 
 
