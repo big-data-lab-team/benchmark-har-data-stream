@@ -14,5 +14,3 @@
 		cp /tmp/output_runs verificarlo_results/output_runs_$i
 		cp models.csv verificarlo_results/models_$i.csv
 	done
-
-

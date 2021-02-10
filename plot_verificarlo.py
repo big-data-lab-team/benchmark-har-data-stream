@@ -1,20 +1,22 @@
-import subprocess
-import sys
-import math
 import os
 import csv
-import random
 import statistics, re
-import pandas as pd
+import pandas as pd #yes
 import seaborn as sns
 from statistics import mean
-import matplotlib.pyplot as plt
-from random import shuffle
+import matplotlib.pyplot as plt #yes
+def hashStringToColor(string):
+    hsh = hash(string)
+    r = (hsh & 0xFF0000) >> 16
+    g = (hsh & 0x00FF00) >> 8
+    b = hsh & 0x0000FF
+    return "#" + format(r, "02x") + format(g, "02x") + format(b, "02x")
 
 def process_output(output_filename, run_output_filename, model_filename):
     def add_names(row, models):
         key = str(int(row['model_id']))
         name = models[key]['name']
+        ##### CHANGE HERE TO CHANGE FULLNAME ######
         if name == 'Mondrian':
             return name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + str(int(models[key]['memory_size']) / 600000) + ')'
         elif name == 'MCNN':
@@ -145,8 +147,9 @@ def print_results(output, output_runs, models, output_directory="."):
                 return ('MCNN OrpailleCC ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN OrpailleCC', int(models[key]['cluster_count'])))
         else:
             return (name, key, (name, 0))
-
+    ####### Controlling the datasets 1/4 ########
     dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis', 'drift_6' : 'Banos et al 6 axis (Drift)'}
+    #dataset_title = {'banos_6': 'Banos et al, 6 axis'}
     #(print name, key in models, tuple for sorting)
     keys = [add_key(key) for key in models if models[key]['fullname'] != 'Previous']
     #grounp the third and second value to use dict to do a unique
@@ -158,41 +161,20 @@ def print_results(output, output_runs, models, output_directory="."):
     colors = [add_colors(key) for key in keys]
     markers = [add_markers(key) for key in keys]
     styles = [add_style(key) for key in keys]
+    ####### Controlling the datasets 2/4 ########
     knn_offline_f1 = {'banos_3': 0.0, 'recofit_3': 0.0, 'drift_3': 0.0, 'dataset_1': 0.95, 'dataset_2' : 0.78, 'dataset_3' : 0.69, 'banos_6': 0.86, 'recofit_6': 0.40, 'drift_6' : 0.86}
+    #knn_offline_f1 = {'banos_6': 0.86}
     print(names)
     print(colors)
     print(markers)
     print(styles)
     plt.rcParams.update({'font.size': 33})
-    list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'dataset_2', 'recofit_6']
+    ####### Controlling the datasets 3/4 ########
+    list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'recofit_6']
+    #list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'dataset_2', 'recofit_6']
+    #list_datastets = ['banos_6']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
-        print('\t- Energy')
-        fig = plt.figure(figsize=(23.38582, 16.53544))
-        ax = sns.boxplot(x="fullname", hue="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
-        ax.legend().remove()
-        ax = sns.swarmplot(x="fullname", y="energy", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
-        ax.legend().remove()
-        plt.xticks(rotation=90)
-        plt.ylabel("Joules")
-        plt.xlabel("Algorithm")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_energy" + ".png")
-        plt.clf()
-
-        print('\t- Power')
-        fig = plt.figure(figsize=(23.38582, 16.53544))
-        ax = sns.boxplot(x="fullname", hue="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], palette=colors, order=names, hue_order=names, dodge=False, boxprops=dict(alpha=.3))
-        ax.legend().remove()
-        ax = sns.swarmplot(x="fullname", y="power", data=output_runs[output_runs.file.str.contains(dataset_name)], order=names, palette=colors, hue_order=names, alpha=0.75)
-        ax.legend().remove()
-        plt.ylim(95, 105)
-        plt.xticks(rotation=90)
-        plt.ylabel("Watt")
-        plt.xlabel("Algorithm")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_watt" + ".png")
-        plt.clf()
 
         print('\t- Time')
         fig = plt.figure(figsize=(23.38582, 16.53544))
@@ -282,24 +264,6 @@ def print_results(output, output_runs, models, output_directory="."):
         plt.tight_layout()
         plt.savefig(output_directory + "/" + dataset_name + "_accuracy" + ".png")
         plt.clf()
-
-        print('\t- Memory')
-        fig = plt.figure(figsize=(23.38582, 16.53544))
-        for name, color, marker, style in zip(names, colors, markers, styles):
-            if 'StreamDM' in name:
-                base = [x for x in daty[daty.fullname == 'StreamDM NaiveBayes']['memory']]
-            else:
-                base = [x for x in daty[daty.fullname == 'NaiveBayes']['memory']]
-            if len(daty[daty.fullname == name]['memory']) == len(daty[daty.fullname == 'Empty']['memory']):
-                y = [x[0] - x[1] for x in zip(daty[daty.fullname == name]['memory'], base)]
-                plt.plot(daty[daty.fullname == name]['element_count'], y, color=color, marker=marker, linestyle=style, markevery=0.1, markersize=15, label=name)
-        if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-            plt.legend(prop={"size":24}, ncol=3)
-        plt.ylabel("KB")
-        plt.xlabel("Element")
-        plt.tight_layout()
-        plt.savefig(output_directory + "/" + dataset_name + "_memory" + ".png")
-        plt.clf()
 def read_models(filename):
     models = {}
     model_file = open(filename, "r")
@@ -348,5 +312,7 @@ def read_models(filename):
     return models
 #main driver
 for i in [32, 40, 48, 56, 64]:
-	output, output_runs, models = process_output("verificarlo_results/output_"+i,"verificarlo_results/output_runs_","verificarlo_results/models.csv"+i)
-	print_results(output, output_runs, models)
+	output, output_runs, models = process_output("verificarlo_results/output_"+str(i),"verificarlo_results/output_runs_"+str(i),"verificarlo_results/models_"+str(i)+".csv")
+	if not os.path.exists("verificarlo_plotting_"+str(i)):
+		os.mkdir("verificarlo_plotting_"+str(i))
+	print_results(output, output_runs, models, output_directory='verificarlo_plotting_'+str(i))

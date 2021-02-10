@@ -129,6 +129,8 @@ moa:
 	 cp dataset_*.log /tmp
 plot_results:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
+plot_verificarlo:
+	PYTHONHASHSEED=0 $(PYTHON_COMMAND) plot_verificarlo.py
 plot_hyperparameters:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_hyperparameters
 clean:
