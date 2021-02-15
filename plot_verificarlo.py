@@ -149,7 +149,7 @@ def print_results(output, output_runs, models, output_directory="."):
             return (name, key, (name, 0))
     ####### Controlling the datasets 1/4 ########
     dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis', 'drift_6' : 'Banos et al 6 axis (Drift)'}
-    #dataset_title = {'banos_6': 'Banos et al, 6 axis'}
+    #dataset_title = {'banos_3': 'Banos et al', 'banos_6': 'Banos et al, 6 axis'}
     #(print name, key in models, tuple for sorting)
     keys = [add_key(key) for key in models if models[key]['fullname'] != 'Previous']
     #grounp the third and second value to use dict to do a unique
@@ -163,7 +163,7 @@ def print_results(output, output_runs, models, output_directory="."):
     styles = [add_style(key) for key in keys]
     ####### Controlling the datasets 2/4 ########
     knn_offline_f1 = {'banos_3': 0.0, 'recofit_3': 0.0, 'drift_3': 0.0, 'dataset_1': 0.95, 'dataset_2' : 0.78, 'dataset_3' : 0.69, 'banos_6': 0.86, 'recofit_6': 0.40, 'drift_6' : 0.86}
-    #knn_offline_f1 = {'banos_6': 0.86}
+    #knn_offline_f1 = {'banos_3': 0.0, 'banos_6': 0.86}
     print(names)
     print(colors)
     print(markers)
@@ -172,7 +172,7 @@ def print_results(output, output_runs, models, output_directory="."):
     ####### Controlling the datasets 3/4 ########
     list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'recofit_6']
     #list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'dataset_2', 'recofit_6']
-    #list_datastets = ['banos_6']
+    #list_datastets = ['banos_6', 'banos_3']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
 
@@ -311,7 +311,7 @@ def read_models(filename):
           models[row[0]]["fullname"] = models[row[0]]["name"]
     return models
 #main driver
-for i in [32, 40, 48, 56, 64]:
+for i in range(11,53,2):
 	output, output_runs, models = process_output("verificarlo_results/output_"+str(i),"verificarlo_results/output_runs_"+str(i),"verificarlo_results/models_"+str(i)+".csv")
 	if not os.path.exists("verificarlo_plotting_"+str(i)):
 		os.mkdir("verificarlo_plotting_"+str(i))

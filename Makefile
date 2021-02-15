@@ -54,7 +54,7 @@ mcnn_%: src/main.cpp src/mcnn.cpp
 #Alternative Mondrian, verificarlo run.
 
 mondrian_t%: src/mond.cpp src/main.cpp
-	verificarlo-c++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+	verificarlo-c++ --verbose --exclude-file exclude.txt src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
 
 
