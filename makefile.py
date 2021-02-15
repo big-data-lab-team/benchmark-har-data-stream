@@ -216,7 +216,9 @@ def memory_list(commands):
 
 def final_list(commands):
     repetition_count = 30
-    for dataset_name in ["banos_6"]: #["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
+    ####### Controlling the datasets 4/4 ########
+    #for dataset_name in ["banos_3", "banos_6"]:
+    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = "/tmp/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
             seed = str(random.randint(0, 2**24))
@@ -252,7 +254,7 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.4", "0.0", "1.0"])
             model_id = get_model_id("Mondrian," + filename + ",0.2,0.0,1.0,50,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.2", "0.0", "1.0"])
-            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
+#            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
 #            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
 #            model_id = get_model_id("NaiveBayes," + filename)
 #            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
@@ -295,13 +297,17 @@ def run(output_filename, run_output_filename, calibration=False):
     #Run every commands
     for i in range(len(commands)):
         #insert energy measurement
-        #command = ['sudo', 'perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
-        command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
+        command = ['perf', 'stat']
+        #command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
         command.extend(commands[i])
         print(" ".join(command))
 
         #run and get the output
-        out = subprocess.check_output(command, stderr=subprocess.STDOUT)
+        try:
+        	out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
+        except subprocess.TimeoutExpired:
+        	print("Error timeout.")
+        	continue
 
         #read output line by line
         joules = 0
@@ -314,7 +320,7 @@ def run(output_filename, run_output_filename, calibration=False):
                 if line[0] not in {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}:
                     line = line.strip()
                     joule_index = line.find(' Joules')
-                    second_index = line.find(' seconds')
+                    second_index = line.find(' seconds time elapsed')
                     if joule_index > 0:
                     	#joules += float(line[0:joule_index].replace(',', ''))
                        try:
