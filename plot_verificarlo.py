@@ -311,8 +311,14 @@ def read_models(filename):
           models[row[0]]["fullname"] = models[row[0]]["name"]
     return models
 #main driver
-for i in range(11,53,2):
-	output, output_runs, models = process_output("verificarlo_results/output_"+str(i),"verificarlo_results/output_runs_"+str(i),"verificarlo_results/models_"+str(i)+".csv")
-	if not os.path.exists("verificarlo_plotting_"+str(i)):
-		os.mkdir("verificarlo_plotting_"+str(i))
-	print_results(output, output_runs, models, output_directory='verificarlo_plotting_'+str(i))
+dir_name = 'results'
+output_lst, output_run_lst, models_lst = [], [], []
+PRECISIONS = [1,2]
+for i in PRECISIONS:
+    output, output_runs, models = process_output(dir_name+"/output_"+str(i),dir_name+"/output_runs_"+str(i),dir_name+"/models_"+str(i)+".csv")
+    output_lst.append(output)
+    output_run_lst.append(output_runs)
+    models_lst.append(models)
+if not os.path.exists("verificarlo_plotting"):
+    os.mkdir("verificarlo_plotting")
+print_results(output_lst, output_runs_lst, models_lst, output_directory='verificarlo_plotting')
