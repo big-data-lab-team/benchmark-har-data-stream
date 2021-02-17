@@ -134,22 +134,22 @@ def print_results(output, output_runs, models, output_directory="."):
             return ':'
         return '-'
     def add_key(key):
-        name = models[key]['name']
+        name = models[0][key]['name']
         if name == 'Mondrian':
-            ram_count = str(int(models[key]['memory_size']) / 600000)
-            return (name + ' ' + models[key]['tree_count'] + ' tree(s) (RAM x' + ram_count + ')', key, (name + ' (RAM x' + ram_count + ')', int(models[key]['tree_count'])))
+            ram_count = str(int(models[0][key]['memory_size']) / 600000)
+            return (name + ' ' + models[0][key]['tree_count'] + ' tree(s) (RAM x' + ram_count + ')', key, (name + ' (RAM x' + ram_count + ')', int(models[0][key]['tree_count'])))
         elif name == 'MCNN':
             if models[key]['cleaning'] == '1':
-                return ('MCNN Origin ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Origin', int(models[key]['cluster_count'])))
+                return ('MCNN Origin ' + models[0][key]['cluster_count'] + ' clusters', key, ('MCNN Origin', int(models[0][key]['cluster_count'])))
             elif models[key]['cleaning'] == '2':
-                return ('MCNN Mixe ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN Mixe', int(models[key]['cluster_count'])))
+                return ('MCNN Mixe ' + models[0][key]['cluster_count'] + ' clusters', key, ('MCNN Mixe', int(models[0][key]['cluster_count'])))
             else:
-                return ('MCNN OrpailleCC ' + models[key]['cluster_count'] + ' clusters', key, ('MCNN OrpailleCC', int(models[key]['cluster_count'])))
+                return ('MCNN OrpailleCC ' + models[0][key]['cluster_count'] + ' clusters', key, ('MCNN OrpailleCC', int(models[0][key]['cluster_count'])))
         else:
             return (name, key, (name, 0))
     ####### Controlling the datasets 1/4 ########
-    dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis', 'drift_6' : 'Banos et al 6 axis (Drift)'}
-    #dataset_title = {'banos_3': 'Banos et al', 'banos_6': 'Banos et al, 6 axis'}
+    #dataset_title = {'banos_3': 'Banos et al', 'recofit_3': 'Recofit', 'drift_3': 'Banos et al (Drift)', 'dataset_1': 'Hyperplane', 'dataset_2' : 'RandomRBF', 'dataset_3' : 'RandomTree', 'banos_6': 'Banos et al, 6 axis', 'recofit_6': 'Recofit 6 axis', 'drift_6' : 'Banos et al 6 axis (Drift)'}
+    dataset_title = {'banos_3': 'Banos et al', 'banos_6': 'Banos et al, 6 axis'}
     #(print name, key in models, tuple for sorting)
     keys = [add_key(key) for key in models[0] if models[0][key]['fullname'] != 'Previous']
     #grounp the third and second value to use dict to do a unique
@@ -158,21 +158,22 @@ def print_results(output, output_runs, models, output_directory="."):
     keys = [(key[0], key[1][0], key[1][1]) for key in keys]
     keys = sorted(keys, key = lambda x: x[2])
     names = [key[0] for key in keys]
-    colors = [add_colors(key) for key in keys]
-    markers = [add_markers(key) for key in keys]
-    styles = [add_style(key) for key in keys]
+    
+    #colors = [add_colors(key) for key in keys]
+    #markers = [add_markers(key) for key in keys]
+    #styles = [add_style(key) for key in keys]
     ####### Controlling the datasets 2/4 ########
-    knn_offline_f1 = {'banos_3': 0.0, 'recofit_3': 0.0, 'drift_3': 0.0, 'dataset_1': 0.95, 'dataset_2' : 0.78, 'dataset_3' : 0.69, 'banos_6': 0.86, 'recofit_6': 0.40, 'drift_6' : 0.86}
-    #knn_offline_f1 = {'banos_3': 0.0, 'banos_6': 0.86}
+    #knn_offline_f1 = {'banos_3': 0.0, 'recofit_3': 0.0, 'drift_3': 0.0, 'dataset_1': 0.95, 'dataset_2' : 0.78, 'dataset_3' : 0.69, 'banos_6': 0.86, 'recofit_6': 0.40, 'drift_6' : 0.86}
+    knn_offline_f1 = {'banos_3': 0.0, 'banos_6': 0.86}
     #print(names)
     #print(colors)
     #print(markers)
     #print(styles)
     plt.rcParams.update({'font.size': 33})
     ####### Controlling the datasets 3/4 ########
-    list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'recofit_6']
+    #list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'recofit_6']
     #list_datastets = ['banos_6', 'drift_3', 'banos_3', 'recofit_3', 'dataset_1', 'dataset_2', 'dataset_3', 'drift_6', 'dataset_2', 'recofit_6']
-    #list_datastets = ['banos_6', 'banos_3']
+    list_datastets = ['banos_6', 'banos_3']
     for dataset_name in list_datastets:
         print('Dataset: ' + dataset_name)
         daty, daty_std = [], []
@@ -189,18 +190,18 @@ def print_results(output, output_runs, models, output_directory="."):
             big_output_run = big_output_run.append(output_run_lst[i])
         for name in names:
             #TIME
-            fig = plt.figure(figsize=(23.38582, 16.53544))
-            k=big_output_run[big_output_run.fullname.str.contains(name)]
-            ax = sns.boxplot(x="precision", hue="precision", y="time", data=k[k.file.str.contains(dataset_name)], order=PRECISIONS, hue_order=PRECISIONS, dodge=False, boxprops=dict(alpha=.3))
-            ax.legend().remove()
-            ax = sns.swarmplot(x="precision", y="time", data=k[k.file.str.contains(dataset_name)], order=PRECISIONS, hue_order=PRECISIONS, alpha=0.75)
-            ax.legend().remove()
-            plt.xticks(rotation=90)
-            plt.ylabel("Dataset processing time (seconds)")
-            plt.xlabel("Precision")
-            plt.tight_layout()
-            plt.savefig(output_directory + "/" + dataset_name + "_runtime_" + name + ".png")
-            plt.clf()
+            #fig = plt.figure(figsize=(23.38582, 16.53544))
+            #k=big_output_run[big_output_run.fullname.str.contains(name)]
+            #ax = sns.boxplot(x="precision", hue="precision", y="time", data=k[k.file.str.contains(dataset_name)], order=PRECISIONS, hue_order=PRECISIONS, dodge=False, boxprops=dict(alpha=.3))
+            #ax.legend().remove()
+            #ax = sns.swarmplot(x="precision", y="time", data=k[k.file.str.contains(dataset_name)], order=PRECISIONS, hue_order=PRECISIONS, alpha=0.75)
+            #ax.legend().remove()
+            #plt.xticks(rotation=90)
+            #plt.ylabel("Dataset processing time (seconds)")
+            #plt.xlabel("Precision")
+            #plt.tight_layout()
+            #plt.savefig(output_directory + "/" + dataset_name + "_runtime_" + name + ".png")
+            #plt.clf()
             #F1
             fig = plt.figure(figsize=(23.38582, 16.53544))
             for i, precision in enumerate(PRECISIONS):
@@ -208,17 +209,17 @@ def print_results(output, output_runs, models, output_directory="."):
                 # if len(daty[daty.fullname == name]['f1']) > 0:
                     # print(name+" - " + str(list(daty[daty.fullname == name]['f1'])[-1]))
 
-                if dataset_name in knn_offline_f1:
-                    x = [a for a in daty[i][daty[i].fullname == name]['element_count']]
-                    y = [knn_offline_f1[dataset_name] for a in daty[i][daty[i].fullname == name]['element_count']]
-                    plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
+            if dataset_name in knn_offline_f1:
+                x = [a for a in daty[i][daty[i].fullname == name]['element_count']]
+                y = [knn_offline_f1[dataset_name] for a in daty[i][daty[i].fullname == name]['element_count']]
+                plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
 
-                plt.ylim(0,1)
-                plt.ylabel("F1")
-                plt.xlabel("Element")
-                plt.tight_layout()
-                plt.savefig(output_directory + "/" + dataset_name + "_f1_" + name + ".png")
-                plt.clf()
+            plt.ylim(0,1)
+            plt.ylabel("F1")
+            plt.xlabel("Element")
+            plt.tight_layout()
+            plt.savefig(output_directory + "/" + dataset_name + "_f1_" + name + ".png")
+            plt.clf()
             #F1 std
             fig = plt.figure(figsize=(23.38582, 16.53544))
             for i, precision in enumerate(PRECISIONS):
@@ -228,29 +229,29 @@ def print_results(output, output_runs, models, output_directory="."):
                 plt.plot(daty[i][daty[i].fullname == name]['element_count'], daty[i][daty[i].fullname == name]['f1'], markevery=0.1, markersize=15, label="Precision {} bits".format(precision))
                 plt.fill_between(daty_std[i][daty_std[i].fullname == name]['element_count'], y1, y2, alpha=0.15)
 
-                if dataset_name in knn_offline_f1:
-                    x = [a for a in daty[i][daty[i].fullname == name]['element_count']]
-                    y = [knn_offline_f1[dataset_name] for a in daty[i][daty[i].fullname == name]['element_count']]
-                    plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
+            if dataset_name in knn_offline_f1:
+                x = [a for a in daty[i][daty[i].fullname == name]['element_count']]
+                y = [knn_offline_f1[dataset_name] for a in daty[i][daty[i].fullname == name]['element_count']]
+                plt.plot(x, y, color='#000000', linestyle='-.', label='kNN Offline')
 
-                plt.ylim(0,1)
-                plt.ylabel("F1")
-                plt.xlabel("Element")
-                plt.tight_layout()
-                plt.savefig(output_directory + "/" + dataset_name + "_f1_std_" + name + ".png")
-                plt.clf()
+            plt.ylim(0,1)
+            plt.ylabel("F1")
+            plt.xlabel("Element")
+            plt.tight_layout()
+            plt.savefig(output_directory + "/" + dataset_name + "_f1_std_" + name + ".png")
+            plt.clf()
             #Accuracy
             fig = plt.figure(figsize=(23.38582, 16.53544))
             for i, precision in enumerate(PRECISIONS):
                 plt.plot(daty[i][daty[i].fullname == name]['element_count'], daty[i][daty[i].fullname == name]['accuracy'], markevery=0.1, markersize=15, label="Precision {} bits".format(precision))
-                if dataset_name == 'banos_3' or dataset_name == 'banos_6':
-                    plt.legend(prop={"size":25}, ncol=3)
-                plt.ylim(0,1)
-                plt.ylabel("Accuracy")
-                plt.xlabel("Element")
-                plt.tight_layout()
-                plt.savefig(output_directory + "/" + dataset_name + "_accuracy_" + name + ".png")
-                plt.clf()
+            if dataset_name == 'banos_3' or dataset_name == 'banos_6':
+                plt.legend(prop={"size":25}, ncol=3)
+            plt.ylim(0,1)
+            plt.ylabel("Accuracy")
+            plt.xlabel("Element")
+            plt.tight_layout()
+            plt.savefig(output_directory + "/" + dataset_name + "_accuracy_" + name + ".png")
+            plt.clf()
 def read_models(filename):
     models = {}
     model_file = open(filename, "r")
@@ -300,7 +301,7 @@ def read_models(filename):
 #main driver
 dir_name = 'results'
 output_lst, output_run_lst, models_lst = [], [], []
-PRECISIONS = [1,2]
+PRECISIONS = [44, 46, 48, 50, 52]
 for i in PRECISIONS:
     output, output_runs, models = process_output(dir_name+"/output_"+str(i),dir_name+"/output_runs_"+str(i),dir_name+"/models_"+str(i)+".csv")
     output_lst.append(output)
@@ -308,4 +309,4 @@ for i in PRECISIONS:
     models_lst.append(models)
 if not os.path.exists("verificarlo_plotting"):
     os.mkdir("verificarlo_plotting")
-print_results(output_lst, output_runs_lst, models_lst, output_directory='verificarlo_plotting')
+print_results(output_lst, output_run_lst, models_lst, output_directory='verificarlo_plotting')
