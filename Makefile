@@ -27,7 +27,7 @@ SHELL := /bin/bash
 ifeq ($(config), debug)
 DEBUG_FLAGS= -g -O0 $(FLAG_GCOV)
 else #release config by default
-DEBUG_FLAGS=-Os -O3
+DEBUG_FLAGS=-Os -O3 -fno-inline
 endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(DEBUG_FLAGS) 
@@ -53,7 +53,6 @@ mcnn_%: src/main.cpp src/mcnn.cpp
 
 #	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 #		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
-
 #Alternative Mondrian, verificarlo run.
 
 mondrian_t%: src/mond.cpp src/main.cpp

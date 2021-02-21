@@ -217,11 +217,11 @@ def memory_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets 4/4 ########
-    #for dataset_name in ["banos_3", "banos_6"]:
-    for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
+    for dataset_name in ["banos_3", "banos_6"]:
+    #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = "/tmp/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
-            seed = str(random.randint(0, 2**24))
+            seed = str(run_id)
 #            model_id = get_model_id("Empty," + filename)
 #            commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
 #            model_id = get_model_id("MCNN," + filename + ",10,16,0,10")
@@ -304,7 +304,8 @@ def run(output_filename, run_output_filename, calibration=False):
 
         #run and get the output
         try:
-        	out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
+        	#out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
+        	out = subprocess.check_output(command, stderr=subprocess.STDOUT)
         except subprocess.TimeoutExpired:
         	print("Error timeout.")
         	continue

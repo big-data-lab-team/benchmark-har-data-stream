@@ -1,1 +1,3 @@
 main _ZN10EvaluationILi33EE5countEii
+main _ZNK10EvaluationILi33EE8accuracyEv
+main _ZNK10EvaluationILi33EE2f1Ev
