@@ -19,7 +19,9 @@ endif
 ifdef NN_TRAIN
 NN_TRAINING=-DNN_TRAINING
 endif
-
+ifndef CXX
+CXX=g++
+endif
 SHELL := /bin/bash
 
 ifeq ($(config), debug)
@@ -41,13 +43,14 @@ compile:  $(ALL_TARGET)
 
 mcnn_%: src/main.cpp src/mcnn.cpp
 	$(eval clusters=$(shell sed -nr 's/^c([0-9]+)/\1/p' <<< $*))
-	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
+	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mcnn.cpp\"" \
 		-DMAX_CLUSTERS=$(clusters) -o bin/$@
 
 #******************************************************************************************************************************************************************
 #mondrian_t%: src/mond.cpp src/main.cpp
 #	$* contains everything within "%" of the target
+
 #	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 #		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
 #Alternative Mondrian, verificarlo run.
@@ -58,20 +61,19 @@ mondrian_t%: src/mond.cpp src/main.cpp
 
 
 empty_classifier: src/empty.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"empty.cpp\"" -o bin/$@
 
 previous_classifier: src/previous.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"previous.cpp\"" -o bin/$@
 
 naive_bayes: src/naive_bayes.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"naive_bayes.cpp\"" -o bin/$@
 
 streamdm_ht: src/streamdm_ht.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-L/home/mark/log4cpp/install/lib\
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
 		-pthread \
@@ -80,8 +82,7 @@ streamdm_ht: src/streamdm_ht.cpp src/main.cpp
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_ht.cpp\"" -o bin/$@ 
 streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-L/home/mark/log4cpp/install/lib\
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-llog4cpp \
 		-L/home/mark/log4cpp/install/lib\
@@ -91,8 +92,7 @@ streamdm_naive_bayes: src/streamdm_naive_bayes.cpp src/main.cpp
 		-lstreamdm \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_naive_bayes.cpp\"" -o bin/$@ 
 streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
-	g++ src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
-		-I/home/mark/log4cpp/install/include \
+	$(CXX) src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-I$(StreamDM_DIR)/code \
 		-L/home/mark/log4cpp/install/lib \
 		-L$(StreamDM_DIR) \
@@ -102,7 +102,7 @@ streamdm_perceptron: src/streamdm_ht.cpp src/main.cpp
 		-DCLASSIFIER_INITIALIZATION_FILE="\"streamdm_perceptron.cpp\"" -o bin/$@ 
 
 mlp_%: src/neural_network.cpp src/main.cpp
-	g++ src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
+	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG)\
 		-DCLASSIFIER_INITIALIZATION_FILE="\"neural_network.cpp\"" -DLAYER_COUNT=$* -o bin/$@
 latex:
 	$(PYTHON_COMMAND) makefile.py latex
