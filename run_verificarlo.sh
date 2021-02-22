@@ -2,7 +2,7 @@
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	
-	for ((i = 36; i > 10; i=i-2))
+	for ((i = 18; i > 10; i=i-2))
 	do
 		echo Running Mondrians with precision of $i bits...
 		export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$i"
