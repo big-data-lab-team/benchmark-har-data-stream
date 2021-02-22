@@ -218,7 +218,7 @@ def memory_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets 4/4 ########
-    for dataset_name in ["banos_3", "banos_6"]:
+    for dataset_name in ["banos_6"]:
     #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
