@@ -10,7 +10,7 @@ import seaborn as sns
 from statistics import mean
 import matplotlib.pyplot as plt
 from random import shuffle
-OUTDIR = '/tmp'
+OUTDIR = 'tmp'
 def stdev(l):
     if len(l) <= 1:
         return 0.0

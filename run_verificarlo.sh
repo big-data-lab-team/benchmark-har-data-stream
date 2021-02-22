@@ -1,5 +1,5 @@
 #!/bin/bash
-OUTDIR=/tmp
+OUTDIR=tmp
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	
