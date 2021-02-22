@@ -10,6 +10,7 @@ import seaborn as sns
 from statistics import mean
 import matplotlib.pyplot as plt
 from random import shuffle
+OUTDIR = 'tmp'
 def stdev(l):
     if len(l) <= 1:
         return 0.0
@@ -151,7 +152,7 @@ def calibration_list(commands):
 def memory_list(commands):
     # for dataset_name in ['banos']:
     for dataset_name in ['drift_6', 'banos_6', 'recofit_6']:
-        filename = "/tmp/" + dataset_name + ".log"
+        filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(10)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
@@ -219,7 +220,7 @@ def final_list(commands):
     ####### Controlling the datasets 4/4 ########
     for dataset_name in ["banos_3", "banos_6"]:
     #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
-        filename = "/tmp/" + dataset_name + ".log"
+        filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
             seed = str(run_id)
 #            model_id = get_model_id("Empty," + filename)
@@ -272,7 +273,7 @@ def final_list(commands):
             	commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.2', '0.0', '1.0'])
 
     for dataset_name in ["banos_3_histogram", "banos_6_histogram"]:
-        filename = "/tmp/" + dataset_name + ".log"
+        filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(1)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("FNN," + filename + ",0.1,30")
@@ -933,9 +934,9 @@ if len(sys.argv) > 1:
     if sys.argv[1] == "compile":
         compile()
     if sys.argv[1] == "run":
-        run("/tmp/output", "/tmp/output_runs")
+        run(OUTDIR + "/output", OUTDIR + "/output_runs")
     if sys.argv[1] == "calibration":
-        run("/tmp/output", "/tmp/output_runs", True)
+        run(OUTDIR + "/output", OUTDIR + "/output_runs", True)
     if sys.argv[1] == "dataset":
         dataset_banos()
     if sys.argv[1] == "latex":

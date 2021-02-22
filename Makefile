@@ -4,6 +4,7 @@ StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 PYTHON_COMMAND=python3
+OUTDIR=tmp
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif
@@ -108,11 +109,11 @@ latex:
 	$(PYTHON_COMMAND) makefile.py latex
 dataset:
 	$(PYTHON_COMMAND) makefile.py dataset
-	shuf /tmp/processed_subject1_ideal.log > /tmp/processed_subject1_ideal_shuf.log
+	shuf $(OUTDIR)/processed_subject1_ideal.log > $(OUTDIR)/processed_subject1_ideal_shuf.log
 run:
 	$(PYTHON_COMMAND) makefile.py run
 rerun: 
-	rm -f /tmp/output /tmp/output_runs models.csv
+	rm -f $(OUTDIR)/output $(OUTDIR)/output_runs models.csv
 	$(PYTHON_COMMAND) makefile.py run
 calibration: 
 	$(PYTHON_COMMAND) makefile.py calibration
@@ -125,7 +126,7 @@ moa:
 	 sed 's/,class1,/,0/g' dataset_1.arff | sed 's/,class2,/,1/g' | sed 's/,/	/g' > dataset_1.log
 	 sed 's/,class1,/,0/g' dataset_2.arff | sed 's/,class2,/,1/g' | sed 's/,/	/g' > dataset_2.log
 	 sed 's/,class10,/,9/g' dataset_3.arff | sed 's/,class1,/,0/g' | sed 's/,class2,/,1/g' | sed 's/,class3,/,2/g' | sed 's/,class4,/,3/g' | sed 's/,class5,/,4/g' | sed 's/,class6,/,5/g' | sed 's/,class7,/,6/g' | sed 's/,class8,/,7/g' | sed 's/,class9,/,8/g' | sed 's/,/	/g' > dataset_3.log
-	 cp dataset_*.log /tmp
+	 cp dataset_*.log $(OUTDIR)
 plot_results:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_verificarlo:
