@@ -2,7 +2,7 @@ FROM verificarlo/verificarlo:latest
 
 RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-5.8.0-43-generic linux-cloud-tools-5.8.0-43-generic
 
-PRUN pip3 install pandas seaborn
+RUN pip3 install pandas seaborn
 
 
 
