@@ -1,9 +1,9 @@
 #!/bin/bash
-OUTDIR=tmp
+OUTDIR=/tmp
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	
-	for ((i = 18; i > 1; i=i-2))
+	for ((i = 14; i > 1; i=i-2))
 	do
 		echo Running Mondrians with precision of $i bits...
 		export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$i"

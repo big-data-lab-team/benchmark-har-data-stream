@@ -1,3 +1,4 @@
 bin/*
 *.log
 *.arff
+verificarlo_results/*
