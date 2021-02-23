@@ -49,6 +49,12 @@ code/src/tasks/EvaluateHoldOut.cpp \
 code/src/tasks/Task.cpp \
 code/src/main.cpp
 
+ifndef CXX
+CXX=g++
+endif
+ifndef CC
+CC=gcc
+endif
 
 sourcefiles = $(sourcefiles_core) 
 
@@ -78,14 +84,14 @@ flags = -std=c++11 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE64 -O
 OBJ := $(filter-out code/src/main.o ,$(addsuffix .o,$(basename $(sourcefiles))))
 
 all:
-	g++ $(sourcefiles) $(includepath) $(log4cpp) $(flags) -o $(targetfile)
+	$(CXX) $(sourcefiles) $(includepath) $(log4cpp) $(flags) -o $(targetfile)
 
 libstreamdm.a: $(OBJ)
 	ar rcs libstreamdm.a $(OBJ)
 static: libstreamdm.a
 
 lib:
-	g++ $(sourcefiles) $(includepath) $(log4cpp) $(flags) -fPIC -shared -o libstreamdm.so
+	$(CXX) $(sourcefiles) $(includepath) $(log4cpp) $(flags) -fPIC -shared -o libstreamdm.so
 
 %.o: %.c
-	gcc $(includepath) $(flags) $< -c -o $@
+	$(CC) $(includepath) $(flags) $< -c -o $@
