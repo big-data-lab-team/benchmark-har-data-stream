@@ -7,7 +7,7 @@ RUN pip3 install pandas seaborn
 
 
 RUN cd /opt/ && \
-	git clone https://github.com/MarkCycVic/benchmark-har-data-stream.git &&\
+	git clone --depth=1 https://github.com/MarkCycVic/benchmark-har-data-stream.git &&\
 	cd benchmark-har-data-stream &&\
 	git submodule init &&\
 	git submodule update &&\
