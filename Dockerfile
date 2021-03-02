@@ -17,15 +17,15 @@ RUN cd /opt/ && \
 	CXX=g++-7 CC=gcc-7 make -j 8 lib &&\
 	cd .. &&\
 	mkdir bin &&\
-	CXX=g++-7 ./setup.sh
-	tar xf datasets.tar.xz
-	mkdir tmp
-	cp *.log tmp
-	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$i"
-	mkdir verificarlo_results
-	make rerun
-	cp tmp/output verificarlo_results/output_$i
-	cp tmp/output_runs verificarlo_results/output_runs_$i
+	CXX=g++-7 ./setup.sh &&\
+	tar xf datasets.tar.xz &&\
+	mkdir tmp &&\
+	cp *.log tmp &&\
+	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$(PRECISION)" &&\
+	mkdir verificarlo_results &&\
+	make rerun &&\
+	cp tmp/output verificarlo_results/output_$i &&\
+	cp tmp/output_runs verificarlo_results/output_runs_$i &&\
 	cp models.csv verificarlo_results/models_$i.csv
 
 ENTRYPOINT ["/bin/bash"]
