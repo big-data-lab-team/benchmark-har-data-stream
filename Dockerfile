@@ -1,9 +1,10 @@
 FROM verificarlo/verificarlo:latest
 
-RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-5.8.0-43-generic linux-cloud-tools-5.8.0-43-generic
+RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-5.8.0-44-generic linux-cloud-tools-5.8.0-44-generic
 
 RUN pip3 install pandas seaborn
 
+ARG PRECISION=52
 #TO DO: Get precision
 
 RUN cd /opt/ && \
@@ -21,12 +22,12 @@ RUN cd /opt/ && \
 	tar xf datasets.tar.xz &&\
 	mkdir tmp &&\
 	cp *.log tmp &&\
-	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$(PRECISION)" &&\
-	mkdir verificarlo_results &&\
-	make rerun &&\
-	cp tmp/output verificarlo_results/output_$i &&\
-	cp tmp/output_runs verificarlo_results/output_runs_$i &&\
-	cp models.csv verificarlo_results/models_$i.csv
+#	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$PRECISION" &&\
+#	mkdir verificarlo_results &&\
+#	make rerun &&\
+#	cp tmp/output verificarlo_results/output_$PRECISION &&\
+#	cp tmp/output_runs verificarlo_results/output_runs_$PRECISION &&\
+#	cp models.csv verificarlo_results/models_$PRECISION.csv
 
 ENTRYPOINT ["/bin/bash"]
 	
