@@ -1,6 +1,6 @@
 FROM verificarlo/verificarlo:latest
 
-RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-generic linux-cloud-tools-generic nano python3-tk
+RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-generic linux-cloud-tools-generic nano python3-tk linux-tools-5.8.0-44-generic linux-cloud-tools-5.8.0-44-generic
 
 RUN pip3 install pandas seaborn 
 
