@@ -1,5 +1,6 @@
 #!/bin/bash
-OUTDIR=tmp
+cp *.log /tmp
+OUTDIR=/tmp
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	
@@ -9,7 +10,7 @@ OUTDIR=tmp
 		export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$i"
 		make rerun
 		echo Copying result files...
-		cp tmp/output verificarlo_results/output_$i
-		cp tmp/output_runs verificarlo_results/output_runs_$i
+		cp $(OUTDIR)/output verificarlo_results/output_$i
+		cp $(OUTDIR)/output_runs verificarlo_results/output_runs_$i
 		cp models.csv verificarlo_results/models_$i.csv
 	done

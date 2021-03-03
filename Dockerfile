@@ -1,8 +1,8 @@
 FROM verificarlo/verificarlo:latest
 
-RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-5.8.0-44-generic linux-cloud-tools-5.8.0-44-generic
+RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev linux-tools-common linux-tools-generic linux-cloud-tools-generic nano python3-tk
 
-RUN pip3 install pandas seaborn
+RUN pip3 install pandas seaborn 
 
 ARG PRECISION=52
 #TO DO: Get precision
@@ -20,8 +20,7 @@ RUN cd /opt/ && \
 	mkdir bin &&\
 	CXX=g++-7 ./setup.sh &&\
 	tar xf datasets.tar.xz &&\
-	mkdir tmp &&\
-	cp *.log tmp &&\
+	cp *.log /tmp
 #	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$PRECISION" &&\
 #	mkdir verificarlo_results &&\
 #	make rerun &&\
