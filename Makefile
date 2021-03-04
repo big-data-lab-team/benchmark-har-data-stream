@@ -4,7 +4,7 @@ StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 PYTHON_COMMAND=python3
-OUTDIR=tmp
+OUTDIR=/tmp
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif

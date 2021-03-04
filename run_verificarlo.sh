@@ -1,5 +1,5 @@
 #!/bin/bash
-OUTDIR=tmp
+OUTDIR=/tmp
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	for ((i = 52; i > 1; i=i-8))
