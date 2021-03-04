@@ -1,0 +1,464 @@
+src/main.cpp:95:39: warning: '&&' within '||' [-Wlogical-op-parentheses]
+                                        if(precision != 0 || recall != 0 && !(isnan(precision) && isnan(recall))){
+                                                          ~~ ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/main.cpp:95:39: note: place parentheses around the '&&' expression to silence this warning
+                                        if(precision != 0 || recall != 0 && !(isnan(precision) && isnan(recall))){
+                                                                         ^
+                                                             (                                                  )
+1 warning generated.
+In Function: std::ios_base::Init::Init()
+In Function: std::ios_base::Init::~Init()
+In Function: __cxa_atexit
+In Function: get_classifier(int, int, char**)
+In Function: llvm.lifetime.start.p0i8
+In Function: __gxx_personality_v0
+In Function: llvm.lifetime.end.p0i8
+In Function: srand
+In Function: operator new(unsigned long)
+In Function: operator delete(void*)
+In Function: main
+In Function: int process_file<6, 33, functions, MondrianForest<double, functions, 10, 6, 33, 600000>, Evaluation<33> >(int, int, int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, MondrianForest<double, functions, 10, 6, 33, 600000>*, Evaluation<33>*)
+Instrumenting  %270 = fadd double %269, 0.000000e+00
+Instrumenting  %272 = fadd double %270, %271
+Instrumenting  %274 = fadd double %272, %273
+Instrumenting  %276 = fadd double %274, %275
+Instrumenting  %278 = fadd double %276, %277
+Instrumenting  %280 = fadd double %278, %279
+Instrumenting  %282 = fadd double %280, %281
+Instrumenting  %284 = fadd double %282, %283
+Instrumenting  %286 = fadd double %284, %285
+Instrumenting  %288 = fadd double %286, %287
+Instrumenting  %290 = fadd double %288, %289
+Instrumenting  %292 = fadd double %290, %291
+Instrumenting  %294 = fadd double %292, %293
+Instrumenting  %296 = fadd double %294, %295
+Instrumenting  %298 = fadd double %296, %297
+Instrumenting  %300 = fadd double %298, %299
+Instrumenting  %302 = fadd double %300, %301
+Instrumenting  %304 = fadd double %302, %303
+Instrumenting  %306 = fadd double %304, %305
+Instrumenting  %308 = fadd double %306, %307
+Instrumenting  %310 = fadd double %308, %309
+Instrumenting  %312 = fadd double %310, %311
+Instrumenting  %314 = fadd double %312, %313
+Instrumenting  %316 = fadd double %314, %315
+Instrumenting  %318 = fadd double %316, %317
+Instrumenting  %320 = fadd double %318, %319
+Instrumenting  %322 = fadd double %320, %321
+Instrumenting  %324 = fadd double %322, %323
+Instrumenting  %326 = fadd double %324, %325
+Instrumenting  %328 = fadd double %326, %327
+Instrumenting  %330 = fadd double %328, %329
+Instrumenting  %332 = fadd double %330, %331
+Instrumenting  %334 = fadd double %332, %333
+Instrumenting  %336 = fdiv double %334, %335
+Instrumenting  %354 = fdiv double %352, %345
+Instrumenting  %361 = fdiv <2 x double> %358, %360
+Instrumenting  %375 = fmul double %373, %374
+Instrumenting  %376 = fadd double %373, %374
+Instrumenting  %377 = fdiv double %375, %376
+Instrumenting  %378 = fmul double %377, 2.000000e+00
+Instrumenting  %379 = fadd double %342, %378
+Instrumenting  %381 = fadd double %343, -1.000000e+00
+Instrumenting  %389 = fdiv double %384, %383
+In Function: strtod
+In Function: std::__throw_invalid_argument(char const*)
+In Function: __errno_location
+In Function: std::__throw_out_of_range(char const*)
+In Function: strtol
+In Function: std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)
+In Function: std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)
+In Function: strlen
+In Function: std::ostream::put(char)
+In Function: std::ostream::flush()
+In Function: std::__throw_bad_cast()
+In Function: std::ctype<char>::_M_widen_init() const
+In Function: std::__throw_logic_error(char const*)
+In Function: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_create(unsigned long&, unsigned long)
+In Function: llvm.memcpy.p0i8.p0i8.i64
+In Function: std::basic_ifstream<char, std::char_traits<char> >::basic_ifstream()
+In Function: void parse_line<7>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, double*)
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::predict(double const*, double*)
+Instrumenting  %99 = fadd <2 x double> %97, %98
+Instrumenting  %102 = fadd <2 x double> %100, %101
+Instrumenting  %105 = fadd <2 x double> %103, %104
+Instrumenting  %108 = fadd <2 x double> %106, %107
+Instrumenting  %93 = fadd <2 x double> %91, %92
+Instrumenting  %96 = fadd <2 x double> %94, %95
+Instrumenting  %111 = fadd <2 x double> %109, %110
+Instrumenting  %114 = fadd <2 x double> %112, %113
+Instrumenting  %117 = fadd <2 x double> %115, %116
+Instrumenting  %120 = fadd <2 x double> %118, %119
+Instrumenting  %123 = fadd <2 x double> %121, %122
+Instrumenting  %126 = fadd <2 x double> %124, %125
+Instrumenting  %129 = fadd <2 x double> %127, %128
+Instrumenting  %132 = fadd <2 x double> %130, %131
+Instrumenting  %135 = fadd <2 x double> %133, %134
+Instrumenting  %138 = fadd <2 x double> %136, %137
+Instrumenting  %141 = fadd double %139, %140
+Instrumenting  %205 = fdiv <2 x double> %204, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %207 = fdiv <2 x double> %120, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %209 = fdiv <2 x double> %123, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %211 = fdiv <2 x double> %126, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %213 = fdiv <2 x double> %129, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %215 = fdiv <2 x double> %132, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %217 = fdiv <2 x double> %135, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %219 = fdiv <2 x double> %138, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %221 = fdiv double %141, 1.000000e+01
+Instrumenting  %180 = fdiv <2 x double> %179, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %184 = fdiv <2 x double> %183, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %188 = fdiv <2 x double> %187, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %192 = fdiv <2 x double> %191, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %196 = fdiv <2 x double> %195, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %200 = fdiv <2 x double> %199, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %172 = fdiv <2 x double> %171, <double 1.000000e+01, double 1.000000e+01>
+Instrumenting  %176 = fdiv <2 x double> %175, <double 1.000000e+01, double 1.000000e+01>
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::train(double const*, int)
+In Function: std::ostream::operator<<(int)
+In Function: std::istream::seekg(long, std::_Ios_Seekdir)
+In Function: std::istream::read(char*, long)
+In Function: std::basic_filebuf<char, std::char_traits<char> >::~basic_filebuf()
+In Function: std::basic_filebuf<char, std::char_traits<char> >::close()
+In Function: std::ios_base::~ios_base()
+In Function: std::basic_filebuf<char, std::char_traits<char> >::open(char const*, std::_Ios_Openmode)
+In Function: std::__basic_file<char>::is_open() const
+In Function: std::basic_istream<char, std::char_traits<char> >& std::getline<char, std::char_traits<char>, std::allocator<char> >(std::basic_istream<char, std::char_traits<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, char)
+In Function: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::find(char const*, unsigned long, unsigned long) const
+In Function: std::__throw_out_of_range_fmt(char const*, ...)
+In Function: llvm.round.f64
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::update_posterior_count()
+In Function: llvm.memset.p0i8.i64
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::predict_tree(double const*, int, double*) const
+Instrumenting  %274 = fsub double %271, %273
+Instrumenting  %281 = fsub double %280, %271
+Instrumenting  %290 = fsub double %287, %289
+Instrumenting  %297 = fsub double %296, %287
+Instrumenting  %309 = fsub <2 x double> %306, %308
+Instrumenting  %316 = fsub <2 x double> %315, %306
+Instrumenting  %331 = fsub <2 x double> %328, %330
+Instrumenting  %338 = fsub <2 x double> %337, %328
+Instrumenting  %350 = fmul double %270, %348
+Instrumenting  %351 = fsub double -0.000000e+00, %350
+Instrumenting  %353 = fsub double 1.000000e+00, %352
+Instrumenting  %692 = fmul <2 x double> %534, %691
+Instrumenting  %693 = fsub <2 x double> %691, %692
+Instrumenting  %695 = fmul <2 x double> %536, %694
+Instrumenting  %696 = fadd <2 x double> %693, %695
+Instrumenting  %697 = fmul <2 x double> %538, %696
+Instrumenting  %698 = fmul <2 x double> %540, %697
+Instrumenting  %700 = fadd <2 x double> %699, %698
+Instrumenting  %702 = fmul double %530, %701
+Instrumenting  %703 = fsub double %701, %702
+Instrumenting  %705 = fmul double %527, %704
+Instrumenting  %706 = fadd double %703, %705
+Instrumenting  %707 = fmul double %531, %706
+Instrumenting  %708 = fmul double %532, %707
+Instrumenting  %710 = fadd double %709, %708
+Instrumenting  %517 = fadd double %512, %516
+Instrumenting  %522 = fadd double %517, %521
+Instrumenting  %527 = fadd double %522, %526
+Instrumenting  %528 = fdiv double %348, %357
+Instrumenting  %529 = fmul double %361, %528
+Instrumenting  %530 = fdiv double %529, %363
+Instrumenting  %531 = fdiv double 1.000000e+00, %527
+Instrumenting  %532 = fmul double %266, %353
+Instrumenting  %357 = fadd double %356, %348
+Instrumenting  %358 = fmul double %270, %357
+Instrumenting  %359 = fsub double -0.000000e+00, %358
+Instrumenting  %361 = fadd double %360, -1.000000e+00
+Instrumenting  %363 = fadd double %362, -1.000000e+00
+Instrumenting  %372 = fadd double %367, %371
+Instrumenting  %377 = fadd double %372, %376
+Instrumenting  %382 = fadd double %377, %381
+Instrumenting  %387 = fadd double %382, %386
+Instrumenting  %392 = fadd double %387, %391
+Instrumenting  %397 = fadd double %392, %396
+Instrumenting  %402 = fadd double %397, %401
+Instrumenting  %407 = fadd double %402, %406
+Instrumenting  %412 = fadd double %407, %411
+Instrumenting  %417 = fadd double %412, %416
+Instrumenting  %422 = fadd double %417, %421
+Instrumenting  %427 = fadd double %422, %426
+Instrumenting  %432 = fadd double %427, %431
+Instrumenting  %437 = fadd double %432, %436
+Instrumenting  %442 = fadd double %437, %441
+Instrumenting  %447 = fadd double %442, %446
+Instrumenting  %452 = fadd double %447, %451
+Instrumenting  %457 = fadd double %452, %456
+Instrumenting  %462 = fadd double %457, %461
+Instrumenting  %467 = fadd double %462, %466
+Instrumenting  %472 = fadd double %467, %471
+Instrumenting  %477 = fadd double %472, %476
+Instrumenting  %482 = fadd double %477, %481
+Instrumenting  %487 = fadd double %482, %486
+Instrumenting  %492 = fadd double %487, %491
+Instrumenting  %497 = fadd double %492, %496
+Instrumenting  %502 = fadd double %497, %501
+Instrumenting  %507 = fadd double %502, %506
+Instrumenting  %512 = fadd double %507, %511
+Instrumenting  %542 = fmul <2 x double> %534, %541
+Instrumenting  %543 = fsub <2 x double> %541, %542
+Instrumenting  %545 = fmul <2 x double> %536, %544
+Instrumenting  %546 = fadd <2 x double> %543, %545
+Instrumenting  %547 = fmul <2 x double> %538, %546
+Instrumenting  %548 = fmul <2 x double> %540, %547
+Instrumenting  %550 = fadd <2 x double> %549, %548
+Instrumenting  %552 = fmul <2 x double> %534, %551
+Instrumenting  %553 = fsub <2 x double> %551, %552
+Instrumenting  %555 = fmul <2 x double> %536, %554
+Instrumenting  %556 = fadd <2 x double> %553, %555
+Instrumenting  %557 = fmul <2 x double> %538, %556
+Instrumenting  %558 = fmul <2 x double> %540, %557
+Instrumenting  %560 = fadd <2 x double> %559, %558
+Instrumenting  %562 = fmul <2 x double> %534, %561
+Instrumenting  %563 = fsub <2 x double> %561, %562
+Instrumenting  %565 = fmul <2 x double> %536, %564
+Instrumenting  %566 = fadd <2 x double> %563, %565
+Instrumenting  %567 = fmul <2 x double> %538, %566
+Instrumenting  %568 = fmul <2 x double> %540, %567
+Instrumenting  %570 = fadd <2 x double> %569, %568
+Instrumenting  %572 = fmul <2 x double> %534, %571
+Instrumenting  %573 = fsub <2 x double> %571, %572
+Instrumenting  %575 = fmul <2 x double> %536, %574
+Instrumenting  %576 = fadd <2 x double> %573, %575
+Instrumenting  %577 = fmul <2 x double> %538, %576
+Instrumenting  %578 = fmul <2 x double> %540, %577
+Instrumenting  %580 = fadd <2 x double> %579, %578
+Instrumenting  %582 = fmul <2 x double> %534, %581
+Instrumenting  %583 = fsub <2 x double> %581, %582
+Instrumenting  %585 = fmul <2 x double> %536, %584
+Instrumenting  %586 = fadd <2 x double> %583, %585
+Instrumenting  %587 = fmul <2 x double> %538, %586
+Instrumenting  %588 = fmul <2 x double> %540, %587
+Instrumenting  %590 = fadd <2 x double> %589, %588
+Instrumenting  %592 = fmul <2 x double> %534, %591
+Instrumenting  %593 = fsub <2 x double> %591, %592
+Instrumenting  %595 = fmul <2 x double> %536, %594
+Instrumenting  %596 = fadd <2 x double> %593, %595
+Instrumenting  %597 = fmul <2 x double> %538, %596
+Instrumenting  %598 = fmul <2 x double> %540, %597
+Instrumenting  %600 = fadd <2 x double> %599, %598
+Instrumenting  %602 = fmul <2 x double> %534, %601
+Instrumenting  %603 = fsub <2 x double> %601, %602
+Instrumenting  %605 = fmul <2 x double> %536, %604
+Instrumenting  %606 = fadd <2 x double> %603, %605
+Instrumenting  %607 = fmul <2 x double> %538, %606
+Instrumenting  %608 = fmul <2 x double> %540, %607
+Instrumenting  %610 = fadd <2 x double> %609, %608
+Instrumenting  %612 = fmul <2 x double> %534, %611
+Instrumenting  %613 = fsub <2 x double> %611, %612
+Instrumenting  %615 = fmul <2 x double> %536, %614
+Instrumenting  %616 = fadd <2 x double> %613, %615
+Instrumenting  %617 = fmul <2 x double> %538, %616
+Instrumenting  %618 = fmul <2 x double> %540, %617
+Instrumenting  %620 = fadd <2 x double> %619, %618
+Instrumenting  %622 = fmul <2 x double> %534, %621
+Instrumenting  %623 = fsub <2 x double> %621, %622
+Instrumenting  %625 = fmul <2 x double> %536, %624
+Instrumenting  %626 = fadd <2 x double> %623, %625
+Instrumenting  %627 = fmul <2 x double> %538, %626
+Instrumenting  %628 = fmul <2 x double> %540, %627
+Instrumenting  %630 = fadd <2 x double> %629, %628
+Instrumenting  %632 = fmul <2 x double> %534, %631
+Instrumenting  %633 = fsub <2 x double> %631, %632
+Instrumenting  %635 = fmul <2 x double> %536, %634
+Instrumenting  %636 = fadd <2 x double> %633, %635
+Instrumenting  %637 = fmul <2 x double> %538, %636
+Instrumenting  %638 = fmul <2 x double> %540, %637
+Instrumenting  %640 = fadd <2 x double> %639, %638
+Instrumenting  %642 = fmul <2 x double> %534, %641
+Instrumenting  %643 = fsub <2 x double> %641, %642
+Instrumenting  %645 = fmul <2 x double> %536, %644
+Instrumenting  %646 = fadd <2 x double> %643, %645
+Instrumenting  %647 = fmul <2 x double> %538, %646
+Instrumenting  %648 = fmul <2 x double> %540, %647
+Instrumenting  %650 = fadd <2 x double> %649, %648
+Instrumenting  %652 = fmul <2 x double> %534, %651
+Instrumenting  %653 = fsub <2 x double> %651, %652
+Instrumenting  %655 = fmul <2 x double> %536, %654
+Instrumenting  %656 = fadd <2 x double> %653, %655
+Instrumenting  %657 = fmul <2 x double> %538, %656
+Instrumenting  %658 = fmul <2 x double> %540, %657
+Instrumenting  %660 = fadd <2 x double> %659, %658
+Instrumenting  %662 = fmul <2 x double> %534, %661
+Instrumenting  %663 = fsub <2 x double> %661, %662
+Instrumenting  %665 = fmul <2 x double> %536, %664
+Instrumenting  %666 = fadd <2 x double> %663, %665
+Instrumenting  %667 = fmul <2 x double> %538, %666
+Instrumenting  %668 = fmul <2 x double> %540, %667
+Instrumenting  %670 = fadd <2 x double> %669, %668
+Instrumenting  %672 = fmul <2 x double> %534, %671
+Instrumenting  %673 = fsub <2 x double> %671, %672
+Instrumenting  %675 = fmul <2 x double> %536, %674
+Instrumenting  %676 = fadd <2 x double> %673, %675
+Instrumenting  %677 = fmul <2 x double> %538, %676
+Instrumenting  %678 = fmul <2 x double> %540, %677
+Instrumenting  %680 = fadd <2 x double> %679, %678
+Instrumenting  %682 = fmul <2 x double> %534, %681
+Instrumenting  %683 = fsub <2 x double> %681, %682
+Instrumenting  %685 = fmul <2 x double> %536, %684
+Instrumenting  %686 = fadd <2 x double> %683, %685
+Instrumenting  %687 = fmul <2 x double> %538, %686
+Instrumenting  %688 = fmul <2 x double> %540, %687
+Instrumenting  %690 = fadd <2 x double> %689, %688
+Instrumenting  %715 = fsub double 1.000000e+00, %353
+Instrumenting  %716 = fmul double %266, %715
+Instrumenting  %788 = fmul <2 x double> %723, %787
+Instrumenting  %789 = fadd <2 x double> %785, %788
+Instrumenting  %796 = fmul <2 x double> %723, %795
+Instrumenting  %797 = fadd <2 x double> %793, %796
+Instrumenting  %804 = fmul <2 x double> %723, %803
+Instrumenting  %805 = fadd <2 x double> %801, %804
+Instrumenting  %812 = fmul <2 x double> %723, %811
+Instrumenting  %813 = fadd <2 x double> %809, %812
+Instrumenting  %820 = fmul <2 x double> %723, %819
+Instrumenting  %821 = fadd <2 x double> %817, %820
+Instrumenting  %828 = fmul <2 x double> %723, %827
+Instrumenting  %829 = fadd <2 x double> %825, %828
+Instrumenting  %836 = fmul <2 x double> %723, %835
+Instrumenting  %837 = fadd <2 x double> %833, %836
+Instrumenting  %844 = fmul <2 x double> %723, %843
+Instrumenting  %845 = fadd <2 x double> %841, %844
+Instrumenting  %850 = fmul double %716, %849
+Instrumenting  %851 = fadd double %848, %850
+Instrumenting  %724 = fmul <2 x double> %723, %721
+Instrumenting  %725 = fadd <2 x double> %719, %724
+Instrumenting  %732 = fmul <2 x double> %723, %731
+Instrumenting  %733 = fadd <2 x double> %729, %732
+Instrumenting  %740 = fmul <2 x double> %723, %739
+Instrumenting  %741 = fadd <2 x double> %737, %740
+Instrumenting  %748 = fmul <2 x double> %723, %747
+Instrumenting  %749 = fadd <2 x double> %745, %748
+Instrumenting  %756 = fmul <2 x double> %723, %755
+Instrumenting  %757 = fadd <2 x double> %753, %756
+Instrumenting  %764 = fmul <2 x double> %723, %763
+Instrumenting  %765 = fadd <2 x double> %761, %764
+Instrumenting  %772 = fmul <2 x double> %723, %771
+Instrumenting  %773 = fadd <2 x double> %769, %772
+Instrumenting  %780 = fmul <2 x double> %723, %779
+Instrumenting  %781 = fadd <2 x double> %777, %780
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::update_posterior_count(int)
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::compute_posterior_mean(MondrianForest<double, functions, 10, 6, 33, 600000>::Node const&, double*) const
+Instrumenting  %18 = fsub double %17, %13
+Instrumenting  %19 = fmul double %15, %18
+Instrumenting  %31 = fadd double %24, %30
+Instrumenting  %35 = fadd double %26, %33
+Instrumenting  %39 = fadd double %31, %38
+Instrumenting  %43 = fadd double %35, %41
+Instrumenting  %47 = fadd double %39, %46
+Instrumenting  %51 = fadd double %43, %49
+Instrumenting  %55 = fadd double %47, %54
+Instrumenting  %59 = fadd double %51, %57
+Instrumenting  %63 = fadd double %55, %62
+Instrumenting  %67 = fadd double %59, %65
+Instrumenting  %71 = fadd double %63, %70
+Instrumenting  %75 = fadd double %67, %73
+Instrumenting  %79 = fadd double %71, %78
+Instrumenting  %83 = fadd double %75, %81
+Instrumenting  %87 = fadd double %79, %86
+Instrumenting  %91 = fadd double %83, %89
+Instrumenting  %95 = fadd double %87, %94
+Instrumenting  %99 = fadd double %91, %97
+Instrumenting  %103 = fadd double %95, %102
+Instrumenting  %107 = fadd double %99, %105
+Instrumenting  %111 = fadd double %103, %110
+Instrumenting  %115 = fadd double %107, %113
+Instrumenting  %119 = fadd double %111, %118
+Instrumenting  %123 = fadd double %115, %121
+Instrumenting  %127 = fadd double %119, %126
+Instrumenting  %259 = fadd double %251, %257
+Instrumenting  %263 = fadd double %255, %262
+Instrumenting  %267 = fadd double %259, %265
+Instrumenting  %271 = fadd double %263, %270
+Instrumenting  %131 = fadd double %123, %129
+Instrumenting  %135 = fadd double %127, %134
+Instrumenting  %139 = fadd double %131, %137
+Instrumenting  %143 = fadd double %135, %142
+Instrumenting  %147 = fadd double %139, %145
+Instrumenting  %151 = fadd double %143, %150
+Instrumenting  %155 = fadd double %147, %153
+Instrumenting  %159 = fadd double %151, %158
+Instrumenting  %163 = fadd double %155, %161
+Instrumenting  %167 = fadd double %159, %166
+Instrumenting  %171 = fadd double %163, %169
+Instrumenting  %175 = fadd double %167, %174
+Instrumenting  %179 = fadd double %171, %177
+Instrumenting  %183 = fadd double %175, %182
+Instrumenting  %187 = fadd double %179, %185
+Instrumenting  %191 = fadd double %183, %190
+Instrumenting  %195 = fadd double %187, %193
+Instrumenting  %199 = fadd double %191, %198
+Instrumenting  %203 = fadd double %195, %201
+Instrumenting  %207 = fadd double %199, %206
+Instrumenting  %211 = fadd double %203, %209
+Instrumenting  %215 = fadd double %207, %214
+Instrumenting  %219 = fadd double %211, %217
+Instrumenting  %223 = fadd double %215, %222
+Instrumenting  %227 = fadd double %219, %225
+Instrumenting  %231 = fadd double %223, %230
+Instrumenting  %235 = fadd double %227, %233
+Instrumenting  %239 = fadd double %231, %238
+Instrumenting  %243 = fadd double %235, %241
+Instrumenting  %247 = fadd double %239, %246
+Instrumenting  %251 = fadd double %243, %249
+Instrumenting  %255 = fadd double %247, %254
+Instrumenting  %275 = fadd double %267, %273
+Instrumenting  %279 = fadd double %271, %278
+Instrumenting  %283 = fadd double %275, %281
+Instrumenting  %284 = fmul double %20, %283
+Instrumenting  %295 = fmul double %20, %294
+Instrumenting  %296 = fsub double %292, %295
+Instrumenting  %299 = fmul double %284, %298
+Instrumenting  %300 = fdiv double %296, %279
+Instrumenting  %301 = fdiv double %299, %279
+Instrumenting  %302 = fadd double %300, %301
+In Function: exp
+In Function: MondrianForest<double, functions, 10, 6, 33, 600000>::extend_block(int, int, double const*, int)
+Instrumenting  %19 = fsub double %17, %18
+Instrumenting  %24 = fsub double %18, %23
+Instrumenting  %27 = fadd double %21, %26
+Instrumenting  %28 = fadd double %27, 0.000000e+00
+Instrumenting  %33 = fsub double %30, %32
+Instrumenting  %38 = fsub double %32, %37
+Instrumenting  %41 = fadd double %35, %40
+Instrumenting  %42 = fadd double %28, %41
+Instrumenting  %52 = fsub <2 x double> %48, %51
+Instrumenting  %58 = fsub <2 x double> %51, %57
+Instrumenting  %61 = fadd <2 x double> %54, %60
+Instrumenting  %63 = fadd double %42, %62
+Instrumenting  %65 = fadd double %63, %64
+Instrumenting  %75 = fsub <2 x double> %71, %74
+Instrumenting  %81 = fsub <2 x double> %74, %80
+Instrumenting  %84 = fadd <2 x double> %77, %83
+Instrumenting  %86 = fadd double %65, %85
+Instrumenting  %88 = fadd double %86, %87
+Instrumenting  %93 = fdiv double %92, 0x41DFFFFFFFC00000
+Instrumenting  %94 = fsub double 1.000000e+00, %93
+Instrumenting  %96 = fsub double -0.000000e+00, %88
+Instrumenting  %97 = fdiv double %95, %96
+Instrumenting  %100 = fadd double %15, %97
+Instrumenting  %110 = fadd double %41, %109
+Instrumenting  %113 = fadd double %62, %112
+Instrumenting  %116 = fadd double %64, %115
+Instrumenting  %119 = fadd double %85, %118
+Instrumenting  %122 = fadd double %87, %121
+Instrumenting  %127 = fdiv double %41, %126
+Instrumenting  %133 = fdiv <2 x double> %131, %132
+Instrumenting  %135 = fadd double %134, %127
+Instrumenting  %136 = fdiv double %62, %126
+Instrumenting  %137 = fadd double %135, %136
+Instrumenting  %138 = fdiv double %64, %126
+Instrumenting  %139 = fadd double %137, %138
+Instrumenting  %140 = fdiv double %85, %126
+Instrumenting  %141 = fadd double %139, %140
+Instrumenting  %142 = fdiv double %87, %126
+Instrumenting  %143 = fadd double %141, %142
+Instrumenting  %164 = fdiv double %163, 0x41DFFFFFFFC00000
+Instrumenting  %178 = fsub double %160, %161
+Instrumenting  %179 = fmul double %178, %164
+Instrumenting  %180 = fadd double %161, %179
+In Function: log
+In Function: rand
+In Function: std::ostream& std::ostream::_M_insert<double>(double)
+In Function: _GLOBAL__sub_I_main.cpp
+clang: warning: argument unused during compilation: '-I /home/mark/benchmark2.0/OrpailleCC/src' [-Wunused-command-line-argument]

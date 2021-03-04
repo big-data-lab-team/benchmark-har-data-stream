@@ -1,7 +1,6 @@
 #!/bin/bash
 # Expecting the first argument to be the precision
-OUTDIR=/tmp
-
+OUTDIR=tmp
 	echo Beginning evaluation.
 	mkdir verificarlo_results
 	echo Running Mondrians with precision of $1 bits...
