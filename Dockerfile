@@ -20,8 +20,8 @@ RUN cd /opt/ && \
 	mkdir bin &&\
 	CXX=g++-7 ./setup.sh &&\
 	tar xf datasets.tar.xz &&\
-	mkdir tmp &&\
-	cp *.log tmp
+	mkdir /tmp &&\
+	cp *.log /tmp
 #	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$PRECISION" &&\
 #	mkdir verificarlo_results &&\
 #	make rerun &&\
