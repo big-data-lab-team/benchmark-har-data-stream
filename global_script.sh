@@ -5,7 +5,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=vicuna.marc@gmail.com
 #SBATCH global_script.sh 52
-# singularity build verificarlo-bench.img docker://vicuna.verificarloorpaille
-# RUNNING
-./run_1_verificarlo.sh $1
+#singularity build verificarlo-bench.img docker://vicuna.verificarloorpaille
+#RUNNING
+singualrity exec -B bench_bind:/opt/benchmark-har-data-stream ./run_1_verificarlo.sh $1
 

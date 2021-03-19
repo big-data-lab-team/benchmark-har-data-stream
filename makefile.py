@@ -218,7 +218,7 @@ def memory_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets 4/4 ########
-    for dataset_name in ["banos_6"]:
+    for dataset_name in ["banos_6", "banos_6_v1.log", "banos_6_v2.log", "banos_6_v3.log", "banos_6_v4.log", "banos_6_v5.log", "banos_6_v6.log","recofit_6", "drift_6","dataset_3", "dataset_2", "dataset_1"]: # add shuf
     #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
@@ -296,13 +296,13 @@ def run(output_filename, run_output_filename, calibration=False):
     write_model_ids("models.csv")
 
     #Run every commands
-    for i in range(len(commands)):
+    for i, command in enumerate(commands):
         #insert energy measurement
-        command = ['perf', 'stat']
+        #command = ['perf', 'stat']
         #command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
-        command.extend(commands[i])
+        
         print(" ".join(command))
-
+	
         #run and get the output
         try:
         	#out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
@@ -334,7 +334,7 @@ def run(output_filename, run_output_filename, calibration=False):
                 else:
                     output_file.write(line + "\n")
 
-        run_output_file.write(commands[i][3] + ',' + commands[i][4] + ',' + str(seconds) + ',' + str(joules) + ',' + str(joules/seconds) + '\n')
+        run_output_file.write(command[3] + ',' + command[4] + ',' + '0' + ',' + '0' + ',' + '0' + '\n')
         run_output_file.flush()
         print(str(i) + "/" + str(len(commands)))
 
