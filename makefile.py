@@ -218,7 +218,7 @@ def memory_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets 4/4 ########
-    for dataset_name in ["banos_6", "banos_6_v1.log", "banos_6_v2.log", "banos_6_v3.log", "banos_6_v4.log", "banos_6_v5.log", "banos_6_v6.log","recofit_6", "drift_6","dataset_3", "dataset_2", "dataset_1"]: # add shuf
+    for dataset_name in ["banos_6", "banos_6_v1", "banos_6_v2", "banos_6_v3", "banos_6_v4", "banos_6_v5", "banos_6_v6","recofit_6"]: # add shuf
     #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = OUTDIR + "/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
@@ -314,25 +314,24 @@ def run(output_filename, run_output_filename, calibration=False):
         #read output line by line
         joules = 0
         seconds = 0
-        for line in out.decode("utf-8").split("\n"):
-            #Some lines are empty so we need to get rid of them
-            if len(line) > 0:
-                #If the line starts with a number, it is already a csv line
-                #Otherwise, we need to check for power of timing
-                if line[0] not in {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}:
-                    line = line.strip()
-                    joule_index = line.find(' Joules')
-                    second_index = line.find(' seconds time elapsed')
-                    if joule_index > 0:
-                    	#joules += float(line[0:joule_index].replace(',', ''))
-                       try:
-                       	joules += float(line[0:joule_index].replace(',', ''))
-                       except:
-                       	print("Joule not supported")
-                    if second_index > 0:
-                        seconds += float(line[0:second_index].replace(',', ''))
-                else:
-                    output_file.write(line + "\n")
+#        for line in out.decode("utf-8").split("\n"):
+#            #Some lines are empty so we need to get rid of them
+#            if len(line) > 0:
+#                #If the line starts with a number, it is already a csv line
+#                #Otherwise, we need to check for power of timing
+#                    line = line.strip()
+#                    joule_index = line.find(' Joules')
+#                    second_index = line.find(' seconds time elapsed')
+#                    if joule_index > 0:
+#                    	#joules += float(line[0:joule_index].replace(',', ''))
+#                       try:
+#                       	joules += float(line[0:joule_index].replace(',', ''))
+#                       except:
+#                       	print("Joule not supported")
+#                    if second_index > 0:
+#                        seconds += float(line[0:second_index].replace(',', ''))
+#                else:
+#                    output_file.write(line + "\n")
 
         run_output_file.write(command[3] + ',' + command[4] + ',' + '0' + ',' + '0' + ',' + '0' + '\n')
         run_output_file.flush()
