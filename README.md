@@ -1,9 +1,9 @@
-A benchmark of data stream classification for human activity recognition on connected objects
+Numerical precision, classification accuracy, and memory footprint in the Mondrian Forest
 =============================================================================================
 
 This repository contains the script, the datasets, and the source code to
 conduct a benchmark of data stream classifiers. The original study was proposed
-in [here](https://arxiv.org/abs/2008.11880). The results were obtained with the
+in [here] (not published). The results were obtained with the
 version 1.0 of this repository.
 
 Requirements
