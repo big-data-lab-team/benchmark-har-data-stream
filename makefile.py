@@ -7,10 +7,9 @@ import random
 import statistics, re
 import pandas as pd
 import seaborn as sns
-from statistics import mean
+from statistics import mean 
 import matplotlib.pyplot as plt
 from random import shuffle
-OUTDIR = '/tmp'
 def stdev(l):
     if len(l) <= 1:
         return 0.0
@@ -152,7 +151,7 @@ def calibration_list(commands):
 def memory_list(commands):
     # for dataset_name in ['banos']:
     for dataset_name in ['drift_6', 'banos_6', 'recofit_6']:
-        filename = OUTDIR + "/" + dataset_name + ".log"
+        filename = "tmp/" + dataset_name + ".log"
         for run_id in map(str,range(10)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("Empty," + filename)
@@ -218,9 +217,10 @@ def memory_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets 4/4 ########
-    for dataset_name in ["banos_6", "banos_6_v1", "banos_6_v2", "banos_6_v3", "banos_6_v4", "banos_6_v5", "banos_6_v6","recofit_6"]: # add shuf
+    #for dataset_name in ["banos_3"]:
+    for dataset_name in ["banos_6", "banos_6_v1", "banos_6_v2", "banos_6_v3", "banos_6_v4", "banos_6_v5", "banos_6_v6", "recofit_6"]:
     #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
-        filename = OUTDIR + "/" + dataset_name + ".log"
+        filename = "tmp/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
             seed = str(run_id)
 #            model_id = get_model_id("Empty," + filename)
@@ -255,6 +255,14 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.4", "0.0", "1.0"])
             model_id = get_model_id("Mondrian," + filename + ",0.2,0.0,1.0,50,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.2", "0.0", "1.0"])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_double', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_double', filename, seed, model_id, run_id, '0.8', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,1.0,10,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_double', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1200000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_double', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
 #            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
 #            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
 #            model_id = get_model_id("NaiveBayes," + filename)
@@ -262,18 +270,17 @@ def final_list(commands):
 #            model_id = get_model_id("StreamDM NaiveBayes," + filename)
 #            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
 
-            if dataset_name == 'banos_6' or dataset_name == 'recofit_6':
-            	model_id = get_model_id('Mondrian,' + filename + ',1.0,0.0,1.0,1,3000000')
-            	commands.append(['bin/' + dataset_name + '/mondrian_t1_quintuple', filename, seed, model_id, run_id, '1.0', '0.0', '1.0'])
-            	model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,5,3000000')
-            	commands.append(['bin/' + dataset_name + '/mondrian_t5_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
-            	model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,10,3000000')
-            	commands.append(['bin/' + dataset_name + '/mondrian_t10_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
-            	model_id = get_model_id('Mondrian,' + filename + ',0.2,0.0,1.0,50,3000000')
-            	commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.2', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',1.0,0.0,1.0,1,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t1_quintuple', filename, seed, model_id, run_id, '1.0', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,5,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t5_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,10,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t10_quintuple', filename, seed, model_id, run_id, '0.4', '0.0', '1.0'])
+            model_id = get_model_id('Mondrian,' + filename + ',0.2,0.0,1.0,50,3000000')
+            commands.append(['bin/' + dataset_name + '/mondrian_t50_quintuple', filename, seed, model_id, run_id, '0.2', '0.0', '1.0'])
 
     for dataset_name in ["banos_3_histogram", "banos_6_histogram"]:
-        filename = OUTDIR + "/" + dataset_name + ".log"
+        filename = "tmp/" + dataset_name + ".log"
         for run_id in map(str,range(1)):
             seed = str(random.randint(0, 2**24))
             model_id = get_model_id("FNN," + filename + ",0.1,30")
@@ -293,16 +300,14 @@ def run(output_filename, run_output_filename, calibration=False):
 
     CURSOR_UP_ONE = '\x1b[1A'
     ERASE_LINE = '\x1b[2K'
-    write_model_ids("models.csv")
+    write_model_ids(OUTDIR+"/models.csv")
 
     #Run every commands
     for i, command in enumerate(commands):
         #insert energy measurement
         #command = ['perf', 'stat']
         #command = ['perf', 'stat', '-a', '-e', 'energy-pkg', '-e', 'energy-cores']
-        
         print(" ".join(command))
-	
         #run and get the output
         try:
         	#out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
@@ -312,14 +317,16 @@ def run(output_filename, run_output_filename, calibration=False):
         	continue
 
         #read output line by line
-        joules = 0
-        seconds = 0
-#        for line in out.decode("utf-8").split("\n"):
+#        joules = 0
+#        seconds = 0
+        for line in out.decode("utf-8").split("\n"):
 #            #Some lines are empty so we need to get rid of them
-#            if len(line) > 0:
+            if len(line) > 0:
 #                #If the line starts with a number, it is already a csv line
 #                #Otherwise, we need to check for power of timing
-#                    line = line.strip()
+                if line[0] in {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}:
+                    output_file.write(line + "\n")
+#line = line.strip()
 #                    joule_index = line.find(' Joules')
 #                    second_index = line.find(' seconds time elapsed')
 #                    if joule_index > 0:
@@ -331,9 +338,9 @@ def run(output_filename, run_output_filename, calibration=False):
 #                    if second_index > 0:
 #                        seconds += float(line[0:second_index].replace(',', ''))
 #                else:
-#                    output_file.write(line + "\n")
+        output_file.flush()
 
-        run_output_file.write(command[3] + ',' + command[4] + ',' + '0' + ',' + '0' + ',' + '0' + '\n')
+        run_output_file.write(command[3] + ',' + command[4] + ',' + "0" + ',' + "0" + ',' + "0" + '\n')
         run_output_file.flush()
         print(str(i) + "/" + str(len(commands)))
 
@@ -928,7 +935,7 @@ def aggregate_list_measurement(measurements):
     tmp = [[x, mean(x_save[x]), stdev(x_save[x]), min(x_save[x]), max(x_save[x])] for x in keys]
     return tmp
 
-
+OUTDIR="tmp_{}_{}".format(sys.argv[2], sys.argv[3])
 if len(sys.argv) > 1:
     if sys.argv[1] == "compile":
         compile()

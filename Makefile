@@ -4,7 +4,7 @@ StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 PYTHON_COMMAND=python3
-OUTDIR=/tmp
+OUTDIR=tmp
 ifndef LABEL_COUNT
 LABEL_COUNT=33
 endif
@@ -20,9 +20,7 @@ endif
 ifdef NN_TRAIN
 NN_TRAINING=-DNN_TRAINING
 endif
-ifndef CXX
-CXX=g++
-endif
+CXX=g++-7
 SHELL := /bin/bash
 
 ifeq ($(config), debug)
@@ -57,7 +55,7 @@ mcnn_%: src/main.cpp src/mcnn.cpp
 #Alternative Mondrian, verificarlo run.
 
 mondrian_t%: src/mond.cpp src/main.cpp
-	verificarlo-c++ --verbose --exclude-file exclude.txt src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG)\
+	verificarlo-c++ --verbose --exclude-file exclude.txt src/main.cpp $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond.cpp\"" -DTREE_COUNT=$* -o bin/$@
 
 
@@ -113,8 +111,8 @@ dataset:
 run:
 	$(PYTHON_COMMAND) makefile.py run
 rerun: 
-	rm -f $(OUTDIR)/output $(OUTDIR)/output_runs models.csv
-	$(PYTHON_COMMAND) makefile.py run
+	rm -f $(OUTDIR)_$(PRECISION)/output $(OUTDIR)_$(PRECISION)/output_runs models.csv
+	$(PYTHON_COMMAND) makefile.py run $(PRECISION) $(EXPONENT)
 calibration: 
 	$(PYTHON_COMMAND) makefile.py calibration
 moa:

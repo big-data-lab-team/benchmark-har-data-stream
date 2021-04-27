@@ -1,4 +1,7 @@
-for ((i = 4; i >= 1; i=i-1))
+for ((i = 1; i <= 52; i=i+1))
 do
-	sbatch --time=01:00:00 --account=rrg-glatard --mem=4G global_script.sh $i;
+	for ((j = 2; j <= 11; j=j+1))
+	do
+		sbatch global_script.sh $i $j;
+	done
 done
