@@ -130,6 +130,7 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 		double features[feature_count+1]; //+1 because we need the label
 		parse_line<feature_count+1>(line, features);
 		int label = func::round(features[feature_count]);
+		features[feature_count] = 0;
 #ifdef BANOS
 		if(label > 0){
 			label -= 1; //We removed the zero
@@ -180,8 +181,8 @@ int main(int argc, char** argv){
 	int const seed = stoi(argv[2]);	
 	int const model_id = stoi(argv[3]);	
 	int const run_id = stoi(argv[4]);	
-	//Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
-	Evaluation<LABEL_COUNT> evaluator(1.0);
+	Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
+	//Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
 	if(classifier != nullptr){
 #ifdef NN_TRAINING
