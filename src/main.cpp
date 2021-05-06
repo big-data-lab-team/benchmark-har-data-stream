@@ -33,10 +33,10 @@ class functions{
 	}
 	//TODO: we need a rand_uniform and a log functions (log == ln)
 	static double rand_uniform(void){
-		return static_cast<double>(rand())/static_cast<double>(RAND_MAX);
+		return static_cast<double>(rand()%RAND_MAX)/static_cast<double>(RAND_MAX);
 	}
 	static double random(void){
-		return (static_cast<double>(std::rand()) / static_cast<double>(RAND_MAX));
+		return (static_cast<double>(std::rand()%RAND_MAX) / static_cast<double>(RAND_MAX));
 	}
 	template<class T>
 	static int round(T const x){
