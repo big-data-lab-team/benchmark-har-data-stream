@@ -22,7 +22,9 @@ class MLPClassifier{
 	inline bool train(feature_type const* features, int const label){
 		double output[last_layer_size];
 		mlp->feed_forward(features, output);
-		double real_output[last_layer_size] = {0};
+		double real_output[last_layer_size];
+		for(int i = 0; i < last_layer_size; ++i)
+			real_output[i] = 0;
 		real_output[label] = 1;
 		double err = mlp->backpropagate(real_output);
 		if(err < min_err)
