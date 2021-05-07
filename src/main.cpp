@@ -31,7 +31,6 @@ class functions{
 	static bool isnan(double const x){
 		return std::isnan(x);
 	}
-	//TODO: we need a rand_uniform and a log functions (log == ln)
 	static double rand_uniform(void){
 		return static_cast<double>(rand()%RAND_MAX)/static_cast<double>(RAND_MAX);
 	}
