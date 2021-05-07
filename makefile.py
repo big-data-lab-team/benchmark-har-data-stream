@@ -312,6 +312,7 @@ def run(output_filename, run_output_filename, calibration=False):
         try:
         	#out = subprocess.check_output(command, stderr=subprocess.STDOUT, timeout=60)
         	out = subprocess.check_output(command, stderr=subprocess.STDOUT)
+        	
         except subprocess.TimeoutExpired:
         	print("Error timeout.")
         	continue
