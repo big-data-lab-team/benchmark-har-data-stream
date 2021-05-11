@@ -16,12 +16,12 @@ RUN cd /opt/ &&\
 	cd streamDM-Cpp &&\
 	CXX=g++-7 CC=gcc-7 make -j 8 lib &&\
 	cd .. &&\
-	mkdir bin &&\
-	CXX=g++-7 ./setup.sh &&\
-	tar xf datasets.tar.xz &&\
-	mkdir /tmp &&\
-	cp *.log /tmp
-RUN bash setup.sh
+	mkdir bin
+#RUN tar xf datasets.tar.xz &&\
+#	mkdir /tmp &&\
+#	cp *.log /tmp
+#RUN CXX=g++-7 ./setup.sh
+#RUN bash setup.sh
 #	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=52" &&\
 #	mkdir verificarlo_results &&\
 
