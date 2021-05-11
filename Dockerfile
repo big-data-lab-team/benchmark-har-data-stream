@@ -1,21 +1,18 @@
 FROM verificarlo/verificarlo:latest
-
+ARG instr
 RUN apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev nano python3-tk
 RUN apt install -y linux-tools-common linux-tools-generic linux-cloud-tools-generic build-essential
 #RUN linux-tools-3.10.0-3.12-generic linux-cloud-tools-3.10.0-3.12-generic
 
-RUN pip3 install pandas seaborn 
+RUN pip3 install pandas seaborn
 
-ARG PRECISION=52
-#TO DO: Get precision
-
-RUN cd /opt/ && \
-	git clone --depth=1 https://github.com/MarkCycVic/benchmark-har-data-stream.git &&\
-	cd benchmark-har-data-stream &&\
+RUN cd /opt/ &&\
+	git clone --depth=1 https://github.com/MarkCycVic/mondrian-veripaille.git veripaille &&\
+	cd veripaille &&\
 	git submodule init &&\
 	git submodule update &&\
 	cp makefile_streamDM streamDM-Cpp/makefile &&\
-	cp mondrian_get_set.hpp OrpailleCC/src/mondrian.hpp &&\
+	if [ $instr = "node" ] ; then cp mondrian_node.hpp OrpailleCC/src/mondrian.hpp ; else cp mondrian_whole.hpp OrpailleCC/src/mondrian.hpp ; fi &&\
 	cd streamDM-Cpp &&\
 	CXX=g++-7 CC=gcc-7 make -j 8 lib &&\
 	cd .. &&\
@@ -24,12 +21,9 @@ RUN cd /opt/ && \
 	tar xf datasets.tar.xz &&\
 	mkdir /tmp &&\
 	cp *.log /tmp
-#	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=$PRECISION" &&\
+RUN bash setup.sh
+#	export VFC_BACKENDS="libinterflop_vprec.so --precision-binary64=52" &&\
 #	mkdir verificarlo_results &&\
-#	make rerun &&\
-#	cp tmp/output verificarlo_results/output_$PRECISION &&\
-#	cp tmp/output_runs verificarlo_results/output_runs_$PRECISION &&\
-#	cp models.csv verificarlo_results/models_$PRECISION.csv
 
 ENTRYPOINT ["/bin/bash"]
 	
