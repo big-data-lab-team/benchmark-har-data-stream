@@ -16,11 +16,12 @@ RUN cd /opt/ &&\
 	cd streamDM-Cpp &&\
 	CXX=g++-7 CC=gcc-7 make -j 8 lib &&\
 	cd .. &&\
-	mkdir bin
-RUN tar xf datasets.tar.xz &&\
+	mkdir bin &&\
+	tar xf datasets.tar.xz &&\
 	mkdir tmp &&\
-	cp *.log /tmp
-RUN bash setup.sh CXX=g++-7 &&\
+	cp *.log tmp
+RUN cd /opt/veripaille/ &&\
+	bash setup.sh CXX=g++-7 &&\
 	mkdir verificarlo_results &&\
 	bash mkdirs.sh
 

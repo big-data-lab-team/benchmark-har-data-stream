@@ -2,9 +2,9 @@ Numerical precision, classification accuracy, and memory footprint in the Mondri
 =============================================================================================
 
 This repository contains the script, the datasets, and the source code to
-conduct a benchmark of data stream classifiers. The original study was proposed
-in [here] (not published). The results were obtained with the
-version 1.0 of this repository.
+conduct a benchmark of the OrpailleCC Mondrian Tree implementation for numerical 
+precision. The original paper was proposed in [here]. The results are available 
+in the results branch.
 
 Requirements
 ------------
@@ -18,9 +18,12 @@ This benchmark requires the following software:
 Setup the repository
 --------------------
 First we clone the repository and we initialize the submodules.
+
+mkdir verificarlo_results &&\
+bash mkdirs.sh
 ```
-git clone https://github.com/big-data-lab-team/benchmark-har-data-stream.git benchmark
-cd benchmark
+git clone --depth=1 https://github.com/MarkCycVic/mondrian-veripaille.git veripaille
+cd veripaille
 git submodule init
 git submodule update
 ```
@@ -32,37 +35,64 @@ cd streamDM-Cpp
 make -j 8 static
 cd ..
 ```
-
+Then, to setup the node version, we copy the necessary files.
+```
+cp mondrian_node.hpp OrpailleCC/src/mondrian.hpp
+echo DO_two_Makefile_s
+```
+If, however, you wish to test the whole instrumentation, copy the following.
+```
+cp mondrian_whole.hpp OrpailleCC/src/mondrian.hpp
+echo DO_two_Makefile_s
+```
+Then we extract the datasets and we place the dataset in memory.
+```
+tar xf datasets.tar.xz &&\
+mkdir tmp &&\
+cp *.log tmp
+```
 Then we compile all the binary to run the experiment.
 ```
 mkdir bin
-./setup.sh
+./setup.sh CXX=g++-7
 ```
 The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
+Then we create all the directories necessary for result output.
+```
+mkdir verificarlo_results
+./mkdirs.sh
+```
 
-Then we extract the datasets and we place the dataset in memory.
-```
-tar xf datasets.tar.xz
-cp *.log /tmp
-```
 
-To run the experiment, we rely on the make command, then we collect the result
-on the current directory. Note that `make run` can be replaced by `make
-calibration` to run an extensive search on the parameter.
+To run the experiment on a single precision, simply run verificarlo at a single precision and exponent length:
 ```
-make run
-cp models.csv /tmp/output /tmp/output_runs .
+./run_1_verificarlo.sh PRECISION EXPONENT
+```
+Setup the Docker image
+--------------------
+Simply run the Dockerfile as follows:
+
+```
+docker build --build-arg="node" -t IMAGENAME .
+```
+We rely of two overarching bash file: main.sh and task.sh. task.sh are the slurm adapted .sh file to run a single model on your image.
+main.sh is a loop on task.sh, to attempt all precisions and exponent combinations wanted.
+Simply change those two files to your environment and purposes, and run:
+```
+./main.sh
+```
+Setup the Singularity image
+--------------------
+```
+singularity build IMAGENAME docker://vicuna/verificarloorpaille
 ```
 
 From the experiment results, we generate the plots (Figure 1-3) with the following command:
 ```
-make plot_results
+python3 plot_verificarlo.py
 ```
 
-From the calibration results, we generate the plots (Figure 4,5) with this command:
-```
-make plot_hyperparameters
-```
+
 
 Regenerating MOA datasets
 -------------------------
@@ -116,18 +146,6 @@ should be the name of the dataset file.
 Then, you'll need to modify the function *final_list* in *makefile.py* to
 append the name of the new dataset to the list.
 
-Adding a classifier
--------------------
-To add a new classifier, you need to code a C++ file that defines the function
-*get_classifier* and that returns a classifier object. This object must implement
-two functions: train and predict. The file *empty.cpp* is an example.
-
-Once you have written the classifier code, you need to modify the Makefile so
-it compiles it depending on the parameter provided to *make* such as
-the number of features or the number of classes.
-
-Finally, you will need to modify the function *final_list* in *makefile.py* to
-add the classifier to each dataset.
 
 Hyperparameters
 ---------------
@@ -143,26 +161,5 @@ Hyperparameters used for Mondrian:
 | 10              | 0.0        | 1.0      | 0.4    |
 | 50              | 0.0        | 1.0      | 0.2    |
 
-Impact of the base count with 10 trees, a budget of 1.0, and a discount factor of 0.2.
-![](paper/figures/calibration_mondrian_base.png)
 
-Impact of the budget with 10 trees, a base count of 0.1, and discount factor of 0.2.
-![](paper/figures/calibration_mondrian_discount.png)
-
-Impact of the discount factor with 10 trees, a budget of 1.0, and a base count of 0.1.
-![](paper/figures/calibration_mondrian_lifetime.png)
-
-*** MCNN
-
-Hyperparameters used for MCNN:
-| Number of clusters | Error threshold | Participation threshold |
-|--------------------|-----------------|-------------------------|
-| 10                 | 2               | 10                      |
-| 20                 | 10              | 10                      |
-| 33                 | 16              | 10                      |
-| 40                 | 8               | 10                      |
-| 50                 | 2               | 10                      |
-
-Error threshold tuning of \mcnn with the first subject of Banos et al dataset. Error threshold in parenthesis.
-![](paper/calibration_mcnn.png)
 
