@@ -127,7 +127,5 @@ moa:
 	 cp dataset_*.log $(OUTDIR)
 plot_verificarlo:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) plot_verificarlo.py
-plot_hyperparameters:
-	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_hyperparameters
 clean:
 	rm -rf bin/mondrian_t* bin/empty_classifier bin/previous_classifier bin/mcnn_* bin/streamdm_ht bin/streamdm_perceptron bin/streamdm_naive_bayes bin/naive_bayes
