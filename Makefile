@@ -125,8 +125,6 @@ moa:
 	 sed 's/,class1,/,0/g' dataset_2.arff | sed 's/,class2,/,1/g' | sed 's/,/	/g' > dataset_2.log
 	 sed 's/,class10,/,9/g' dataset_3.arff | sed 's/,class1,/,0/g' | sed 's/,class2,/,1/g' | sed 's/,class3,/,2/g' | sed 's/,class4,/,3/g' | sed 's/,class5,/,4/g' | sed 's/,class6,/,5/g' | sed 's/,class7,/,6/g' | sed 's/,class8,/,7/g' | sed 's/,class9,/,8/g' | sed 's/,/	/g' > dataset_3.log
 	 cp dataset_*.log $(OUTDIR)
-plot_results:
-	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_verificarlo:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) plot_verificarlo.py
 plot_hyperparameters:
