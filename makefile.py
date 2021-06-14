@@ -152,36 +152,11 @@ def calibration_list(commands):
 def final_list(commands):
     repetition_count = 30
     ####### Controlling the datasets: To add a dataset, both add it here and to the setup. ########
-    #for dataset_name in ["banos_3"]:
     for dataset_name in ["banos_6", "banos_6_v1", "banos_6_v2", "banos_6_v3", "banos_6_v4", "banos_6_v5", "banos_6_v6", "recofit_6"]:
-    #for dataset_name in ["dataset_3", "dataset_2", "dataset_1", "banos_3", "recofit_3", "drift_3", "banos_6", "recofit_6", "drift_6"]:
         filename = "tmp/" + dataset_name + ".log"
         for run_id in map(str,range(repetition_count)):
             seed = str(run_id)
-#            model_id = get_model_id("Empty," + filename)
-#            commands.append(["bin/" + dataset_name + "/empty_classifier", filename, seed, model_id, run_id])
-#            model_id = get_model_id("MCNN," + filename + ",10,16,0,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "2", "0", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",20,10,0,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "10", "0", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",40,8,0,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "8", "0", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",33,16,0,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "16", "0", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",50,2,0,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c50", filename, seed, model_id, run_id, "2", "0", "10"])
-
-#            model_id = get_model_id("MCNN," + filename + ",10,2,1,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c10", filename, seed, model_id, run_id, "2", "1", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",20,10,1,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c20", filename, seed, model_id, run_id, "10", "1", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",40,8,1,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c40", filename, seed, model_id, run_id, "8", "1", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",33,16,1,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c33", filename, seed, model_id, run_id, "16", "1", "10"])
-#            model_id = get_model_id("MCNN," + filename + ",50,2,1,10")
-#            commands.append(["bin/" + dataset_name + "/mcnn_c50", filename, seed, model_id, run_id, "2", "1", "10"])
-
+            
             model_id = get_model_id("Mondrian," + filename + ",1.0,0.1,1.0,1,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t1", filename, seed, model_id, run_id, "1.0", "0.0", "1.0"])
             model_id = get_model_id("Mondrian," + filename + ",0.4,0.0,1.0,5,600000")
@@ -190,6 +165,7 @@ def final_list(commands):
             commands.append(["bin/" + dataset_name + "/mondrian_t10", filename, seed, model_id, run_id, "0.4", "0.0", "1.0"])
             model_id = get_model_id("Mondrian," + filename + ",0.2,0.0,1.0,50,600000")
             commands.append(["bin/" + dataset_name + "/mondrian_t50", filename, seed, model_id, run_id, "0.2", "0.0", "1.0"])
+            
             model_id = get_model_id('Mondrian,' + filename + ',0.8,0.1,1.0,1,1200000')
             commands.append(['bin/' + dataset_name + '/mondrian_t1_double', filename, seed, model_id, run_id, '0.8', '0.1', '1.0'])
             model_id = get_model_id('Mondrian,' + filename + ',0.8,0.0,1.0,5,1200000')
@@ -198,13 +174,7 @@ def final_list(commands):
             commands.append(['bin/' + dataset_name + '/mondrian_t10_double', filename, seed, model_id, run_id, '0.6', '0.0', '1.0'])
             model_id = get_model_id('Mondrian,' + filename + ',0.6,0.0,0.1,50,1200000')
             commands.append(['bin/' + dataset_name + '/mondrian_t50_double', filename, seed, model_id, run_id, '0.6', '0.0', '0.1'])
-#            model_id = get_model_id("StreamDM HoeffdingTree," + filename + ",0,0.01,10")
-#            commands.append(["bin/" + dataset_name + "/streamdm_ht", filename, seed, model_id, run_id, "0", "0.01", "10"])
-#            model_id = get_model_id("NaiveBayes," + filename)
-#            commands.append(["bin/" + dataset_name + "/naive_bayes", filename, seed, model_id, run_id])
-#            model_id = get_model_id("StreamDM NaiveBayes," + filename)
-#            commands.append(["bin/" + dataset_name + "/streamdm_naive_bayes", filename, seed, model_id, run_id])
-
+            
             model_id = get_model_id('Mondrian,' + filename + ',1.0,0.0,1.0,1,3000000')
             commands.append(['bin/' + dataset_name + '/mondrian_t1_quintuple', filename, seed, model_id, run_id, '1.0', '0.0', '1.0'])
             model_id = get_model_id('Mondrian,' + filename + ',0.4,0.0,1.0,5,3000000')

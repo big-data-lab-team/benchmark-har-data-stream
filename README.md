@@ -3,24 +3,32 @@ Numerical precision, classification accuracy, and memory footprint in the Mondri
 
 This repository contains the script, the datasets, and the source code to
 conduct a benchmark of the OrpailleCC Mondrian Tree implementation for numerical 
-precision. The original paper was proposed in [here]. The results are available 
+precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). The results are available 
 in the results branch.
+
 
 Requirements
 ------------
 This benchmark requires the following software:
 - git: to download the source codes, the modules, and the datasets.
 - gcc: to compile.
-- perf: to evaluate the resource usage, in particular, the runtime and the energy.
 - pandas, seaborn, matplotlib: to plot the figures.
 - log4cpp: log4cpp is a requirement for streamDM-Cpp.
 
 Setup the repository
 --------------------
-First we clone the repository and we initialize the submodules.
+We do not recommend this, as runs tend to be long and containerizing make more sense, especially in a SLURM context.
 
-mkdir verificarlo_results &&\
-bash mkdirs.sh
+First, install Verificarlo, to allow numerical precision reduction.
+All instructions are available in [here](https://github.com/verificarlo/verificarlo).
+
+Then, install all the software needed.
+```
+apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev nano python3-tk git
+apt install -y linux-tools-common linux-tools-generic linux-cloud-tools-generic build-essential
+```
+Then, we clone the repository and we initialize the submodules.
+
 ```
 git clone --depth=1 https://github.com/MarkCycVic/mondrian-veripaille.git veripaille
 cd veripaille
@@ -28,7 +36,7 @@ git submodule init
 git submodule update
 ```
 
-Then we compile streamDM-Cpp. To get a static library, we patch the Makefile.
+Then, we compile streamDM-Cpp. To get a static library, we patch the Makefile.
 ```
 patch streamDM-Cpp/makefile streamdm_patch
 cd streamDM-Cpp
@@ -38,12 +46,12 @@ cd ..
 Then, to setup the node version, we copy the necessary files.
 ```
 cp mondrian_node.hpp OrpailleCC/src/mondrian.hpp
-echo DO_two_Makefile_s
+cp Makefile_node Makefile
 ```
 If, however, you wish to test the whole instrumentation, copy the following.
 ```
 cp mondrian_whole.hpp OrpailleCC/src/mondrian.hpp
-echo DO_two_Makefile_s
+cp Makefile_whole Makefile
 ```
 Then we extract the datasets and we place the dataset in memory.
 ```
@@ -56,20 +64,15 @@ Then we compile all the binary to run the experiment.
 mkdir bin
 ./setup.sh CXX=g++-7
 ```
-The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
+The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name. 
 Then we create all the directories necessary for result output.
 ```
 mkdir verificarlo_results
 ./mkdirs.sh
 ```
 
-
-To run the experiment on a single precision, simply run verificarlo at a single precision and exponent length:
-```
-./run_1_verificarlo.sh PRECISION EXPONENT
-```
 Setup the Docker image
---------------------
+----------------------
 Simply run the Dockerfile as follows:
 
 ```
@@ -82,17 +85,33 @@ Simply change those two files to your environment and purposes, and run:
 ./main.sh
 ```
 Setup the Singularity image
---------------------
+---------------------------
 ```
 singularity build IMAGENAME docker://vicuna/verificarloorpaille
 ```
 
-From the experiment results, we generate the plots (Figure 1-3) with the following command:
+From the experiment results, refer to the ins
 ```
 python3 plot_verificarlo.py
 ```
+Testing
+-------
 
+Training is made through a single file: run_1_verificarlo.sh.
+To verify your installation, run this file in the veripaille directory at a given precision (1-52) and a given exponent (2-11)
+```
+./run_1_verificarlo.sh PRECISION EXPONENT
+```
+To run many precisions using SLURM and containers, download the files task.sh and main.sh.
 
+Then, adapt the task.sh file to your specific directories and container. 
+
+Finally, adapt the for-loop in the main.sh file to run all the precisions and exponents you want. You can now run the main.sh file from outside your container.
+```
+./main.sh
+```
+By default, all datasets will be run. This can take up to 10 hours for node, 20 hours for whole (Compute Canada, Beluga, Scratch).
+To run change the datasets run, modify line 156 of the makefile.py file to the intented datasets. For a simple and quick dataset, use banos_3.
 
 Regenerating MOA datasets
 -------------------------
@@ -144,7 +163,8 @@ the binary files place in the proper directory. The name of that directory
 should be the name of the dataset file.
 
 Then, you'll need to modify the function *final_list* in *makefile.py* to
-append the name of the new dataset to the list.
+append the name of the new dataset to the list. You will also need to
+modify the setup.sh accordingly and rerun it.
 
 
 Hyperparameters
