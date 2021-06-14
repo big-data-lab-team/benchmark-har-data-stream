@@ -3,8 +3,7 @@ Numerical precision, classification accuracy, and memory footprint in the Mondri
 
 This repository contains the script, the datasets, and the source code to
 conduct a benchmark of the OrpailleCC Mondrian Tree implementation for numerical 
-precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). The results are available 
-in the results branch.
+precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). Raw results and plots are available [here](https://doi.org/10.5281/zenodo.4946897).
 
 
 Requirements
@@ -123,7 +122,6 @@ and place it in the repository under the name *moa* or you can modify the
 variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
 to remove the header and change the tabulation into commas and rename the class
 name to actual numbers starting at zero.
-
 
 Result Structure
 ----------------
