@@ -163,9 +163,12 @@ the binary files place in the proper directory. The name of that directory
 should be the name of the dataset file.
 
 Then, you'll need to modify the function *final_list* in *makefile.py* to
-append the name of the new dataset to the list. You will also need to
-modify the setup.sh accordingly and rerun it.
+append the name of the new dataset to the list. 
 
+Plotting, data analysis
+-----------------------
+Plots and results are available from two zip files available [here]. 
+To plot, follow the instructions of the plot_veripaille.ipynb file.
 
 Hyperparameters
 ---------------
