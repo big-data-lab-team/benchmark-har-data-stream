@@ -166,6 +166,8 @@ append the name of the new dataset to the list.
 Plotting, data analysis
 -----------------------
 Plots and results are available from two zip files available [here]. 
+Extract the result.zip contents in the same directory as the 
+plot_veripaille.ipynb file to use the same results as obtained in our training.
 To plot, follow the instructions of the plot_veripaille.ipynb file.
 
 Hyperparameters
