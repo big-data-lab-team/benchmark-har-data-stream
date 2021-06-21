@@ -1,0 +1,3 @@
+main _ZN10Evaluation*countEii
+main _ZNK10Evaluation*accuracyEv
+main _ZNK10Evaluation*f1Ev

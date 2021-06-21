@@ -31,7 +31,6 @@ class functions{
 	static bool isnan(double const x){
 		return std::isnan(x);
 	}
-	//TODO: we need a rand_uniform and a log functions (log == ln)
 	static double rand_uniform(void){
 		return static_cast<double>(rand()%RAND_MAX)/static_cast<double>(RAND_MAX);
 	}
@@ -181,8 +180,8 @@ int main(int argc, char** argv){
 	int const seed = stoi(argv[2]);	
 	int const model_id = stoi(argv[3]);	
 	int const run_id = stoi(argv[4]);	
-	Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
-	//Evaluation<LABEL_COUNT> evaluator(1.0);
+	//Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
+	Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
 	if(classifier != nullptr){
 #ifdef NN_TRAINING
@@ -193,4 +192,3 @@ int main(int argc, char** argv){
 	delete classifier;
 	return 0;
 }
-

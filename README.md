@@ -1,68 +1,116 @@
-A benchmark of data stream classification for human activity recognition on connected objects
+Numerical precision, classification accuracy, and memory footprint in the Mondrian Forest
 =============================================================================================
 
 This repository contains the script, the datasets, and the source code to
-conduct a benchmark of data stream classifiers. The original study was proposed
-in [here](https://arxiv.org/abs/2008.11880). The results were obtained with the
-version 1.0 of this repository.
+conduct a benchmark of the OrpailleCC Mondrian Tree implementation for numerical 
+precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). Raw results and plots are available [here](https://doi.org/10.5281/zenodo.4946897).
+
 
 Requirements
 ------------
 This benchmark requires the following software:
 - git: to download the source codes, the modules, and the datasets.
 - gcc: to compile.
-- perf: to evaluate the resource usage, in particular, the runtime and the energy.
 - pandas, seaborn, matplotlib: to plot the figures.
 - log4cpp: log4cpp is a requirement for streamDM-Cpp.
 
 Setup the repository
 --------------------
-First we clone the repository and we initialize the submodules.
+We do not recommend this, as runs tend to be long and containerizing make more sense, especially in a SLURM context.
+
+First, install Verificarlo, to allow numerical precision reduction.
+All instructions are available in [here](https://github.com/verificarlo/verificarlo).
+
+Then, install all the software needed.
 ```
-git clone https://github.com/big-data-lab-team/benchmark-har-data-stream.git benchmark
-cd benchmark
+apt update -y && apt install -y liblog4cpp5v5 liblog4cpp5-dev nano python3-tk git
+apt install -y linux-tools-common linux-tools-generic linux-cloud-tools-generic build-essential
+```
+Then, we clone the repository and we initialize the submodules.
+
+```
+git clone --depth=1 https://github.com/MarkCycVic/mondrian-veripaille.git veripaille
+cd veripaille
 git submodule init
 git submodule update
 ```
 
-Then we compile streamDM-Cpp. To get a static library, we patch the Makefile.
+Then, we compile streamDM-Cpp. To get a static library, we patch the Makefile.
 ```
 patch streamDM-Cpp/makefile streamdm_patch
 cd streamDM-Cpp
 make -j 8 static
 cd ..
 ```
-
+Then, to setup the node version, we copy the necessary files.
+```
+cp mondrian_node.hpp OrpailleCC/src/mondrian.hpp
+cp Makefile_node Makefile
+```
+If, however, you wish to test the whole instrumentation, copy the following.
+```
+cp mondrian_whole.hpp OrpailleCC/src/mondrian.hpp
+cp Makefile_whole Makefile
+```
+Then we extract the datasets and we place the dataset in memory.
+```
+tar xf datasets.tar.xz &&\
+mkdir tmp &&\
+cp *.log tmp
+```
 Then we compile all the binary to run the experiment.
 ```
 mkdir bin
-./setup.sh
+./setup.sh CXX=g++-7
 ```
-The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
-
-Then we extract the datasets and we place the dataset in memory.
+The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name. 
+Then we create all the directories necessary for result output.
 ```
-tar xf datasets.tar.xz
-cp *.log /tmp
-```
-
-To run the experiment, we rely on the make command, then we collect the result
-on the current directory. Note that `make run` can be replaced by `make
-calibration` to run an extensive search on the parameter.
-```
-make run
-cp models.csv /tmp/output /tmp/output_runs .
+mkdir verificarlo_results
+./mkdirs.sh
 ```
 
-From the experiment results, we generate the plots (Figure 1-3) with the following command:
+Setup the Docker image
+----------------------
+Simply run the Dockerfile as follows:
+
 ```
-make plot_results
+docker build --build-arg="node" -t IMAGENAME .
+```
+We rely of two overarching bash file: main.sh and task.sh. task.sh are the slurm adapted .sh file to run a single model on your image.
+main.sh is a loop on task.sh, to attempt all precisions and exponent combinations wanted.
+Simply change those two files to your environment and purposes, and run:
+```
+./main.sh
+```
+Setup the Singularity image
+---------------------------
+```
+singularity build IMAGENAME docker://vicuna/verificarloorpaille
 ```
 
-From the calibration results, we generate the plots (Figure 4,5) with this command:
+From the experiment results, refer to the ins
 ```
-make plot_hyperparameters
+python3 plot_verificarlo.py
 ```
+Testing
+-------
+
+Training is made through a single file: run_1_verificarlo.sh.
+To verify your installation, run this file in the veripaille directory at a given precision (1-52) and a given exponent (2-11)
+```
+./run_1_verificarlo.sh PRECISION EXPONENT
+```
+To run many precisions using SLURM and containers, download the files task.sh and main.sh.
+
+Then, adapt the task.sh file to your specific directories and container. 
+
+Finally, adapt the for-loop in the main.sh file to run all the precisions and exponents you want. You can now run the main.sh file from outside your container.
+```
+./main.sh
+```
+By default, all datasets will be run. This can take up to 10 hours for node, 20 hours for whole (Compute Canada, Beluga, Scratch).
+To run change the datasets run, modify line 156 of the makefile.py file to the intented datasets. For a simple and quick dataset, use banos_3.
 
 Regenerating MOA datasets
 -------------------------
@@ -74,7 +122,6 @@ and place it in the repository under the name *moa* or you can modify the
 variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
 to remove the header and change the tabulation into commas and rename the class
 name to actual numbers starting at zero.
-
 
 Result Structure
 ----------------
@@ -114,20 +161,14 @@ the binary files place in the proper directory. The name of that directory
 should be the name of the dataset file.
 
 Then, you'll need to modify the function *final_list* in *makefile.py* to
-append the name of the new dataset to the list.
+append the name of the new dataset to the list. 
 
-Adding a classifier
--------------------
-To add a new classifier, you need to code a C++ file that defines the function
-*get_classifier* and that returns a classifier object. This object must implement
-two functions: train and predict. The file *empty.cpp* is an example.
-
-Once you have written the classifier code, you need to modify the Makefile so
-it compiles it depending on the parameter provided to *make* such as
-the number of features or the number of classes.
-
-Finally, you will need to modify the function *final_list* in *makefile.py* to
-add the classifier to each dataset.
+Plotting, data analysis
+-----------------------
+Plots and results are available from two zip files available [here]. 
+Extract the result.zip contents in the same directory as the 
+plot_veripaille.ipynb file to use the same results as obtained in our training.
+To plot, follow the instructions of the plot_veripaille.ipynb file.
 
 Hyperparameters
 ---------------
@@ -143,26 +184,5 @@ Hyperparameters used for Mondrian:
 | 10              | 0.0        | 1.0      | 0.4    |
 | 50              | 0.0        | 1.0      | 0.2    |
 
-Impact of the base count with 10 trees, a budget of 1.0, and a discount factor of 0.2.
-![](paper/figures/calibration_mondrian_base.png)
 
-Impact of the budget with 10 trees, a base count of 0.1, and discount factor of 0.2.
-![](paper/figures/calibration_mondrian_discount.png)
-
-Impact of the discount factor with 10 trees, a budget of 1.0, and a base count of 0.1.
-![](paper/figures/calibration_mondrian_lifetime.png)
-
-*** MCNN
-
-Hyperparameters used for MCNN:
-| Number of clusters | Error threshold | Participation threshold |
-|--------------------|-----------------|-------------------------|
-| 10                 | 2               | 10                      |
-| 20                 | 10              | 10                      |
-| 33                 | 16              | 10                      |
-| 40                 | 8               | 10                      |
-| 50                 | 2               | 10                      |
-
-Error threshold tuning of \mcnn with the first subject of Banos et al dataset. Error threshold in parenthesis.
-![](paper/calibration_mcnn.png)
 
