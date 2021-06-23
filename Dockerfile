@@ -7,7 +7,7 @@ RUN apt install -y linux-tools-common linux-tools-generic linux-cloud-tools-gene
 RUN pip3 install pandas seaborn
 
 RUN cd /opt/ &&\
-	git clone --depth=1 https://github.com/big-data-lab-team/benchmark-har-data-stream/tree/veripaille veripaille &&\
+	git clone --depth=1 https://github.com/MarkCycVic/mondrian-veripaille.git veripaille &&\
 	cd veripaille &&\
 	git submodule init &&\
 	git submodule update &&\
