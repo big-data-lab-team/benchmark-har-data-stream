@@ -3,8 +3,7 @@ Numerical precision, classification accuracy, and memory footprint in the Mondri
 
 This repository contains the script, the datasets, and the source code to
 conduct a benchmark of the OrpailleCC Mondrian Tree implementation for numerical 
-precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). The results are available 
-in the results branch.
+precision. The original paper was proposed in [here](https://www.overleaf.com/read/rtvpkqksbqxj). Raw results and plots are available [here](https://doi.org/10.5281/zenodo.4946897).
 
 
 Requirements
@@ -124,7 +123,6 @@ variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
 to remove the header and change the tabulation into commas and rename the class
 name to actual numbers starting at zero.
 
-
 Result Structure
 ----------------
 The results are split in three files:
@@ -163,9 +161,14 @@ the binary files place in the proper directory. The name of that directory
 should be the name of the dataset file.
 
 Then, you'll need to modify the function *final_list* in *makefile.py* to
-append the name of the new dataset to the list. You will also need to
-modify the setup.sh accordingly and rerun it.
+append the name of the new dataset to the list. 
 
+Plotting, data analysis
+-----------------------
+Plots and results are available from two zip files available [here]. 
+Extract the result.zip contents in the same directory as the 
+plot_veripaille.ipynb file to use the same results as obtained in our training.
+To plot, follow the instructions of the plot_veripaille.ipynb file.
 
 Hyperparameters
 ---------------
