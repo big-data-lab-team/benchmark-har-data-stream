@@ -111,7 +111,7 @@ dataset:
 run:
 	$(PYTHON_COMMAND) makefile.py run
 rerun: 
-	rm -f $(OUTDIR)_$(PRECISION)/output $(OUTDIR)_$(PRECISION)/output_runs models.csv
+	rm -f $(OUTDIR)_$(PRECISION)_$(EXPONENT)/output $(OUTDIR)_$(PRECISION)_$(EXPONENT)/output_runs $(OUTDIR)_$(PRECISION)_$(EXPONENT)/models.csv
 	$(PYTHON_COMMAND) makefile.py run $(PRECISION) $(EXPONENT)
 calibration: 
 	$(PYTHON_COMMAND) makefile.py calibration
