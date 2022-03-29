@@ -1,5 +1,4 @@
-#OrpailleCC_DIR=$(shell pwd)/OrpailleCC
-OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
+OrpailleCC_DIR=$(shell pwd)/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 MOA_DIR=$(shell pwd)/MOA
