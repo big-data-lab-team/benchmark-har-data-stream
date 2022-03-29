@@ -27,7 +27,7 @@ SHELL := /bin/bash
 ifeq ($(config), debug)
 DEBUG_FLAGS= -g -O0 -DDEBUG #$(FLAG_GCOV)
 else #release config by default
-DEBUG_FLAGS=-O0 -g
+DEBUG_FLAGS=-O3
 endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(DEBUG_FLAGS) 
