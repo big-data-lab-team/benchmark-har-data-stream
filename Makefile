@@ -1,7 +1,8 @@
 OrpailleCC_DIR=$(shell pwd)/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
-MOA_DIR=$(shell pwd)/MOA
+#MOA_DIR=$(shell pwd)/MOA
+MOA_DIR=/home/magoa/phd/moa
 MOA_COMMAND=java -Xmx512m -cp "$(MOA_DIR)/lib/moa-2019.05.0:$(MOA_DIR)/lib/*" -javaagent:$(MOA_DIR)/lib/sizeofag-1.0.4.jar moa.DoTask
 PYTHON_COMMAND=python
 ifndef LABEL_COUNT
@@ -200,9 +201,9 @@ moa_xp1_xp2:
 	cd $(MOA_DIR)
 	#We set the random seed to 888
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGeneratorDrift -s 0.001 -c 33 -a 12 -r 1 -i 1) -f RandomRBF_drift.artf -m 20000"
-	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -c 33 -a 12 -r 1 -i 1) -f RandomRBF_stable.arff -m 20000"
-	sed 's/class\([0-9]*\)/\1/' RandomRBF_drift.artf | sed 's/,/	/g' > RandomRBF_drift.log
-	sed 's/class\([0-9]*\)/\1/' RandomRBF_stable.artf | sed 's/,/	/g' > RandomRBF_stable.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -c 33 -a 12 -r 1 -i 1) -f RandomRBF_stable.artf -m 20000"
+	sed 's/class\([0-9]*\)/\1/' RandomRBF_drift.artf | sed 's/,/	/g' | tail -n +19 > RandomRBF_drift.log
+	sed 's/class\([0-9]*\)/\1/' RandomRBF_stable.artf | sed 's/,/	/g' | tail -n +19 > RandomRBF_stable.log
 plot_results:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_hyperparameters:
