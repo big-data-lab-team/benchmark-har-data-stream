@@ -1,3 +1,5 @@
 bin/*
 *.log
 *.arff
+draft_*
+add_*
