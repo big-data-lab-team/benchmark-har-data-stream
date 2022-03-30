@@ -1,3 +1,81 @@
+Mondrian Forest Under Memory Constraints
+========================================
+
+This repository contains the script, the datasets, and the source code to
+conduct a benchmark of Mondrian Forest under Memory Constraints. The original study was proposed
+in [todo](). The results were obtained with the
+version 1.1 of this repository.
+
+Requirements
+------------
+This benchmark requires the following software:
+- git: to download the source codes, the modules, and the datasets.
+- gcc: to compile.
+- pandas, seaborn, matplotlib: to plot the figures.
+
+Setup the repository for Mondrian Forest under Memory Constraints
+-----------------------------------------------------------------
+First we clone the repository and we initialize the submodules.
+```
+git clone https://github.com/big-data-lab-team/benchmark-har-data-stream.git benchmark
+cd benchmark
+git submodule init
+git submodule update
+```
+
+Then we compile all the binary to run the experiment.
+```
+./setup_xp1_xp2.sh
+```
+This script take care of compiling the binary files and placing these files into a directory related to the dataset name.
+
+Then we extract the datasets and we place the dataset in memory.
+```
+tar xf datasets_xp1_xp2.tar.xz
+cp *.log /tmp
+```
+
+To run the experiment, we rely on two more scripts.
+```
+./run_xp1.sh
+./run_xp2.sh
+```
+Two directories are generated, results_xp1 and results_xp2.
+
+From these results directories, we generate the plots with the following command:
+```
+./plot_xp1.py
+./plot_xp2.py
+```
+
+Regenerating MOA datasets
+-------------------------
+
+The MOA dataset can be regenerated with the command `make moa` even
+though they are also stored in datasets.tar.xz.  MOA archive is available
+[here](https://sourceforge.net/projects/moa-datastream/). You can download it
+and place it in the repository under the name *moa* or you can modify the
+variable *MOA_DIR* in the Makefile. Then you'll need to modify the arff files
+to remove the header and change the tabulation into commas and rename the class
+name to actual numbers starting at zero.
+
+
+Result Structure
+----------------
+The results are split in six directories containing the results for each datasets.
+For a given dataset, there is one result file per method. For instance, the
+file mondrian_t30_partial.csv contains the results for the Mondrian Forest with
+30 trees with the Partial Update out-of-memory strategy.
+
+An output file is a CSV file split in these columns:
+- model_id: not used here.
+- run_id: the id of the repetition, which is a number between 0 and the number of repetitions.
+- element_count: the number of data point seen so far.
+- seed: the seed used for that repetition.
+- accuracy: the accuracy updated with the last data point.
+- f1: the F1 score updated with the last data point.
+- memory: The amount of memory used.
+
 A benchmark of data stream classification for human activity recognition on connected objects
 =============================================================================================
 
@@ -36,13 +114,13 @@ cd ..
 Then we compile all the binary to run the experiment.
 ```
 mkdir bin
-./setup.sh
+./setup_xp0.sh
 ```
-The setup.sh script take care of compiling the binary files and placing these files into a directory related to the dataset name.
+This script take care of compiling the binary files and placing these files into a directory related to the dataset name.
 
 Then we extract the datasets and we place the dataset in memory.
 ```
-tar xf datasets.tar.xz
+tar xf datasets_xp0.tar.xz
 cp *.log /tmp
 ```
 
@@ -67,7 +145,7 @@ make plot_hyperparameters
 Regenerating MOA datasets
 -------------------------
 
-The MOA dataset can be regenerated with the command `make moa` even
+The MOA dataset can be regenerated with the command `make moa_xp0` even
 though they are also stored in datasets.tar.xz.  MOA archive is available
 [here](https://sourceforge.net/projects/moa-datastream/). You can download it
 and place it in the repository under the name *moa* or you can modify the
