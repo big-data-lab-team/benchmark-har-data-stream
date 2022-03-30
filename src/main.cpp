@@ -1,6 +1,6 @@
 #include <fstream>
-#include <iostream> 
-#include <string> 
+#include <iostream>
+#include <string>
 #include <sstream>
 #include <cmath>
 #include "utils.hpp"
@@ -120,8 +120,8 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 		return 2;
 	}
 	int line_count = 1;
-	int* stats = new int[LABEL_COUNT];
-	bool seen_label[label_count];
+	int* stats = new int[label_count];
+	bool seen_label[label_count] = {0};
 	for(int i = 0; i < label_count; ++i)
 		seen_label[i] = false;
 
@@ -178,9 +178,9 @@ int main(int argc, char** argv){
 		return 0;
 	}
 	char* filename = argv[1];
-	int const seed = stoi(argv[2]);	
-	int const model_id = stoi(argv[3]);	
-	int const run_id = stoi(argv[4]);	
+	int const seed = stoi(argv[2]);
+	int const model_id = stoi(argv[3]);
+	int const run_id = stoi(argv[4]);
 	Evaluation<LABEL_COUNT> evaluator(0.995); //magic number from issue with data stream learning
 	//Evaluation<LABEL_COUNT> evaluator(1.0);
 	auto classifier = get_classifier(seed, argc-5, argv+5);
