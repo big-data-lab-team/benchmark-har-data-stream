@@ -51,7 +51,7 @@ From these results directories, we generate the plots with the following command
 Regenerating MOA datasets
 -------------------------
 
-The MOA dataset can be regenerated with the command `make moa` even
+The MOA dataset can be regenerated with the command `make moa_xp1_xp2` even
 though they are also stored in datasets.tar.xz.  MOA archive is available
 [here](https://sourceforge.net/projects/moa-datastream/). You can download it
 and place it in the repository under the name *moa* or you can modify the
