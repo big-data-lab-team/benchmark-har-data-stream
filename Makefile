@@ -186,7 +186,7 @@ xp0: empty_classifier previous_classifier \
 			 mlp_3
 xp1: empty_classifier mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t50 mondrian_coarse_empty
 xp2: empty_classifier mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t50 mondrian_coarse_empty
-moa:
+moa_xp0:
 	cd $(MOA_DIR)
 	#We set the random seed to 888
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -a 3 -k 0 -i 888) -f dataset_1.arff -m 200000"
@@ -196,6 +196,13 @@ moa:
 	 sed 's/,class1,/,0/g' dataset_2.arff | sed 's/,class2,/,1/g' | sed 's/,/	/g' > dataset_2.log
 	 sed 's/,class10,/,9/g' dataset_3.arff | sed 's/,class1,/,0/g' | sed 's/,class2,/,1/g' | sed 's/,class3,/,2/g' | sed 's/,class4,/,3/g' | sed 's/,class5,/,4/g' | sed 's/,class6,/,5/g' | sed 's/,class7,/,6/g' | sed 's/,class8,/,7/g' | sed 's/,class9,/,8/g' | sed 's/,/	/g' > dataset_3.log
 	 cp dataset_*.log /tmp
+moa_xp1_xp2:
+	cd $(MOA_DIR)
+	#We set the random seed to 888
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGeneratorDrift -s 0.001 -c 33 -a 12 -r 1 -i 1) -f RandomRBF_drift.artf -m 20000"
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -c 33 -a 12 -r 1 -i 1) -f RandomRBF_stable.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' RandomRBF_drift.artf | sed 's/,/	/g' > RandomRBF_drift.log
+	sed 's/class\([0-9]*\)/\1/' RandomRBF_stable.artf | sed 's/,/	/g' > RandomRBF_stable.log
 plot_results:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_hyperparameters:
