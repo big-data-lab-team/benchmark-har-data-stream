@@ -199,7 +199,6 @@ moa_xp0:
 	 cp dataset_*.log /tmp
 moa_xp1_xp2:
 	cd $(MOA_DIR)
-	#We set the random seed to 888
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGeneratorDrift -s 0.001 -c 33 -a 12 -r 1 -i 1) -f RandomRBF_drift.artf -m 20000"
 	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -c 33 -a 12 -r 1 -i 1) -f RandomRBF_stable.artf -m 20000"
 	sed 's/class\([0-9]*\)/\1/' RandomRBF_drift.artf | sed 's/,/	/g' | tail -n +19 > RandomRBF_drift.log
