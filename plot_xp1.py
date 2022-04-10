@@ -69,7 +69,7 @@ colors = sns.color_palette('bright', len(names)-1)
 palette = {z[0]:z[1] for z in zip(names[1:], colors)}
 palette['Mondrian 2GB'] = '#000000'
 style = {k:'' for k in names}
-style['Mondrian 2GB'] = (4, 1.5)
+style['Mondrian 2GB'] = (4, 6)
 
 #Keep only last element for the f1-score
 max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
@@ -84,9 +84,13 @@ g = sns.relplot(
         col='real_dataset', hue='name', palette=palette,
         col_wrap=2, col_order=col_order,
         style='name', dashes=style,
-        kind='line', legend=True
+        kind='line', legend=False,
+        size=2, aspect=3
         )
+parent_mpl_figure = g.fig
+lgd = parent_mpl_figure.legend(labels=names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
 g.set_titles('{col_name}')
+
 g.set(xticks=[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
 g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -94,4 +98,11 @@ g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 for ax in g.axes:
     ax.yaxis.set_ticklabels(['0.1', '', '0.3', '', '0.5', '', '0.7', '', '0.9'])
     ax.xaxis.set_ticklabels(['1', '', '10', '', '20', '', '30', '', '40', '', '50'])
-plt.show()
+
+plt.tight_layout()
+plt.savefig('xp1.pdf',
+        dpi=100,
+        bbox_extra_artists=(lgd,),
+        bbox_inches='tight')
+# plt.show(bbox_extra_artists=(lgd,),
+                    # bbox_inches='tight')
