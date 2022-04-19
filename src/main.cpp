@@ -5,6 +5,9 @@
 #include <cmath>
 #include "utils.hpp"
 
+#define MACRO_F1 0
+#define WEIGHTED_F1 1
+
 using namespace std;
 
 
@@ -85,25 +88,69 @@ class Evaluation{
 			double const total = counts[label_count][label_count];
 			return right / total;
 		}
-		double f1(void) const{
+		double f1(int const type=MACRO_F1, bool print=false) const{
+			if(type == MACRO_F1)
+				return macro_f1(print);
+			else
+				return weighted_f1(print);
+		}
+		double macro_f1(bool print=false) const{
 			double score_sum = 0;
-			double real_label_count = static_cast<double>(label_count);
+			unsigned int count = 0;
+			double f1s[label_count];
+			double support[label_count];
+			f1_per_class(f1s);
+			support_per_class(support);
+			for(int i = 0; i < label_count; ++i){
+				if(support[i] > 0){ //The label has to have been encountered
+					count += 1;
+					score_sum += f1s[i];
+				}
+			}
+			if(count == 0)
+				return 0;
+			return score_sum / static_cast<double>(count);
+		}
+		double weighted_f1(bool print=false) const{
+			double score = 0;
+			double f1s[label_count];
+			double support[label_count];
+			f1_per_class(f1s);
+			support_per_class(support);
+			for(int i = 0; i < label_count; ++i){
+					score += f1s[i] * support[i];
+			}
+			return score;
+		}
+		void f1_per_class(double * f1s) const{
 			for(int i = 0; i < label_count; ++i){
 				if(counts[label_count][i] != 0){ //The label has to have been encountered
 					double const precision = counts[i][label_count] == 0 ? 1 : counts[i][i] / counts[i][label_count];
 					double const recall = counts[i][i] / counts[label_count][i];
-					if(precision != 0 || recall != 0 && !(isnan(precision) && isnan(recall))){
+					if((precision + recall) != 0 && !(isnan(precision) && isnan(recall))){
 						double const score = 2 * ((precision * recall) / (precision + recall));
-						score_sum += score;
+						f1s[i] = score;
+					}
+					else{
+						f1s[i] = 0;
 					}
 				}
 				else{
-					real_label_count -= 1;
+					f1s[i] = 0;
 				}
 			}
-			if(real_label_count == 0)
-				return 0;
-			return score_sum / real_label_count;
+		}
+		void support_per_class(double * support) const{
+			double sum = 0;
+			for(int i = 0; i < label_count; ++i){
+				sum += counts[label_count][i];
+				support[i] = counts[label_count][i];
+			}
+			if(sum > 0){
+				for(int i = 0; i < label_count; ++i){
+					support[i] = support[i] / sum;
+				}
+			}
 		}
 };
 
@@ -148,7 +195,8 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 #ifndef NN_TRAINING
 			line_count += 1;
 			if(line_count%50 == 0){
-				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << ",";
+				double const f = evaluator->f1(MACRO_F1);
+				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << f << ",";
 				//rewind cursor
 				statm.seekg(0, ios::beg);
 				char letter = 'A';
@@ -160,7 +208,7 @@ int process_file(int const model_id, int const run_id, int const seed, string co
 				cout << endl;
 			}
 			else if(line_count%50 == 0){
-				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1() << "," << endl;
+				cout << model_id << "," << run_id << "," << line_count << "," << seed << "," << evaluator->accuracy() << "," << evaluator->f1(MACRO_F1) << "," << endl;
 			}
 #endif
 #ifdef BANOS
