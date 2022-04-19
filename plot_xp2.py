@@ -15,6 +15,7 @@ def plot_names(output_filename, used_names, legend_names, f1s):
     palette['Mondrian 2GB'] = '#000000'
     style = {k:'' for k in names}
     style['Mondrian 2GB'] = (4, 6)
+    sizes = {k:4 for k in names}
 
     max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
     last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
@@ -25,7 +26,8 @@ def plot_names(output_filename, used_names, legend_names, f1s):
             col='real_dataset', hue='name', palette=palette,
             col_wrap=2, col_order=col_order, legend=False,
             style='name', dashes=style,
-            size=2, aspect=3,
+            size='name', sizes=sizes,
+            aspect=3,
             kind='line')
     parent_mpl_figure = g.fig
     lgd = parent_mpl_figure.legend(labels=legend_names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
@@ -143,11 +145,11 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
     loutry_f1.extend(listy_f1)
 
 f1s = pd.concat(loutry_f1).reset_index(drop=True)
-plot_names('xp2.1.pdf',
+plot_names('xp2.3.pdf',
         ['Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
         ['Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
         f1s)
-plot_names('xp2.3.pdf',
+plot_names('xp2.1.pdf',
         ['Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
         ['Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
         f1s)

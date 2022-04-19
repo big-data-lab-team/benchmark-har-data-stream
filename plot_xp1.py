@@ -70,6 +70,7 @@ palette = {z[0]:z[1] for z in zip(names[1:], colors)}
 palette['Mondrian 2GB'] = '#000000'
 style = {k:'' for k in names}
 style['Mondrian 2GB'] = (4, 6)
+sizes = {k:4 for k in names}
 
 #Keep only last element for the f1-score
 max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
@@ -84,8 +85,9 @@ g = sns.relplot(
         col='real_dataset', hue='name', palette=palette,
         col_wrap=2, col_order=col_order,
         style='name', dashes=style,
+        size='name', sizes=sizes,
         kind='line', legend=False,
-        size=2, aspect=3
+        aspect=3
         )
 parent_mpl_figure = g.fig
 lgd = parent_mpl_figure.legend(labels=names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
