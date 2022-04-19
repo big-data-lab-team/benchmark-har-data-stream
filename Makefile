@@ -23,6 +23,9 @@ endif
 ifndef CXX
 CXX=g++
 endif
+ifdef UNBOUND_OPTIMIZE
+UNBOUND_OPTI=-DUNBOUND_OPTIMIZE
+endif
 SHELL := /bin/bash
 
 ifeq ($(config), debug)
@@ -31,7 +34,7 @@ else #release config by default
 DEBUG_FLAGS=-O3
 endif
 
-COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(DEBUG_FLAGS) 
+COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(UNBOUND_OPTI) $(DEBUG_FLAGS) 
 
 ALL_TARGET = empty_classifier previous_classifier \
 			 streamdm_ht streamdm_naive_bayes streamdm_perceptron\
