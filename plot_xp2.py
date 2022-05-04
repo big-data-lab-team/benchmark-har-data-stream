@@ -9,12 +9,14 @@ def cmp(a):
     return float(a[1]) - float(a[2])
 def plot_names(output_filename, used_names, legend_names, f1s):
     f1s = f1s[f1s['name'].isin(used_names)]
-    names = ['Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split', 'Mondrian 2GB']
+    names = ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split', 'Mondrian 2GB']
     colors = sns.color_palette('bright', len(names)-1)
-    palette = {z[0]:z[1] for z in zip(names[1:], colors)}
+    palette = {z[0]:z[1] for z in zip(names[2:], colors)}
     palette['Mondrian 2GB'] = '#000000'
+    palette['Online Mondrian'] = '#FF0000'
     style = {k:'' for k in names}
     style['Mondrian 2GB'] = (4, 6)
+    style['Online Mondrian'] = (4, 6)
     sizes = {k:4 for k in names}
 
     max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
@@ -44,6 +46,23 @@ def plot_names(output_filename, used_names, legend_names, f1s):
             bbox_extra_artists=(lgd,),
             bbox_inches='tight')
 
+online_mondrian_forest_scores = {'banos_6' : {1: 0.68, 5:0.82, 10:0.86, 20:0.88, 30:0.89, 40:0.89, 50:0.89},
+ 'drift_6' : {1: 0.35, 5:0.43, 10:0.43, 20:0.45, 30:0.45, 40:0.45, 50:0.44},
+ 'RandomRBF_stable' : {1: 0.78, 5:0.87, 10:0.88, 20:0.90, 30:0.90, 40:0.90, 50:0.90},
+ 'RandomRBF_drift' : {1: 0.41, 5:0.60, 10:0.66, 20:0.70, 30:0.71, 40:0.71, 50:0.72},
+ 'covtype' : {1: 0.81, 5:0.88, 10:0.90, 20:0.91, 30:0.91, 40:0.91, 50:0.91},
+ 'recofit_6' : {1: 0.50, 5:0.68, 10:0.74, 20:0.766, 30:0.77, 40:0.78, 50:0.78}
+ }
+online_df = {
+        'Mean F1' : [],
+        'f1 std' : [],
+        'name' : [],
+        'tree_count' : [],
+        'dataset' : [],
+        'real_dataset' : [],
+        'memory' : []
+        }
+
 f1_dir = 'results_xp2'
 loutry_f1 = []
 dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
@@ -54,6 +73,14 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
     d = f1_dir + '/' + dataset
     listy_f1 = []
     for t in ['1', '5', '10', '20', '30', '50']:
+        online_df['Mean F1'].append(online_mondrian_forest_scores[dataset][int(t)])
+        online_df['f1 std'].append(0.0)
+        online_df['name'].append('Online Mondrian')
+        online_df['tree_count'].append(int(t))
+        online_df['dataset'].append(copy.copy(dataset))
+        online_df['real_dataset'].append(copy.copy(dataset_realname[dataset]))
+        online_df['memory'].append('2GB')
+
         fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
         fifi['name'] = 'Mondrian 2GB'
         fifi['tree_count'] = int(t)
@@ -145,11 +172,21 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
     loutry_f1.extend(listy_f1)
 
 f1s = pd.concat(loutry_f1).reset_index(drop=True)
+max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
+of1 = pd.DataFrame(online_df)
+of1 = pd.merge(of1, max_elts, on =['dataset'])
+cols = ['element_count', 'Mean F1', 'f1 std', 'name', 'tree_count', 'dataset' , 'real_dataset', 'memory']
+of1 = of1[cols]
+
+f1s = pd.concat([of1, f1s]).reset_index(drop=True)
+print(f1s)
+
+
 plot_names('xp2.3.pdf',
-        ['Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-        ['Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
         f1s)
 plot_names('xp2.1.pdf',
-        ['Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
-        ['Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
+        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
+        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
         f1s)
