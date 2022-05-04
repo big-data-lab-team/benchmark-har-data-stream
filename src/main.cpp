@@ -140,6 +140,17 @@ class Evaluation{
 				}
 			}
 		}
+		void recall_per_class(double * rec) const{
+			for(int i = 0; i < label_count; ++i){
+				if(counts[label_count][i] != 0){ //The label has to have been encountered
+					double const recall = counts[i][i] / counts[label_count][i];
+					rec[i] = recall;
+				}
+				else{
+					rec[i] = 0;
+				}
+			}
+		}
 		void support_per_class(double * support) const{
 			double sum = 0;
 			for(int i = 0; i < label_count; ++i){
