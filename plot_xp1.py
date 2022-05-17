@@ -8,6 +8,45 @@ import sys
 import copy
 from f1_utils import read_f1
 
+def plot_names(output_filename, used_names, legend_names, f1s):
+    f1s = f1s[f1s['name'].isin(used_names)]
+    names = ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost']
+    colors = sns.color_palette('bright', len(names)-1)
+    palette = {z[0]:z[1] for z in zip(names[2:], colors)}
+    palette['Data Stream Mondrian 2GB'] = '#000000'
+    palette['Online Mondrian'] = '#FF0000'
+    style = {k:'' for k in names}
+    style['Data Stream Mondrian 2GB'] = (4, 6)
+    style['Online Mondrian'] = (4, 6)
+    sizes = {k:4 for k in names}
+
+    max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
+    last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
+    col_order = ['RandomRBF stable', 'RandomRBF drift', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
+    last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
+    g = sns.relplot(
+            data=last_f1s, x='Tree count', y='Mean F1',
+            col='real_dataset', hue='name', palette=palette,
+            col_wrap=2, col_order=col_order, legend=False,
+            style='name', dashes=style,
+            size='name', sizes=sizes,
+            aspect=3,
+            kind='line')
+    parent_mpl_figure = g.fig
+    lgd = parent_mpl_figure.legend(labels=legend_names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
+    g.set_titles('{col_name}')
+    g.set(xticks=[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
+    g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+    #Make it so there is one label every two ticks (for more space)
+    for ax in g.axes:
+        ax.yaxis.set_ticklabels(['0.1', '', '0.3', '', '0.5', '', '0.7', '', '0.9'])
+        ax.xaxis.set_ticklabels(['1', '', '10', '', '20', '', '30', '', '40', '', '50'])
+    plt.savefig(output_filename,
+            dpi=100,
+            bbox_extra_artists=(lgd,),
+            bbox_inches='tight')
+
 online_mondrian_forest_scores = {'banos_6' : {1: 0.68, 5:0.82, 10:0.86, 20:0.88, 30:0.89, 40:0.89, 50:0.89},
  'drift_6' : {1: 0.35, 5:0.43, 10:0.43, 20:0.45, 30:0.45, 40:0.45, 50:0.44},
  'RandomRBF_stable' : {1: 0.78, 5:0.87, 10:0.88, 20:0.90, 30:0.90, 40:0.90, 50:0.90},
@@ -42,7 +81,7 @@ for dataset in datasets:
         online_df['real_dataset'].append(copy.copy(dataset_realname[dataset]))
 
         fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
-        fifi['name'] = 'Mondrian 2GB'
+        fifi['name'] = 'Data Stream Mondrian 2GB'
         fifi['tree_count'] = int(t)
         fifi['dataset'] = copy.copy(dataset)
         fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
@@ -92,50 +131,7 @@ cols = ['element_count', 'Mean F1', 'f1 std', 'name', 'tree_count', 'dataset' , 
 of1 = of1[cols]
 
 f1s = pd.concat([of1, f1s]).reset_index(drop=True)
-#Keep order for colors and name with a palette
-names = ['Online Mondrian', 'Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost']
-colors = sns.color_palette('bright', len(names)-1)
-palette = {z[0]:z[1] for z in zip(names[2:], colors)}
-palette['Mondrian 2GB'] = '#000000'
-palette['Online Mondrian'] = '#FF0000'
-style = {k:'' for k in names}
-style['Mondrian 2GB'] = (4, 6)
-style['Online Mondrian'] = (4, 6)
-sizes = {k:4 for k in names}
-
-#Keep only last element for the f1-score
-max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
-last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
-col_order = ['RandomRBF stable', 'RandomRBF drift', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
-
-last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
-
-#Do the plot with multiple facets
-g = sns.relplot(
-        data=last_f1s, x='Tree count', y='Mean F1',
-        col='real_dataset', hue='name', palette=palette,
-        col_wrap=2, col_order=col_order,
-        style='name', dashes=style,
-        size='name', sizes=sizes,
-        kind='line', legend=False,
-        aspect=3
-        )
-parent_mpl_figure = g.fig
-lgd = parent_mpl_figure.legend(labels=names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
-g.set_titles('{col_name}')
-
-g.set(xticks=[1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
-g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-
-#Make it so there is one label every two ticks (for more space)
-for ax in g.axes:
-    ax.yaxis.set_ticklabels(['0.1', '', '0.3', '', '0.5', '', '0.7', '', '0.9'])
-    ax.xaxis.set_ticklabels(['1', '', '10', '', '20', '', '30', '', '40', '', '50'])
-
-plt.tight_layout()
-plt.savefig('xp1.pdf',
-        dpi=100,
-        bbox_extra_artists=(lgd,),
-        bbox_inches='tight')
-# plt.show(bbox_extra_artists=(lgd,),
-                    # bbox_inches='tight')
+plot_names('xp1.pdf',
+        ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
+        ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
+        f1s)

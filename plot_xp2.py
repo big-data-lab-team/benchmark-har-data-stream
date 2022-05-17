@@ -9,13 +9,13 @@ def cmp(a):
     return float(a[1]) - float(a[2])
 def plot_names(output_filename, used_names, legend_names, f1s):
     f1s = f1s[f1s['name'].isin(used_names)]
-    names = ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split', 'Mondrian 2GB']
+    names = ['Online Mondrian', 'Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split', 'Mondrian 2GB']
     colors = sns.color_palette('bright', len(names)-1)
     palette = {z[0]:z[1] for z in zip(names[2:], colors)}
-    palette['Mondrian 2GB'] = '#000000'
+    palette['Data Stream Mondrian 2GB'] = '#000000'
     palette['Online Mondrian'] = '#FF0000'
     style = {k:'' for k in names}
-    style['Mondrian 2GB'] = (4, 6)
+    style['Data Stream Mondrian 2GB'] = (4, 6)
     style['Online Mondrian'] = (4, 6)
     sizes = {k:4 for k in names}
 
@@ -82,7 +82,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
         online_df['memory'].append('2GB')
 
         fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
-        fifi['name'] = 'Mondrian 2GB'
+        fifi['name'] = 'Data Stream Mondrian 2GB'
         fifi['tree_count'] = int(t)
         fifi['dataset'] = copy.copy(dataset)
         fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
@@ -178,15 +178,11 @@ of1 = pd.merge(of1, max_elts, on =['dataset'])
 cols = ['element_count', 'Mean F1', 'f1 std', 'name', 'tree_count', 'dataset' , 'real_dataset', 'memory']
 of1 = of1[cols]
 
-f1s = pd.concat([of1, f1s]).reset_index(drop=True)
-print(f1s)
-
-
 plot_names('xp2.3.pdf',
-        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
         f1s)
 plot_names('xp2.1.pdf',
-        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
-        ['Online Mondrian', 'Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
+        ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
+        ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
         f1s)
