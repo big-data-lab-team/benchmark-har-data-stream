@@ -43,14 +43,11 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 	parameters["base_measure"] = -1;
 	parameters["discount_factor"] = -1;
 	parameters["tree_count"] = -1;
-	parameters["size_type"] = NODE_SIZE;
 	parameters["size_limit"] = -1;
-	parameters["tree_management"] = PHOENIX_MANAGEMENT;
-	parameters["dont_delete"] = DO_DELETE;
+	parameters["enable_tree_change"] = NO;
 	parameters["print_nodes"] = -1;
 	parameters["split_trigger"] = SPLIT_TRIGGER_NONE;
 	parameters["fe_distribution"] = FE_DISTRIBUTION_ZERO;
-	parameters["tau_factor"] = 1.0;
 	parameters["reset_once"] = 1.0;
 	parameters["generate_full_point"] = 1.0;
 	parameters["fe_parameter"] = 1.0;
@@ -59,6 +56,10 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 	parameters["extend_type"] = EXTEND_ORIGINAL;
 	parameters["trim_type"] = TRIM_NONE;
 	parameters["maximum_trim_size"] = 1.0;
+	parameters["threshold_overfit"] = 1.0;
+	parameters["tree_count_target"] = TREE_COUNT_TARGET_DISABLED;
+	parameters["maximum_tree_count"] = -1;
+	parameters["step_tree_change"] = 500;
 	for(int i = 0; i < argc; ++i){
 		string arg(argv[i]);
 		int const pos = arg.find(":");
@@ -70,36 +71,20 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		if(parameters.count(name) == 0){
 			cout << "Parameter" << RED << " « " << name << " » " << RESET << "doesn't exists." << endl;
 		}
-		if(name == "lifetime" || name == "base_measure" || name == "discount_factor" || name == "tree_count" || name == "size_limit" || name == "tau_factor" || name == "fe_parameter" || name == "fading_count" || name == "maximum_trim_size"){
+		if(name == "lifetime" || name == "base_measure" || name == "discount_factor" || name == "tree_count" || name == "size_limit" || name == "fe_parameter" || name == "fading_count" || name == "maximum_trim_size" || name == "threshold_overfit" || name == "maximum_tree_count" || name == "step_tree_change"){
 			parameters[name] = stod(value);
 		}
-		else if(name == "tree_management"){
-			if(value == "cobble"){
-				parameters["tree_management"] = COBBLE_MANAGEMENT;
-				parameters["size_type"] = DEPTH_SIZE;
-			}
-			else if(value == "optimistic_cobble"){
-				parameters["tree_management"] = OPTIMISTIC_COBBLE_MANAGEMENT;
-				parameters["size_type"] = DEPTH_SIZE;
-			}
-			else if(value == "robur"){
-				parameters["tree_management"] = ROBUR_MANAGEMENT;
-				parameters["size_type"] = NODE_SIZE;
-			}
-			else if(value == "phoenix"){
-				parameters["tree_management"] = PHOENIX_MANAGEMENT;
-				parameters["size_type"] = NODE_SIZE;
-			}
-			else if(value == "pausing_phoenix"){
-				parameters["tree_management"] = PAUSING_PHOENIX_MANAGEMENT;
-				parameters["size_type"] = NODE_SIZE;
-			}
+		else if(name == "tree_count_target"){
+			if(value == "best")
+				parameters[name] = TREE_COUNT_TARGET_BEST;
+			else
+				parameters[name] = stod(value);
 		}
-		else if(name == "dont_delete"){
+		else if(name == "enable_tree_change"){
 			if(value == "yes")
-				parameters[name] = DONT_DELETE;
+				parameters[name] = YES;
 			else if(value == "no")
-				parameters[name] = DO_DELETE;
+				parameters[name] = NO;
 		}
 		else if(name == "print_nodes"){
 			if(value == "yes")
@@ -140,12 +125,6 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 				parameters[name] = EXTEND_ORIGINAL;
 			else if(value == "none")
 				parameters[name] = EXTEND_NONE;
-			else if(value == "ghost")
-				parameters[name] = EXTEND_GHOST;
-			else if(value == "count_only")
-				parameters[name] = EXTEND_COUNTER_NO_UPDATE;
-			else if(value == "partial")
-				parameters[name] = EXTEND_PARTIAL_UPDATE;
 			else if(value == "barycenter")
 				parameters[name] = EXTEND_BARYCENTER;
 		}
@@ -195,17 +174,15 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		return nullptr;
 	}
 	srand(seed);
+	cout << parameters["threshold_overfit"] << endl;
 	return new Classifier
 		(parameters["lifetime"], parameters["base_measure"], parameters["discount_factor"],
 		 static_cast<int>(parameters["tree_count"]),
-		 static_cast<int>(parameters["tree_management"]),
-		 static_cast<int>(parameters["size_type"]),
 		 static_cast<int>(parameters["size_limit"]),
-		 static_cast<int>(parameters["dont_delete"]),
+		 static_cast<int>(parameters["enable_tree_change"]),
 		 parameters["print_nodes"] > 0,
 		 static_cast<int>(parameters["fe_distribution"]),
 		 static_cast<int>(parameters["split_trigger"]),
-		 parameters["tau_factor"],
 		 parameters["generate_full_point"] > 0,
 		 parameters["reset_once"] > 0,
 		 parameters["fe_parameter"],
@@ -213,7 +190,11 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		 static_cast<int>(parameters["split_helper"]),
 		 static_cast<int>(parameters["extend_type"]),
 		 static_cast<int>(parameters["trim_type"]),
-		 parameters["maximum_trim_size"]
+		 parameters["maximum_trim_size"],
+		 static_cast<int>(parameters["tree_count_target"]),
+		 static_cast<int>(parameters["maximum_tree_count"]),
+		 parameters["threshold_overfit"],
+		 static_cast<int>(parameters["step_tree_change"])
 		 );
 }
 
