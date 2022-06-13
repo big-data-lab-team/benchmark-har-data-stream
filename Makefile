@@ -190,6 +190,7 @@ xp0: empty_classifier previous_classifier \
 			 mlp_3
 xp1: empty_classifier mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t50 mondrian_coarse_empty
 xp2: empty_classifier mondrian_t1 mondrian_t5 mondrian_t10 mondrian_t50 mondrian_coarse_empty
+xp3: empty_classifier mondrian_coarse_empty mondrian_coarse_acc
 moa_xp0:
 	cd $(MOA_DIR)
 	#We set the random seed to 888
