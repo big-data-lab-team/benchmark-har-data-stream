@@ -1,4 +1,5 @@
-OrpailleCC_DIR=$(shell pwd)/OrpailleCC
+#OrpailleCC_DIR=$(shell pwd)/OrpailleCC
+OrpailleCC_DIR=/home/magoa/phd/OrpailleCC
 OrpailleCC_INC=$(OrpailleCC_DIR)/src
 StreamDM_DIR=$(shell pwd)/streamDM-Cpp
 #MOA_DIR=$(shell pwd)/MOA
@@ -31,7 +32,7 @@ SHELL := /bin/bash
 ifeq ($(config), debug)
 DEBUG_FLAGS= -g -O0 -DDEBUG #$(FLAG_GCOV)
 else #release config by default
-DEBUG_FLAGS=-O3
+DEBUG_FLAGS=-O2 -g
 endif
 
 COMMON_FLAGS=-std=c++11 -I$(OrpailleCC_INC) -DLABEL_COUNT=$(LABEL_COUNT) -DFEATURES_COUNT=$(FEATURES_COUNT) -DSIZE=$(MEMORY_SIZE) $(NN_TRAINING) $(UNBOUND_OPTI) $(DEBUG_FLAGS) 
@@ -72,6 +73,7 @@ mondrian_coarse_empty: src/mond_coarse.cpp src/main.cpp
 	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond_coarse.cpp\"" \
 		-DSAMPLING_OBJECT="$(sampling_object)" -o bin/$@
+
 mondrian_coarse_rs: src/mond_coarse.cpp src/main.cpp
 #	$* contains everything within "%" of the target
 	$(eval sampling_object=ReservoirSamplingMetrics)
@@ -81,28 +83,14 @@ mondrian_coarse_rs: src/mond_coarse.cpp src/main.cpp
 
 mondrian_coarse_acc: src/mond_coarse.cpp src/main.cpp
 #	$* contains everything within "%" of the target
-	$(eval sampling_object=ErrorMetrics<false>)
+	$(eval sampling_object=ErrorMetrics)
 	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond_coarse.cpp\"" \
 		-DSAMPLING_OBJECT="$(sampling_object)" -o bin/$@
 
 mondrian_coarse_kap: src/mond_coarse.cpp src/main.cpp
 #	$* contains everything within "%" of the target
-	$(eval sampling_object=KappaMetrics<$(LABEL_COUNT), false>)
-	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG) \
-		-DCLASSIFIER_INITIALIZATION_FILE="\"mond_coarse.cpp\"" \
-		-DSAMPLING_OBJECT="$(sampling_object)" -o bin/$@
-
-mondrian_coarse_racc: src/mond_coarse.cpp src/main.cpp
-#	$* contains everything within "%" of the target
-	$(eval sampling_object=ErrorMetrics<true>)
-	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG) \
-		-DCLASSIFIER_INITIALIZATION_FILE="\"mond_coarse.cpp\"" \
-		-DSAMPLING_OBJECT="$(sampling_object)" -o bin/$@
-
-mondrian_coarse_rkap: src/mond_coarse.cpp src/main.cpp
-#	$* contains everything within "%" of the target
-	$(eval sampling_object=KappaMetrics<$(LABEL_COUNT), true>)
+	$(eval sampling_object=KappaMetrics<$(LABEL_COUNT)>)
 	$(CXX) src/main.cpp  $(COMMON_FLAGS) $(BANOS_FLAG) \
 		-DCLASSIFIER_INITIALIZATION_FILE="\"mond_coarse.cpp\"" \
 		-DSAMPLING_OBJECT="$(sampling_object)" -o bin/$@
