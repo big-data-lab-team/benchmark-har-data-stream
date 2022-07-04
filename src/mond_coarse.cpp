@@ -60,6 +60,8 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 	parameters["tree_count_target"] = TREE_COUNT_TARGET_DISABLED;
 	parameters["maximum_tree_count"] = -1;
 	parameters["step_tree_change"] = 500;
+	parameters["last_data_point"] = -1;
+	parameters["stats_type"] = TYPE_SLIDING;
 	for(int i = 0; i < argc; ++i){
 		string arg(argv[i]);
 		int const pos = arg.find(":");
@@ -71,7 +73,7 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		if(parameters.count(name) == 0){
 			cout << "Parameter" << RED << " « " << name << " » " << RESET << "doesn't exists." << endl;
 		}
-		if(name == "lifetime" || name == "base_measure" || name == "discount_factor" || name == "tree_count" || name == "size_limit" || name == "fe_parameter" || name == "fading_count" || name == "maximum_trim_size" || name == "threshold_overfit" || name == "maximum_tree_count" || name == "step_tree_change"){
+		if(name == "lifetime" || name == "base_measure" || name == "discount_factor" || name == "tree_count" || name == "size_limit" || name == "fe_parameter" || name == "fading_count" || name == "maximum_trim_size" || name == "maximum_tree_count" || name == "step_tree_change" || name == "last_data_point"){
 			parameters[name] = stod(value);
 		}
 		else if(name == "tree_count_target"){
@@ -79,6 +81,28 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 				parameters[name] = TREE_COUNT_TARGET_BEST;
 			else
 				parameters[name] = stod(value);
+		}
+		else if(name == "threshold_overfit"){
+			if(value == "z-test")
+				parameters[name] = THRESHOLD_Z_TEST;
+			else if(value == "t-test")
+				parameters[name] = THRESHOLD_T_TEST;
+			else if(value == "sum-std")
+				parameters[name] = THRESHOLD_SUM_STD;
+			else if(value == "sum-var")
+				parameters[name] = THRESHOLD_SUM_VAR;
+			else if(value == "delta-sum-std")
+				parameters[name] = THRESHOLD_DELTA_ACC_STD;
+			else
+				parameters[name] = stod(value);
+		}
+		else if(name == "stats_type"){
+			if(value == "sliding"){
+				parameters[name] = TYPE_SLIDING;
+			}
+			else if(value == "fading"){
+				parameters[name] = TYPE_FADING;
+			}
 		}
 		else if(name == "enable_tree_change"){
 			if(value == "yes")
@@ -174,7 +198,6 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		return nullptr;
 	}
 	srand(seed);
-	cout << parameters["threshold_overfit"] << endl;
 	return new Classifier
 		(parameters["lifetime"], parameters["base_measure"], parameters["discount_factor"],
 		 static_cast<int>(parameters["tree_count"]),
@@ -194,7 +217,9 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 		 static_cast<int>(parameters["tree_count_target"]),
 		 static_cast<int>(parameters["maximum_tree_count"]),
 		 parameters["threshold_overfit"],
-		 static_cast<int>(parameters["step_tree_change"])
+		 static_cast<int>(parameters["step_tree_change"]),
+		 static_cast<int>(parameters["last_data_point"]),
+		 static_cast<int>(parameters["stats_type"])
 		 );
 }
 
