@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 result_dir="results_xp2"
-rep_count=10
+rep_count=1
 rm -rf $result_dir
 mkdir $result_dir
 
@@ -13,31 +13,34 @@ runny()
 	local sh=$4
 	local tt=$5
 	local dataset=$6
-	local binary="bin/$dataset/mondrian_coarse_empty"
-	local f="mondrian_t"$t"_"$et"_"$sh"_"$tt
+	local memory=$7
+	local binary="bin/$dataset/mondrian_coarse_empty_"$memory
+	local f="mondrian_t"$t"_"$et"_"$sh"_"$tt"_"$memory
 	$binary $dataset.log $s 3 $s lifetime:0.5 base_measure:0.0 discount_factor:1.0 tree_management:phoenix tree_count:$t extend_type:$et split_helper:$sh trim_type:$tt maximum_trim_size:0.03 >> $result_dir/$dataset/$f.csv
 }
 
-for dataset in recofit_6 banos_6 RandomRBF_stable RandomRBF_drift covtype drift_6; do
-	mkdir $result_dir/$dataset
-	for s in `seq $rep_count`; do
-		for t in 1 5 10 20 30 50; do
-			for extend_type in original,none barycenter,weighted barycenter,avg; do
-				for tt in none random fading_score count; do
-					IFS="," read -r -a array <<< $extend_type
-					et=${array[0]}
-					sh=${array[1]}
-					runny $s $t $et $sh $tt $dataset &
+for s in `seq $rep_count`; do
+	for memory in '0.6M' '1M' '10M' '100M' '200M'; do
+		for dataset in recofit_6 banos_6 RandomRBF_stable RandomRBF_drift covtype drift_6; do
+			mkdir $result_dir/$dataset
+			for t in 1 5 10 20 30 50; do
+				for extend_type in original,none barycenter,weighted barycenter,avg; do
+					for tt in none random fading_score count; do
+						IFS="," read -r -a array <<< $extend_type
+						et=${array[0]}
+						sh=${array[1]}
+						runny $s $t $et $sh $tt $dataset $memory &
+					done
 				done
+				wait
 			done
 		done
-		wait
 	done
 done
 
 #Run with unbound
 for dataset in recofit_6 banos_6 RandomRBF_stable RandomRBF_drift covtype drift_6; do
-	binary="bin/$dataset/mondrian_coarse_empty_unbound"
+	binary="bin/$dataset/mondrian_coarse_empty_2G"
 	mkdir $result_dir/$dataset
 	for s in `seq $rep_count`; do
 		for t in 1 5 10 20 30 50; do
