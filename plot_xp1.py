@@ -47,44 +47,6 @@ def plot_names(output_filename, used_names, legend_names, f1s):
             bbox_extra_artists=(lgd,),
             bbox_inches='tight')
 
-def plot_memory(output_filename, used_names, legend_names, f1s):
-    f1s = f1s[f1s['name'].isin(used_names)]
-    names = ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost']
-    colors = sns.color_palette('bright', len(names)-1)
-    palette = {z[0]:z[1] for z in zip(names[2:], colors)}
-    palette['Data Stream Mondrian 2GB'] = '#000000'
-    palette['Online Mondrian'] = '#FF0000'
-    style = {k:'' for k in names}
-    style['Data Stream Mondrian 2GB'] = (4, 6)
-    style['Online Mondrian'] = (4, 6)
-    sizes = {k:4 for k in names}
-
-    max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
-    last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
-    col_order = ['RandomRBF stable', 'RandomRBF drift', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
-    last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
-    g = sns.relplot(
-            data=last_f1s, x='memory', y='Mean F1',
-            col='real_dataset', hue='name', palette=palette,
-            col_wrap=2, col_order=col_order, legend=False,
-            style='Tree count', #dashes=style,
-            size='name', sizes=sizes,
-            aspect=3,
-            kind='line')
-    parent_mpl_figure = g.fig
-    lgd = parent_mpl_figure.legend(labels=legend_names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
-    g.set_titles('{col_name}')
-    g.set(xticks=[600000, 1000000, 10000000, 50000000, 100000000, 200000000])
-    g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-
-    #Make it so there is one label every two ticks (for more space)
-    for ax in g.axes:
-        ax.yaxis.set_ticklabels(['0.1', '', '0.3', '', '0.5', '', '0.7', '', '0.9'])
-        ax.xaxis.set_ticklabels(['0.6M', '1M', '10M', '50M', '100M', '200M'])
-    plt.savefig(output_filename,
-            dpi=100,
-            bbox_extra_artists=(lgd,),
-            bbox_inches='tight')
 online_mondrian_forest_scores = {'banos_6' : {1: 0.68, 5:0.82, 10:0.86, 20:0.88, 30:0.89, 40:0.89, 50:0.89},
  'drift_6' : {1: 0.35, 5:0.43, 10:0.43, 20:0.45, 30:0.45, 40:0.45, 50:0.44},
  'RandomRBF_stable' : {1: 0.78, 5:0.87, 10:0.88, 20:0.90, 30:0.90, 40:0.90, 50:0.90},
@@ -104,6 +66,7 @@ online_df = {
 f1_dir = 'results_xp1'
 datasets = ['recofit_6', 'covtype', 'drift_6', 'banos_6', 'RandomRBF_stable', 'RandomRBF_drift']
 dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
+memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000, '2GB' : 2000000000}
 
 #Read the data
 loutry_f1 = []
@@ -122,14 +85,13 @@ for dataset in datasets:
 
         fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
         fifi['name'] = 'Data Stream Mondrian 2GB'
-        fifi['memory'] = 2000000000
+        fifi['memory'] = memory_name['2GB']
         fifi['tree_count'] = int(t)
         fifi['dataset'] = copy.copy(dataset)
         fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
         listy_f1.append(fifi)
 
-        memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000}
-        for memory in ['0.6M', '1M', '10M', '50M', '100M', '200M']:
+        for memory in ['0.6M']:
             fifi = read_f1(d + '/mondrian_t' + t + '_none_' + memory + '.csv')
             fifi['name'] = 'Stopped'
             fifi['memory'] = memory_name[memory]
@@ -154,24 +116,22 @@ for dataset in datasets:
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             listy_f1.append(fifi)
 
-            if dataset != 'covtype':
-                fifi = read_f1(d + '/mondrian_t' + t + '_count_only_' + memory + '.csv')
-                fifi['name'] = 'Count Only'
-                fifi['memory'] = memory_name[memory]
-                fifi['tree_count'] = int(t)
-                fifi['dataset'] = copy.copy(dataset)
-                fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-                listy_f1.append(fifi)
+            fifi = read_f1(d + '/mondrian_t' + t + '_count_only_' + memory + '.csv')
+            fifi['name'] = 'Count Only'
+            fifi['memory'] = memory_name[memory]
+            fifi['tree_count'] = int(t)
+            fifi['dataset'] = copy.copy(dataset)
+            fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            listy_f1.append(fifi)
 
-            if dataset != 'covtype':
-                fifi = read_f1(d + '/mondrian_t' + t + '_ghost_' + memory + '.csv')
-                fifi['name'] = 'Ghost'
-                fifi['memory'] = memory_name[memory]
-                fifi['tree_count'] = int(t)
-                fifi['dataset'] = copy.copy(dataset)
-                fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-                listy_f1.append(fifi)
-    loutry_f1.extend(listy_f1)
+            fifi = read_f1(d + '/mondrian_t' + t + '_ghost_' + memory + '.csv')
+            fifi['name'] = 'Ghost'
+            fifi['memory'] = memory_name[memory]
+            fifi['tree_count'] = int(t)
+            fifi['dataset'] = copy.copy(dataset)
+            fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            listy_f1.append(fifi)
+        loutry_f1.extend(listy_f1)
 
 f1s = pd.concat(loutry_f1).reset_index(drop=True)
 max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
@@ -184,12 +144,5 @@ f1s = pd.concat([of1, f1s]).reset_index(drop=True)
 plot_names('xp1.pdf',
         ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
         ['Online Mondrian', 'Data Stream Mondrian 2GB', 'Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
-        f1s[(f1s['memory'] == '10M') | (f1s['memory'] == '2G') | (f1s['memory'] == 'unbound')])
+        f1s[(f1s['memory'] == memory_name['0.6M']) | (f1s['memory'] == memory_name['2GB']) | (f1s['memory'] < 0)])
 
-
-
-for tree in [10, 20, 30, 50]:
-    plot_memory('xp1_memory_t' + str(tree) + '.pdf',
-            ['Stopped', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
-            ['Stopped (baseline)', 'Extend Node', 'Partial Update', 'Count Only', 'Ghost'],
-            f1s[(f1s['memory'] != 2000000000) & (f1s['memory'] != -1) & (f1s['tree_count'] == tree)])
