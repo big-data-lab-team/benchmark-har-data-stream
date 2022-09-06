@@ -122,7 +122,7 @@ online_df = {
         }
 
 f1_dir = 'results_xp2'
-loutry_f1 = []
+list_f1_data = []
 dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
 memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000, '2GB' : 2000000000}
 
@@ -146,7 +146,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
         fifi['dataset'] = copy.copy(dataset)
         fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
         fifi['memory'] = 2000000000
-        listy_f1.append(fifi)
+        list_f1_data.append(fifi)
 
         for memory in ['0.6M', '1M', '10M', '100M', '200M']:
             fifi = read_f1(d + '/mondrian_t' + t + '_original_none_none_' + memory + '.csv')
@@ -155,7 +155,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_original_none_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, No Split'
@@ -163,7 +163,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, Split AVG'
@@ -171,7 +171,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, Split Barycenter'
@@ -179,7 +179,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, Split AVG'
@@ -187,7 +187,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, Split Barycenter'
@@ -195,7 +195,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_original_none_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, No Split'
@@ -203,7 +203,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_original_none_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, No Split'
@@ -211,7 +211,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, Split AVG'
@@ -219,7 +219,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, Split Barycenter'
@@ -227,9 +227,7 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
-
-    loutry_f1.extend(listy_f1)
+            list_f1_data.append(fifi)
 
 #Add results of Stopped for memory plot
 for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6']:
@@ -243,10 +241,9 @@ for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'dr
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            listy_f1.append(fifi)
-    loutry_f1.extend(listy_f1)
+            list_f1_data.append(fifi)
 
-f1s = pd.concat(loutry_f1).reset_index(drop=True)
+f1s = pd.concat(list_f1_data).reset_index(drop=True)
 max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
 of1 = pd.DataFrame(online_df)
 of1 = pd.merge(of1, max_elts, on =['dataset'])

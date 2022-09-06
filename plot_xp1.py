@@ -69,7 +69,7 @@ dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'Ran
 memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000, '2GB' : 2000000000}
 
 #Read the data
-loutry_f1 = []
+list_f1_data = []
 plt.rcParams.update({'font.size': 27})
 for dataset in datasets:
     listy_f1 = []
@@ -89,7 +89,7 @@ for dataset in datasets:
         fifi['tree_count'] = int(t)
         fifi['dataset'] = copy.copy(dataset)
         fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-        listy_f1.append(fifi)
+        list_f1_data.append(fifi)
 
         for memory in ['0.6M']:
             fifi = read_f1(d + '/mondrian_t' + t + '_none_' + memory + '.csv')
@@ -98,7 +98,7 @@ for dataset in datasets:
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_original_' + memory + '.csv')
             fifi['name'] = 'Extend Node'
@@ -106,7 +106,7 @@ for dataset in datasets:
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_partial_' + memory + '.csv')
             fifi['name'] = 'Partial Update'
@@ -114,7 +114,7 @@ for dataset in datasets:
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_count_only_' + memory + '.csv')
             fifi['name'] = 'Count Only'
@@ -122,7 +122,7 @@ for dataset in datasets:
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            listy_f1.append(fifi)
+            list_f1_data.append(fifi)
 
             fifi = read_f1(d + '/mondrian_t' + t + '_ghost_' + memory + '.csv')
             fifi['name'] = 'Ghost'
@@ -130,10 +130,9 @@ for dataset in datasets:
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            listy_f1.append(fifi)
-        loutry_f1.extend(listy_f1)
+            list_f1_data.append(fifi)
 
-f1s = pd.concat(loutry_f1).reset_index(drop=True)
+f1s = pd.concat(list_f1_data).reset_index(drop=True)
 max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
 of1 = pd.DataFrame(online_df)
 of1 = pd.merge(of1, max_elts, on =['dataset'])
