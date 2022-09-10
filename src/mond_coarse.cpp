@@ -161,6 +161,8 @@ Classifier* get_classifier(int seed, int argc, char** argv){
 				parameters[name] = TRIM_FADING;
 			else if(value == "count")
 				parameters[name] = TRIM_COUNT;
+			else if(value == "chop")
+				parameters[name] = TRIM_CHOP;
 		}
 		else if(name == "reset_once"){
 			if(value == "yes")
