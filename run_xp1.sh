@@ -3,7 +3,7 @@
 result_dir="results_xp1"
 rm -rf $result_dir
 mkdir $result_dir
-rep_count=1
+rep_count=10
 
 runny()
 {

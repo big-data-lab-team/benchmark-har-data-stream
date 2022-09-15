@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 result_dir="results_xp2"
-rep_count=1
+rep_count=10
 rm -rf $result_dir
 mkdir $result_dir
 
