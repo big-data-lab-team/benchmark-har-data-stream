@@ -15,10 +15,12 @@ def plot_names(output_filename, used_names, legend_names, f1s):
     palette = {z[0]:z[1] for z in zip(names[2:], colors)}
     palette['Data Stream Mondrian 2GB'] = '#000000'
     palette['Online Mondrian'] = '#FF0000'
+    palette['Stopped'] = '#000000'
     style = {k:'' for k in names}
     style['Data Stream Mondrian 2GB'] = (4, 6)
     style['Online Mondrian'] = (4, 6)
     sizes = {k:4 for k in names}
+    sizes['Stopped'] = 2
 
     max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
     last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
