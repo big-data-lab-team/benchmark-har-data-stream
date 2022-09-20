@@ -21,7 +21,7 @@ runny()
 	local stats_type=$8
 	local trim_size='0.03'
 	local binary="bin/$dataset/mondrian_coarse_acc_"$memory"M"
-	local f="mondrian_original_add_1_to_"$tree_count_target"_"$memory"M_ttf_"$trim_type"_th_"$threshold_overfit"_st_"$stats_type
+	local f="mondrian_original_add_"$tree_count"_to_"$tree_count_target"_"$memory"M_ttf_"$trim_type"_th_"$threshold_overfit"_st_"$stats_type
 
 	#echo "$binary $dataset.log $seed 3 $seed lifetime:0.5 base_measure:0.0 discount_factor:1.0 extend_type:original split_helper:none trim_type:$trim_type maximum_trim_size:$trim_size enable_tree_change:yes tree_count:$tree_count tree_count_target:$tree_count_target threshold_overfit:$threshold_overfit step_tree_change:$step_tree_change last_data_point:${dataset_last_data_point[$dataset]} stats_type:$stats_type"
 	$binary $dataset.log $seed 3 $seed \
