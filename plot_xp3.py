@@ -11,7 +11,8 @@ from f1_utils import read_f1
 # dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
 dataset_realname = {'RandomRBF_drift':'RBF drift', 'RandomRBF_stable':'RBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos (drift)','recofit_6':'Recofit'}
 datasets = ['RandomRBF_stable', 'RandomRBF_drift', 'banos_6', 'drift_6', 'recofit_6', 'covtype']
-result_dir = 'results_xp3'
+result_dir = 'results_xp3_0_995'
+plt.rcParams.update({'font.size': 27})
 
 
 def last_f1_score(f1s):
@@ -20,19 +21,19 @@ def last_f1_score(f1s):
     return last_f1s
 def plot_tree_count(output_filename, used_names, legend_names, f1s, dataset_realname):
     f1s = f1s[f1s['type'] == 'Fixed']
-    names = sorted(list(set(f1s['name'])), reverse=True)
-    colors = sns.color_palette('bright', len(names))
+    names = ['0.2', '0.6', '10']
+    colors = ['#FFD92F', '#3BA3EC', '#F564D4']
     palette = {z[0]:z[1] for z in zip(names, colors)}
     style = {k:'' for k in names}
-    sizes = {k:2 for k in names}
+    sizes = {k:4 for k in names}
 
-    legend_names = [str(j) + 'MB' for j in sorted([float(i) for i in set(f1s['memory'])])]
+    legend_names = [str(j) + 'MB' for j in names]
 
     col_order = ['RandomRBF_stable', 'banos_6', 'recofit_6', 'RandomRBF_drift', 'drift_6', 'covtype']
     col_order = [dataset_realname[x] for x in col_order]
     g = sns.relplot(
             data=f1s, x='Tree count', y='Mean F1',
-            size='name', sizes=sizes,
+            size='memory', sizes=sizes, palette=palette,
             col_wrap=3, col='real_dataset', col_order=col_order,
             hue='memory', kind='line',
             legend=False)
@@ -53,11 +54,12 @@ def plot_tree_count(output_filename, used_names, legend_names, f1s, dataset_real
             bbox_inches='tight')
 def plot_tree_variation(output_filename, used_names, legend_names, f1s, dataset_realname):
     f1s = f1s[(f1s['type'] == 'Fixed') | (f1s['type'] == 'Add to fixed') | (f1s['type'] == 'Remove to fixed')]
-    names = sorted(list(set(f1s['name'])), reverse=True)
+    names = used_names
+    print(names)
     colors = sns.color_palette('bright', len(names))
     palette = {z[0]:z[1] for z in zip(names, colors)}
     style = {k:'' for k in names}
-    sizes = {k:2 for k in names}
+    sizes = {k:4 for k in names}
 
     col_order = ['RandomRBF_stable', 'RandomRBF_drift', 'banos_6', 'drift_6', 'covtype', 'recofit_6']
     col_order = [dataset_realname[x] for x in col_order]
@@ -181,6 +183,7 @@ def plot_bar_percent(output_filename, used_names, legend_names, reference_name, 
     for lines_ax in g.axes:
         for ax in lines_ax:
             ax.axvline(1, ls='--')
+            ax.set(ylabel=None)
 
     plt.savefig(output_filename,
             dpi=100,
@@ -231,72 +234,72 @@ for dataset in datasets:
 
 
 # Load Add from 1 to n
-for dataset in datasets:
-    f1_dir = result_dir + '/' + dataset
-    for memory in ['0.2', '0.6', '10']:
-        for trim_type in ['random', 'count', 'chop']:
-            for tree_count in ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '20']:
-                fname = 'mondrian_original_add_1_to_' + tree_count + '_' + memory + 'M_ttf_' + trim_type + '_th_-1_st_none'
-                try:
-                    fifi = read_f1(f1_dir + '/' + fname + '.csv')
-                    if trim_type in ['random', 'count']:
-                        fifi['name'] = 'Add ' + trim_type
-                    else:
-                        fifi['name'] = 'Add depth'
-                    fifi['type'] = 'Add to fixed'
-                    fifi['Tree count'] = int(tree_count)
-                    fifi['dataset'] = dataset
-                    fifi['memory'] = memory
-                    fifi['threshold_overfit'] = -1
-                    fifi['real_dataset'] = dataset_realname[dataset]
-                    listy_f1.append(fifi)
-                except:
-                    print('No file ' + f1_dir + '/' + fname + '.csv')
-
-# Load delete from 50 to n
-for dataset in datasets:
-    f1_dir = result_dir + '/' + dataset
-    for memory in ['0.2', '0.6', '10']:
-        for tree_count in ['45', '40', '35', '30', '25', '20']:
-            fname = 'mondrian_original_add_50_to_' + tree_count + '_' + memory + 'M_ttf_none_th_-1_st_none'
-            try:
-                fifi = read_f1(f1_dir + '/' + fname + '.csv')
-                fifi['name'] = 'Remove'
-                fifi['type'] = 'Remove to fixed'
-                fifi['Tree count'] = int(tree_count)
-                fifi['dataset'] = dataset
-                fifi['memory'] = memory
-                fifi['threshold_overfit'] = -1
-                fifi['real_dataset'] = dataset_realname[dataset]
-                listy_f1.append(fifi)
-            except:
-                print('No file ' + f1_dir + '/' + fname + '.csv')
-
-# Load adaptive threshold
 # for dataset in datasets:
     # f1_dir = result_dir + '/' + dataset
     # for memory in ['0.2', '0.6', '10']:
-        # # for threshold in ['z-test', 't-test', 'sum-std', 'sum-var', 'delta-sum-std']:
-        # for threshold in ['z-test', 't-test', 'sum-std', 'sum-var']:
-            # for stats_type in ['fading', 'sliding']:
-                # for trim_type in ['count', 'random', 'chop']:
-                    # fname = 'mondrian_original_add_1_to_best_' + memory + 'M_ttf_' + trim_type + '_th_' + threshold + '_st_' + stats_type + '.csv'
-                    # try:
-                        # fifi = read_f1(f1_dir + '/' + fname)
-                        # if trim_type in ['random', 'count']:
-                            # fifi['name'] = trim_type + ' ' + stats_type + ' ' + threshold
-                        # else:
-                            # fifi['name'] = 'depth ' + stats_type + ' ' + threshold
-                        # fifi['type'] = 'Add to best'
-                        # fifi['stats_type'] = stats_type
-                        # fifi['Tree count'] = -1
-                        # fifi['dataset'] = dataset
-                        # fifi['memory'] = memory
-                        # fifi['threshold_overfit'] = threshold
-                        # fifi['real_dataset'] = dataset_realname[dataset]
-                        # listy_f1.append(fifi)
-                    # except Exception as e:
-                        # print('No file R ' + f1_dir + '/' + fname)
+        # for trim_type in ['random', 'count', 'chop']:
+            # for tree_count in ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '20']:
+                # fname = 'mondrian_original_add_1_to_' + tree_count + '_' + memory + 'M_ttf_' + trim_type + '_th_-1_st_none'
+                # try:
+                    # fifi = read_f1(f1_dir + '/' + fname + '.csv')
+                    # if trim_type in ['random', 'count']:
+                        # fifi['name'] = 'Add ' + trim_type
+                    # else:
+                        # fifi['name'] = 'Add depth'
+                    # fifi['type'] = 'Add to fixed'
+                    # fifi['Tree count'] = int(tree_count)
+                    # fifi['dataset'] = dataset
+                    # fifi['memory'] = memory
+                    # fifi['threshold_overfit'] = -1
+                    # fifi['real_dataset'] = dataset_realname[dataset]
+                    # listy_f1.append(fifi)
+                # except:
+                    # print('No file ' + f1_dir + '/' + fname + '.csv')
+
+# Load delete from 50 to n
+# for dataset in datasets:
+    # f1_dir = result_dir + '/' + dataset
+    # for memory in ['0.2', '0.6', '10']:
+        # for tree_count in ['45', '40', '35', '30', '25', '20']:
+            # fname = 'mondrian_original_add_50_to_' + tree_count + '_' + memory + 'M_ttf_none_th_-1_st_none'
+            # try:
+                # fifi = read_f1(f1_dir + '/' + fname + '.csv')
+                # fifi['name'] = 'Remove'
+                # fifi['type'] = 'Remove to fixed'
+                # fifi['Tree count'] = int(tree_count)
+                # fifi['dataset'] = dataset
+                # fifi['memory'] = memory
+                # fifi['threshold_overfit'] = -1
+                # fifi['real_dataset'] = dataset_realname[dataset]
+                # listy_f1.append(fifi)
+            # except:
+                # print('No file ' + f1_dir + '/' + fname + '.csv')
+
+# Load adaptive threshold
+for dataset in datasets:
+    f1_dir = result_dir + '/' + dataset
+    for memory in ['0.2', '0.6', '10']:
+        # for threshold in ['z-test', 't-test', 'sum-std', 'sum-var', 'delta-sum-std']:
+        for threshold in ['z-test', 't-test', 'sum-std', 'sum-var']:
+            for stats_type in ['fading', 'sliding']:
+                for trim_type in ['count', 'random', 'chop']:
+                    fname = 'mondrian_original_add_1_to_best_' + memory + 'M_ttf_' + trim_type + '_th_' + threshold + '_st_' + stats_type + '.csv'
+                    try:
+                        fifi = read_f1(f1_dir + '/' + fname)
+                        if trim_type in ['random', 'count']:
+                            fifi['name'] = trim_type + ' ' + stats_type + ' ' + threshold
+                        else:
+                            fifi['name'] = 'depth ' + stats_type + ' ' + threshold
+                        fifi['type'] = 'Add to best'
+                        fifi['stats_type'] = stats_type
+                        fifi['Tree count'] = -1
+                        fifi['dataset'] = dataset
+                        fifi['memory'] = memory
+                        fifi['threshold_overfit'] = threshold
+                        fifi['real_dataset'] = dataset_realname[dataset]
+                        listy_f1.append(fifi)
+                    except Exception as e:
+                        print('No file R ' + f1_dir + '/' + fname)
 
 
 only_df = pd.concat(listy_f1).reset_index(drop=True)
@@ -304,8 +307,8 @@ last_f1 = last_f1_score(only_df)
 
 ## plot_tree_count('f1_tree_count.pdf', None, None, last_f1[(last_f1['dataset'] != 'RandomRBF_drift') & (last_f1['dataset'] != 'drift_6')], dataset_realname)
 # plot_tree_count('f1_tree_count.pdf', None, None, last_f1, dataset_realname)
-# plot_tree_variation('f1_add_remove.pdf', None, None, last_f1[(last_f1['dataset'] == 'banos_6') | (last_f1['dataset'] == 'RandomRBF_stable')], dataset_realname)
-plot_tree_variation('f1_add_remove_full.pdf', None, None, last_f1, dataset_realname)
+# plot_tree_variation('f1_add_remove.pdf', ['Fixed', 'Remove', 'Add random', 'Add depth', 'Add count'], None, last_f1[(last_f1['dataset'] == 'banos_6') | (last_f1['dataset'] == 'RandomRBF_stable')], dataset_realname)
+# plot_tree_variation('f1_add_remove_full.pdf', ['Fixed', 'Remove', 'Add random', 'Add depth', 'Add count'], None, last_f1, dataset_realname)
 
 # print('==== Fading ====')
 # print_ranks(last_f1, last_f1[last_f1['stats_type'] == 'fading'])
@@ -313,10 +316,47 @@ plot_tree_variation('f1_add_remove_full.pdf', None, None, last_f1, dataset_realn
 # print_ranks(last_f1, last_f1[last_f1['stats_type'] == 'sliding'])
 # print('==== Fading vs Sliding ====')
 # print_ranks(last_f1, last_f1[(last_f1['stats_type'] == 'sliding') | (last_f1['stats_type'] == 'fading')])
-# print('==== Global ====')
-# canard = last_f1[~last_f1['stats_type'].isnull()]
+print('==== Global ====')
+canard = last_f1[~last_f1['stats_type'].isnull()]
 # canard = canard[(canard['dataset'] == 'covtype') | (canard['dataset'] == 'recofit_6')]
-# print_ranks(last_f1, canard)
+print_ranks(last_f1, canard)
 
-# names = ['random sliding sum-var', 'count sliding sum-var', 'count fading sum-std', 'count fading sum-var', 'count sliding sum-std', 'count sliding z-test',  'random sliding sum-std',  'random sliding z-test', 'random fading sum-std', 'random fading sum-var']
-# plot_bar_percent('xp3.pdf', names, names, 'Fixed', last_f1)
+print('==== Global (rec+cov) ====')
+canard = last_f1[~last_f1['stats_type'].isnull()]
+canard = canard[(canard['dataset'] == 'covtype') | (canard['dataset'] == 'recofit_6')]
+print_ranks(last_f1, canard)
+
+print('==== Global (rbf+banos) ====')
+canard = last_f1[~last_f1['stats_type'].isnull()]
+canard = canard[(canard['dataset'] == 'RandomRBF_stable') | (canard['dataset'] == 'banos_6')]
+print_ranks(last_f1, canard)
+
+print('==== Global (no drift) ====')
+canard = last_f1[~last_f1['stats_type'].isnull()]
+canard = canard[(canard['dataset'] != 'RandomRBF_drift') & (canard['dataset'] != 'drift_6')]
+print_ranks(last_f1, canard)
+
+plt.rcParams.update({'font.size': 10})
+names = [
+		# 'count sliding sum-var', \
+        # 'random sliding sum-var', \
+		# 'count fading t-test', \
+		# 'count fading sum-std', \
+		# 'count fading sum-var', \
+		# 'random sliding sum-std', \
+		# 'count sliding sum-std', \
+		# 'count sliding z-test', \
+		# 'random sliding z-test', \
+		# 'count sliding t-test', \
+       'count fading sum-std', \
+       'random fading sum-std', \
+       'random sliding z-test', \
+       'count sliding z-test', \
+       'count fading t-test', \
+       'depth fading sum-std', \
+       'count fading z-test', \
+       'random fading z-test', \
+       'count sliding sum-std', \
+       'count sliding t-test', \
+		]
+plot_bar_percent('xp3.pdf', names, names, 'Fixed', last_f1)
