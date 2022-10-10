@@ -244,3 +244,9 @@ Hyperparameters used for MCNN:
 Error threshold tuning of \mcnn with the first subject of Banos et al dataset. Error threshold in parenthesis.
 ![](paper/calibration_mcnn.png)
 
+References
+----------
+This repository is related to the following papers:
+- M. Khannouz and T. Glatard, “Mondrian Forest for Data Stream Classification Under Memory Constraints,” 2022.
+- Martin Khannouz and Tristan Glatard. A benchmark of data stream classification for human activity recognition on connected objects. Sensors (Basel, Switzerland), 20, 2020.
+- M. Khannouz, B. Li, and T. Glatard, “OrpailleCC: a Library for Data Stream Analysis on Embedded Systems,” The Journal of Open Source Software, vol. 4, p. 1485, 07 2019.
