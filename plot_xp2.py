@@ -27,7 +27,7 @@ def plot_names(output_filename, used_names, legend_names, f1s):
 
     max_elts = f1s[['dataset', 'element_count']].groupby(['dataset']).max().reset_index()
     last_f1s = pd.merge(f1s, max_elts, on =['dataset', 'element_count'])
-    col_order = ['RandomRBF stable', 'RandomRBF drift', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
+    col_order = ['RandomRBF stable', 'RandomRBF (drift)', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
     last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
     g = sns.relplot(
             data=last_f1s, x='Tree count', y='Mean F1',
@@ -65,7 +65,7 @@ def plot_memory(output_filename, used_names, legend_names, f1s):
     sizes = {k:4 for k in names}
     sizes['Stopped'] = 2
 
-    col_order = ['RandomRBF stable', 'RandomRBF drift', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
+    col_order = ['RandomRBF stable', 'RandomRBF (drift)', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
     last_f1s = last_f1_score(f1s)
     last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
 
@@ -126,7 +126,7 @@ online_df = {
 
 f1_dir = 'results_xp2'
 list_f1_data = []
-dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
+dataset_realname = {'RandomRBF_drift':'RandomRBF (drift)', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
 memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000, '2GB' : 2000000000}
 
 #Read the data
