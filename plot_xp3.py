@@ -9,7 +9,7 @@ import copy
 from f1_utils import read_f1
 
 # dataset_realname = {'RandomRBF_drift':'RandomRBF drift', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
-dataset_realname = {'RandomRBF_drift':'RBF drift', 'RandomRBF_stable':'RBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos (drift)','recofit_6':'Recofit'}
+dataset_realname = {'RandomRBF_drift':'RBF (drift)', 'RandomRBF_stable':'RBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos (drift)','recofit_6':'Recofit'}
 datasets = ['RandomRBF_stable', 'RandomRBF_drift', 'banos_6', 'drift_6', 'recofit_6', 'covtype']
 result_dir = 'results_xp3_0_995'
 plt.rcParams.update({'font.size': 27})
@@ -234,46 +234,46 @@ for dataset in datasets:
 
 
 # Load Add from 1 to n
-# for dataset in datasets:
-    # f1_dir = result_dir + '/' + dataset
-    # for memory in ['0.2', '0.6', '10']:
-        # for trim_type in ['random', 'count', 'chop']:
-            # for tree_count in ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '20']:
-                # fname = 'mondrian_original_add_1_to_' + tree_count + '_' + memory + 'M_ttf_' + trim_type + '_th_-1_st_none'
-                # try:
-                    # fifi = read_f1(f1_dir + '/' + fname + '.csv')
-                    # if trim_type in ['random', 'count']:
-                        # fifi['name'] = 'Add ' + trim_type
-                    # else:
-                        # fifi['name'] = 'Add depth'
-                    # fifi['type'] = 'Add to fixed'
-                    # fifi['Tree count'] = int(tree_count)
-                    # fifi['dataset'] = dataset
-                    # fifi['memory'] = memory
-                    # fifi['threshold_overfit'] = -1
-                    # fifi['real_dataset'] = dataset_realname[dataset]
-                    # listy_f1.append(fifi)
-                # except:
-                    # print('No file ' + f1_dir + '/' + fname + '.csv')
+for dataset in datasets:
+    f1_dir = result_dir + '/' + dataset
+    for memory in ['0.2', '0.6', '10']:
+        for trim_type in ['random', 'count', 'chop']:
+            for tree_count in ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '20']:
+                fname = 'mondrian_original_add_1_to_' + tree_count + '_' + memory + 'M_ttf_' + trim_type + '_th_-1_st_none'
+                try:
+                    fifi = read_f1(f1_dir + '/' + fname + '.csv')
+                    if trim_type in ['random', 'count']:
+                        fifi['name'] = 'Add ' + trim_type
+                    else:
+                        fifi['name'] = 'Add depth'
+                    fifi['type'] = 'Add to fixed'
+                    fifi['Tree count'] = int(tree_count)
+                    fifi['dataset'] = dataset
+                    fifi['memory'] = memory
+                    fifi['threshold_overfit'] = -1
+                    fifi['real_dataset'] = dataset_realname[dataset]
+                    listy_f1.append(fifi)
+                except:
+                    print('No file ' + f1_dir + '/' + fname + '.csv')
 
 # Load delete from 50 to n
-# for dataset in datasets:
-    # f1_dir = result_dir + '/' + dataset
-    # for memory in ['0.2', '0.6', '10']:
-        # for tree_count in ['45', '40', '35', '30', '25', '20']:
-            # fname = 'mondrian_original_add_50_to_' + tree_count + '_' + memory + 'M_ttf_none_th_-1_st_none'
-            # try:
-                # fifi = read_f1(f1_dir + '/' + fname + '.csv')
-                # fifi['name'] = 'Remove'
-                # fifi['type'] = 'Remove to fixed'
-                # fifi['Tree count'] = int(tree_count)
-                # fifi['dataset'] = dataset
-                # fifi['memory'] = memory
-                # fifi['threshold_overfit'] = -1
-                # fifi['real_dataset'] = dataset_realname[dataset]
-                # listy_f1.append(fifi)
-            # except:
-                # print('No file ' + f1_dir + '/' + fname + '.csv')
+for dataset in datasets:
+    f1_dir = result_dir + '/' + dataset
+    for memory in ['0.2', '0.6', '10']:
+        for tree_count in ['45', '40', '35', '30', '25', '20']:
+            fname = 'mondrian_original_add_50_to_' + tree_count + '_' + memory + 'M_ttf_none_th_-1_st_none'
+            try:
+                fifi = read_f1(f1_dir + '/' + fname + '.csv')
+                fifi['name'] = 'Remove'
+                fifi['type'] = 'Remove to fixed'
+                fifi['Tree count'] = int(tree_count)
+                fifi['dataset'] = dataset
+                fifi['memory'] = memory
+                fifi['threshold_overfit'] = -1
+                fifi['real_dataset'] = dataset_realname[dataset]
+                listy_f1.append(fifi)
+            except:
+                print('No file ' + f1_dir + '/' + fname + '.csv')
 
 # Load adaptive threshold
 for dataset in datasets:
@@ -306,8 +306,8 @@ only_df = pd.concat(listy_f1).reset_index(drop=True)
 last_f1 = last_f1_score(only_df)
 
 ## plot_tree_count('f1_tree_count.pdf', None, None, last_f1[(last_f1['dataset'] != 'RandomRBF_drift') & (last_f1['dataset'] != 'drift_6')], dataset_realname)
-# plot_tree_count('f1_tree_count.pdf', None, None, last_f1, dataset_realname)
-# plot_tree_variation('f1_add_remove.pdf', ['Fixed', 'Remove', 'Add random', 'Add depth', 'Add count'], None, last_f1[(last_f1['dataset'] == 'banos_6') | (last_f1['dataset'] == 'RandomRBF_stable')], dataset_realname)
+plot_tree_count('f1_tree_count.pdf', None, None, last_f1, dataset_realname)
+plot_tree_variation('f1_add_remove.pdf', ['Fixed', 'Remove', 'Add random', 'Add depth', 'Add count'], None, last_f1[(last_f1['dataset'] == 'banos_6') | (last_f1['dataset'] == 'RandomRBF_stable')], dataset_realname)
 # plot_tree_variation('f1_add_remove_full.pdf', ['Fixed', 'Remove', 'Add random', 'Add depth', 'Add count'], None, last_f1, dataset_realname)
 
 # print('==== Fading ====')
