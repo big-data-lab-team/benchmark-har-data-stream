@@ -13,11 +13,16 @@ compile () {
 	cp bin/empty_classifier* bin/mondrian_* bin/drift_6
 	rm -f bin/empty_classifier* bin/mondrian_*
 
-	make MEMORY_SIZE=$memory LABEL_COUNT=33 FEATURES_COUNT=12 BANOS=1 -j 8 xp1 #RandomRBF_stable and RandomRBF_drift
+	make MEMORY_SIZE=$memory LABEL_COUNT=33 FEATURES_COUNT=12 BANOS=1 -j 8 xp1 #RandomRBF_stable and RandomRBF_drift, other RBF and hyperplane
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	cp bin/empty_classifier* bin/mondrian_* bin/RandomRBF_drift
 	cp bin/empty_classifier* bin/mondrian_* bin/RandomRBF_stable
+	for dataset in datasets/rbf*.log datasets/hyperplane*.log; do
+		d_name=`basename $dataset .log`
+		[ -d bin/$d_name ] || mkdir bin/$d_name
+		cp bin/empty_classifier* bin/mondrian_* bin/$d_name
+	done
 	rm -f bin/empty_classifier* bin/mondrian_*
 
 	make MEMORY_SIZE=$memory LABEL_COUNT=7 FEATURES_COUNT=54 BANOS=1 -j 8 xp1 #covtype
@@ -30,6 +35,26 @@ compile () {
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	cp bin/empty_classifier* bin/mondrian_* bin/recofit_6
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=3 BANOS=0 -j 8 xp1 #SEA
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	for dataset in datasets/sea*.log; do
+		d_name=`basename $dataset .log`
+		[ -d bin/$d_name ] || mkdir bin/$d_name
+		cp bin/empty_classifier* bin/mondrian_* bin/$d_name
+	done
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=4 BANOS=0 -j 8 xp1 #SINE
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	for dataset in datasets/sine*.log; do
+		d_name=`basename $dataset .log`
+		[ -d bin/$d_name ] || mkdir bin/$d_name
+		cp bin/empty_classifier* bin/mondrian_* bin/$d_name
+	done
 	rm -f bin/empty_classifier* bin/mondrian_*
 }
 compile_opti_unbound () {
