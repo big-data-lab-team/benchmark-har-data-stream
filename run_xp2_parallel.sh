@@ -67,26 +67,26 @@ runny_2G()
 }
 
 echo "Listing Commands"
-for s in $rep_test; do
-	for memory in '0.6M'; do
-		for d in datasets/*.log; do
-			dataset=`basename $d .log`
-			#Create the directories if they don't exist
-			[ -d $result_dir/$dataset ] || mkdir $result_dir/$dataset
-			[ -d $result_dir/$dataset/$s ] || mkdir $result_dir/$dataset/$s
-			for t in 1 5 10 20 30 50; do
-				for extend_type in original,none barycenter,weighted barycenter,avg; do
-					for tt in none random fading_score count; do
-						IFS="," read -r -a array <<< $extend_type
-						et=${array[0]}
-						sh=${array[1]}
-						runny_generated $s $t $et $sh $tt $dataset $memory $s 
-					done
-				done
-			done
-		done
-	done
-done
+#for s in $rep_test; do
+	#for memory in '0.6M'; do
+		#for d in datasets/*.log; do
+			#dataset=`basename $d .log`
+			##Create the directories if they don't exist
+			#[ -d $result_dir/$dataset ] || mkdir $result_dir/$dataset
+			#[ -d $result_dir/$dataset/$s ] || mkdir $result_dir/$dataset/$s
+			#for t in 1 5 10 20 30 50; do
+				#for extend_type in original,none barycenter,weighted barycenter,avg; do
+					#for tt in none random fading_score count; do
+						#IFS="," read -r -a array <<< $extend_type
+						#et=${array[0]}
+						#sh=${array[1]}
+						#runny_generated $s $t $et $sh $tt $dataset $memory $s
+					#done
+				#done
+			#done
+		#done
+	#done
+#done
 
 #Run all trimming strategies
 for s in $rep_test; do
@@ -118,18 +118,21 @@ for s in ${rep_test[@]:0:10}; do
 			[ -d $result_dir/$dataset ] || mkdir $result_dir/$dataset
 			[ -d $result_dir/$dataset/$s ] || mkdir $result_dir/$dataset/$s
 			for t in 1 5 10 20 30 50; do
-				for extend_type in original,none barycenter,weighted barycenter,avg; do
-					for tt in none random fading_score count; do
+				#for extend_type in original,none barycenter,weighted barycenter,avg; do
+				for extend_type in original,none; do
+					#for tt in none random fading_score count; do
+					for tt in none; do
 						IFS="," read -r -a array <<< $extend_type
 						et=${array[0]}
 						sh=${array[1]}
-						runny $s $t $et $sh $tt $dataset $memory $s 
+						runny $s $t $et $sh $tt $dataset $memory $s
 					done
 				done
 			done
 		done
 	done
 done
+exit
 
 #Run with unbound
 for dataset in recofit_6 banos_6 RandomRBF_stable RandomRBF_drift covtype drift_6 pamap_chest harth har70; do
@@ -138,13 +141,13 @@ for dataset in recofit_6 banos_6 RandomRBF_stable RandomRBF_drift covtype drift_
 	for s in $rep_test; do
 		for t in 1 5 10 20 30 50; do
 			for et in original; do
-				runny_2G $s $t $et $dataset 
+				runny_2G $s $t $et $dataset
 			done
 		done
 	done
 done
 
 
-#echo "Done Listing; Start Running"
-#parallel --memfree 4G --retries 10 --progress < commands_$ID.txt
-#rm -f commands_$ID.txt
+echo "Done Listing; Start Running"
+parallel --memfree 4G --retries 10 --progress < commands_$ID.txt
+rm -f commands_$ID.txt

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import sys
-from f1_utils import read_f1
+from f1_utils import read_f1, read_f1s
 import copy
 def cmp(a):
     return float(a[1]) - float(a[2])
@@ -106,13 +106,117 @@ def plot_memory(output_filename, used_names, legend_names, f1s):
             dpi=100,
             bbox_extra_artists=(lgd,),
             bbox_inches='tight')
+def plot_time(output_filename, used_names, legend_names, f1s):
+    f1s = f1s[f1s['name'].isin(used_names)]
+    names = ['Online Mondrian', 'Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split']
+    colors = sns.color_palette('bright', len(names)-1)
+    palette = {z[0]:z[1] for z in zip(names[2:], colors)}
+    palette['Data Stream Mondrian 2GB'] = '#000000'
+    palette['Online Mondrian'] = '#FF0000'
+    palette['Stopped'] = '#000000'
+    style = {k:'' for k in names}
+    style['Data Stream Mondrian 2GB'] = (4, 6)
+    style['Online Mondrian'] = (4, 6)
+    style['Stopped'] = ''
+    sizes = {k:4 for k in names}
+    sizes['Stopped'] = 2
 
-online_mondrian_forest_scores = {'banos_6' : {1: 0.68, 5:0.82, 10:0.86, 20:0.88, 30:0.89, 40:0.89, 50:0.89},
+    #Take less element to make the plot smoother
+    f1s = f1s[(f1s['element_count']%200 == 0)]
+
+    col_order = ['RandomRBF stable', 'RandomRBF (drift)', 'Banos et al', 'Banos et al (drift)', 'Covtype', 'Recofit']
+    plt.cla()
+    plt.clf()
+    g = sns.relplot(
+            data=f1s, x='element_count', y='Mean F1',
+            col='real_dataset', hue='name', palette=palette,
+            col_wrap=2, col_order=col_order, legend=True,
+            style='name', dashes=style,
+            size='name', sizes=sizes,
+            errorbar=None,
+            aspect=3,
+            facet_kws={'sharey': True, 'sharex': False},
+            kind='line')
+    g.set(xlabel=None)
+    parent_mpl_figure = g.fig
+    sns.move_legend(
+                g, 'upper center',
+                    labels=legend_names, bbox_to_anchor=(0.5, 0.01, 0, 0), ncol=3, title=None, frameon=False,
+                    )
+    lgd = parent_mpl_figure.legend(labels=legend_names, ncol=3, bbox_to_anchor=(0.5, 0.01, 0, 0), loc='upper center')
+    g.set_titles('{col_name}')
+    g.set(yticks=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+    #Make it so there is one label every two ticks (for more space)
+    for ax in g.axes:
+        ax.yaxis.set_ticklabels(['0.1', '', '0.3', '', '0.5', '', '0.7', '', '0.9'])
+    plt.savefig(output_filename,
+            dpi=100,
+            bbox_extra_artists=(lgd,),
+            bbox_inches='tight')
+def plot_base_box(output_filename, used_names, legend_names, f1s):
+    f1s = f1s[f1s['name'].isin(used_names)]
+    names = ['Online Mondrian', 'Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, Split AVG', 'Trim Count, Split Barycenter', 'Trim Count, No Split', 'Trim Fading, Split AVG', 'Trim Fading, Split Barycenter', 'Trim Fading, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter', 'Trim Random, No Split']
+    colors = sns.color_palette('bright', len(names)-1)
+    palette = {z[0]:z[1] for z in zip(names[2:], colors)}
+    palette['Data Stream Mondrian 2GB'] = '#000000'
+    palette['Online Mondrian'] = '#FF0000'
+
+    #Keep only the last f1s
+    last_f1s = last_f1_score(f1s)
+    last_f1s = last_f1s.rename(columns={'tree_count': 'Tree count'})
+
+    from pingouin import pairwise_tests
+    pd.set_option('display.max_rows', None)
+    a=pairwise_tests(dv='f1', between='name', within='real_dataset', subject='seed', padjust='bonf', data=last_f1s)
+    # a=pairwise_tests(dv='f1', between='name', padjust='bonf', data=last_f1s)
+    a = a[(a['Contrast'] == 'real_dataset * name') & (a['p-corr'] < 0.01)]
+
+    #Make pairs for annotation. Since we have two level, we need tuple of two for dataset and method
+    pairs = [((row['real_dataset'], row['A']), (row['real_dataset'], row['B'])) for index, row in a.iterrows()]
+    #Make the p-value list
+    pvalues = [row['p-corr'] for index, row in a.iterrows()]
+
+    order=['RandomRBF stable', 'RandomRBF (drift)', 'PAMAP2', 'Banos et al', 'Banos et al (drift)', 'HAR70', 'HARTH', 'Covtype', 'Recofit']
+    plt.figure(figsize=(20,12))
+    g = sns.violinplot(data=last_f1s, y='f1', x='real_dataset', hue='name',
+                       inner='quartile',
+                       order=order,
+                       palette=palette,
+                       dodge=True
+                    )
+
+    #Add annotations
+    # from statannotations.Annotator import Annotator
+    # annotator = Annotator(g, pairs, data=last_f1s, y='f1', x='real_dataset', hue='name', order=order)
+    # annotator.set_pvalues(pvalues)
+    # annotator.configure(loc="outside").annotate()
+
+    #Set transparancy
+    plt.setp(g.collections, alpha=.8)
+    #Rotate x-labels
+    plt.xticks(rotation=25)
+
+    #Remove legend title + place legend in the graph
+    plt.legend(title='', loc='upper right')
+    #Remove label name in xaxis
+    g.set(xlabel=None)
+    #Save figure
+    plt.savefig(output_filename,
+            dpi=100,
+            bbox_inches='tight')
+
+
+online_mondrian_forest_scores = {
+ 'banos_6' : {1: 0.68, 5:0.82, 10:0.86, 20:0.88, 30:0.89, 40:0.89, 50:0.89},
  'drift_6' : {1: 0.35, 5:0.43, 10:0.43, 20:0.45, 30:0.45, 40:0.45, 50:0.44},
  'RandomRBF_stable' : {1: 0.78, 5:0.87, 10:0.88, 20:0.90, 30:0.90, 40:0.90, 50:0.90},
  'RandomRBF_drift' : {1: 0.41, 5:0.60, 10:0.66, 20:0.70, 30:0.71, 40:0.71, 50:0.72},
  'covtype' : {1: 0.81, 5:0.88, 10:0.90, 20:0.91, 30:0.91, 40:0.91, 50:0.91},
- 'recofit_6' : {1: 0.50, 5:0.68, 10:0.74, 20:0.766, 30:0.77, 40:0.78, 50:0.78}
+ 'recofit_6' : {1: 0.50, 5:0.68, 10:0.74, 20:0.766, 30:0.77, 40:0.78, 50:0.78},
+ 'pamap_chest' : {1: 0.0, 5:0.0, 10:0.0, 20:0.0, 30:0.0, 40:0.0, 50:0.0},
+ 'harth' : {1: 0.0, 5:0.0, 10:0.0, 20:0.0, 30:0.0, 40:0.0, 50:0.0},
+ 'har70' : {1: 0.0, 5:0.0, 10:0.0, 20:0.0, 30:0.0, 40:0.0, 50:0.0}
  }
 online_df = {
         'Mean F1' : [],
@@ -126,146 +230,246 @@ online_df = {
 
 f1_dir = 'results_xp2'
 list_f1_data = []
-dataset_realname = {'RandomRBF_drift':'RandomRBF (drift)', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit'}
+dataset_realname = {'RandomRBF_drift':'RandomRBF (drift)', 'RandomRBF_stable':'RandomRBF stable', 'banos_6':'Banos et al', 'covtype':'Covtype', 'drift_6':'Banos et al (drift)','recofit_6':'Recofit', 'pamap_chest': 'PAMAP2', 'har70':'HAR70', 'harth':'HARTH'}
 memory_name = {'0.6M':600000, '1M':1000000, '10M':10000000, '50M':50000000, '100M':100000000, '200M':200000000, '2GB' : 2000000000}
 
 #Read the data
 plt.rcParams.update({'font.size': 27})
-for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6']:
+# for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6']:
+    # d = f1_dir + '/' + dataset
+    # listy_f1 = []
+    # for t in ['1', '5', '10', '20', '30', '50']:
+        # online_df['Mean F1'].append(online_mondrian_forest_scores[dataset][int(t)])
+        # online_df['f1 std'].append(0.0)
+        # online_df['name'].append('Online Mondrian')
+        # online_df['tree_count'].append(int(t))
+        # online_df['dataset'].append(copy.copy(dataset))
+        # online_df['real_dataset'].append(copy.copy(dataset_realname[dataset]))
+        # online_df['memory'].append(2000000000)
+
+        # fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
+        # fifi['name'] = 'Data Stream Mondrian 2GB'
+        # fifi['tree_count'] = int(t)
+        # fifi['dataset'] = copy.copy(dataset)
+        # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+        # fifi['memory'] = 2000000000
+        # list_f1_data.append(fifi)
+
+        # for memory in ['0.6M', '1M', '10M', '100M', '200M']:
+            # fifi = read_f1(d + '/mondrian_t' + t + '_original_none_none_' + memory + '.csv')
+            # fifi['name'] = 'No Trim'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_original_none_count_' + memory + '.csv')
+            # fifi['name'] = 'Trim Count, No Split'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_count_' + memory + '.csv')
+            # fifi['name'] = 'Trim Count, Split AVG'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_count_' + memory + '.csv')
+            # fifi['name'] = 'Trim Count, Split Barycenter'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_fading_score_' + memory + '.csv')
+            # fifi['name'] = 'Trim Fading, Split AVG'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_fading_score_' + memory + '.csv')
+            # fifi['name'] = 'Trim Fading, Split Barycenter'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_original_none_fading_score_' + memory + '.csv')
+            # fifi['name'] = 'Trim Fading, No Split'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_original_none_random_' + memory + '.csv')
+            # fifi['name'] = 'Trim Random, No Split'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_random_' + memory + '.csv')
+            # fifi['name'] = 'Trim Random, Split AVG'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+            # fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_random_' + memory + '.csv')
+            # fifi['name'] = 'Trim Random, Split Barycenter'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+# #Add results of Stopped for memory plot
+# for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6']:
+    # d = 'results_xp1/' + dataset
+    # listy_f1 = []
+    # for t in ['1', '5', '10', '20', '30', '50']:
+        # for memory in ['0.6M', '1M', '10M', '100M', '200M']:
+            # fifi = read_f1(d + '/mondrian_t' + t + '_none_' + memory + '.csv')
+            # fifi['name'] = 'Stopped'
+            # fifi['tree_count'] = int(t)
+            # fifi['dataset'] = copy.copy(dataset)
+            # fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
+            # fifi['memory'] = memory_name[memory]
+            # list_f1_data.append(fifi)
+
+# f1s = pd.concat(list_f1_data).reset_index(drop=True)
+# max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
+
+
+# plot_time('xp2.5_t5.pdf',
+        # ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        # ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+        # f1s[((f1s['memory'] == memory_name['0.6M']) | (f1s['memory'] == memory_name['2GB'])) & (f1s['tree_count'] == 5)])
+
+# for memory in ['0.6M', '1M', '10M', '100M', '200M']:
+    # plot_names('xp2.3_' + memory + '.pdf',
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+            # f1s[(f1s['memory'] == memory_name[memory]) | (f1s['memory'] == memory_name['2GB'])])
+    # plot_names('xp2.1_' + memory + '.pdf',
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
+            # f1s[(f1s['memory'] == memory_name[memory]) | (f1s['memory'] == memory_name['2GB'])])
+
+# for tree in [50]:
+    # plot_memory('xp2.4_t' + str(tree) + '.pdf',
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+            # ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+            # f1s[(f1s['memory'] != -1) & (f1s['tree_count'] == tree)])
+
+print("Re-read")
+#Re-read the data
+for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6', 'pamap_chest', 'har70', 'harth']:
     d = f1_dir + '/' + dataset
     listy_f1 = []
     for t in ['1', '5', '10', '20', '30', '50']:
-        online_df['Mean F1'].append(online_mondrian_forest_scores[dataset][int(t)])
-        online_df['f1 std'].append(0.0)
-        online_df['name'].append('Online Mondrian')
-        online_df['tree_count'].append(int(t))
-        online_df['dataset'].append(copy.copy(dataset))
-        online_df['real_dataset'].append(copy.copy(dataset_realname[dataset]))
-        online_df['memory'].append(2000000000)
-
-        fifi = read_f1(d + '/mondrian_unbound_t' + t + '_original.csv')
-        fifi['name'] = 'Data Stream Mondrian 2GB'
-        fifi['tree_count'] = int(t)
-        fifi['dataset'] = copy.copy(dataset)
-        fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-        fifi['memory'] = 2000000000
-        list_f1_data.append(fifi)
-
-        for memory in ['0.6M', '1M', '10M', '100M', '200M']:
-            fifi = read_f1(d + '/mondrian_t' + t + '_original_none_none_' + memory + '.csv')
+        for memory in ['0.6M']:
+            fifi = read_f1s(d + '/mondrian_t' + t + '_original_none_none_' + memory + '.csv')
             fifi['name'] = 'No Trim'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_original_none_count_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_original_none_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, No Split'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_count_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_avg_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, Split AVG'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_count_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_weighted_count_' + memory + '.csv')
             fifi['name'] = 'Trim Count, Split Barycenter'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_fading_score_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_avg_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, Split AVG'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_fading_score_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_weighted_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, Split Barycenter'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_original_none_fading_score_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_original_none_fading_score_' + memory + '.csv')
             fifi['name'] = 'Trim Fading, No Split'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_original_none_random_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_original_none_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, No Split'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_avg_random_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_avg_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, Split AVG'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
-            fifi = read_f1(d + '/mondrian_t' + t + '_barycenter_weighted_random_' + memory + '.csv')
+            fifi = read_f1s(d + '/mondrian_t' + t + '_barycenter_weighted_random_' + memory + '.csv')
             fifi['name'] = 'Trim Random, Split Barycenter'
             fifi['tree_count'] = int(t)
             fifi['dataset'] = copy.copy(dataset)
             fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
             fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
-
-#Add results of Stopped for memory plot
-for dataset in ['RandomRBF_drift', 'RandomRBF_stable', 'banos_6', 'covtype', 'drift_6','recofit_6']:
-    d = 'results_xp1/' + dataset
-    listy_f1 = []
-    for t in ['1', '5', '10', '20', '30', '50']:
-        for memory in ['0.6M', '1M', '10M', '100M', '200M']:
-            fifi = read_f1(d + '/mondrian_t' + t + '_none_' + memory + '.csv')
-            fifi['name'] = 'Stopped'
-            fifi['tree_count'] = int(t)
-            fifi['dataset'] = copy.copy(dataset)
-            fifi['real_dataset'] = copy.copy(dataset_realname[dataset])
-            fifi['memory'] = memory_name[memory]
-            list_f1_data.append(fifi)
+            list_f1_data.append(last_f1_score(fifi))
 
 f1s = pd.concat(list_f1_data).reset_index(drop=True)
-max_elts = f1s[['element_count', 'dataset']].groupby(['dataset']).max().reset_index()
-of1 = pd.DataFrame(online_df)
-of1 = pd.merge(of1, max_elts, on =['dataset'])
-cols = ['element_count', 'Mean F1', 'f1 std', 'name', 'tree_count', 'dataset' , 'real_dataset', 'memory']
-of1 = of1[cols]
 
-for memory in ['0.6M', '1M', '10M', '100M', '200M']:
-    plot_names('xp2.3_' + memory + '.pdf',
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-            f1s[(f1s['memory'] == memory_name[memory]) | (f1s['memory'] == memory_name['2GB'])])
-    plot_names('xp2.1_' + memory + '.pdf',
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
-            f1s[(f1s['memory'] == memory_name[memory]) | (f1s['memory'] == memory_name['2GB'])])
+plot_base_box('xp2.1_base_box.pdf',
+              ['No Trim', 'Trim Count, No Split', 'Trim Fading, No Split', 'Trim Random, No Split'],
+              ['No Trim', 'Trim Count', 'Trim Fading', 'Trim Random'],
+              f1s[(f1s['memory'] == memory_name['0.6M']) | (f1s['memory'] == memory_name['2GB']) | (f1s['memory'] < 0)])
 
-for tree in [50]:
-    plot_memory('xp2.4_t' + str(tree) + '.pdf',
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-            ['Data Stream Mondrian 2GB', 'No Trim', 'Stopped', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
-            f1s[(f1s['memory'] != -1) & (f1s['tree_count'] == tree)])
-
+plot_base_box('xp2.3_base_box.pdf',
+            ['No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+            ['No Trim', 'Trim Random, No Split', 'Trim Random, Split AVG', 'Trim Random, Split Barycenter'],
+              f1s[(f1s['memory'] == memory_name['0.6M']) | (f1s['memory'] == memory_name['2GB']) | (f1s['memory'] < 0)])

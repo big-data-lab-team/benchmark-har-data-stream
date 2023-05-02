@@ -207,6 +207,86 @@ moa_xp1_xp2:
 	sed 's/class\([0-9]*\)/\1/' RandomRBF_drift.artf | sed 's/,/	/g' | tail -n +19 > RandomRBF_drift.log
 	sed 's/class\([0-9]*\)/\1/' RandomRBF_stable.artf | sed 's/,/	/g' | tail -n +19 > RandomRBF_stable.log
 	[ -d datasets ] || mkdir datasets
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 0 -c 33 -a 12 -k 6 -t 0.000 -n 04) -f hyperplane_0_6_000_04.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_0_6_000_04.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_0_6_000_04.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 0 -c 33 -a 12 -k 4 -t 0.001 -n 01) -f hyperplane_0_4_001_01.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_0_4_001_01.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_0_4_001_01.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 1 -c 33 -a 12 -k 7 -t 0.000 -n 08) -f hyperplane_1_7_000_08.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_1_7_000_08.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_1_7_000_08.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 1 -c 33 -a 12 -k 4 -t 0.001 -n 04) -f hyperplane_1_4_001_04.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_1_4_001_04.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_1_4_001_04.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 2 -c 33 -a 12 -k 5 -t 0.000 -n 04) -f hyperplane_2_5_000_04.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_2_5_000_04.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_2_5_000_04.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 2 -c 33 -a 12 -k 3 -t 0.001 -n 08) -f hyperplane_2_3_001_08.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_2_3_001_08.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_2_3_001_08.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 3 -c 33 -a 12 -k 2 -t 0.000 -n 08) -f hyperplane_3_2_000_08.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_3_2_000_08.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_3_2_000_08.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 3 -c 33 -a 12 -k 2 -t 0.001 -n 04) -f hyperplane_3_2_001_04.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_3_2_001_04.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_3_2_001_04.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 4 -c 33 -a 12 -k 4 -t 0.000 -n 00) -f hyperplane_4_4_000_00.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_4_4_000_00.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_4_4_000_00.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.HyperplaneGenerator -i 4 -c 33 -a 12 -k 2 -t 0.001 -n 08) -f hyperplane_4_2_001_08.arff -m 20000 -h"
+	sed 's/class\([0-9]*\)/\1/' hyperplane_4_2_001_08.arff | sed 's/,/	/g' | tail -n +19 > datasets/hyperplane_4_2_001_08.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 0 -f 3 -b) -f sine_0_3.arff -m 20000"
+	sed 's/negative/0/' sine_0_3.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_0_3.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 1 -i 0 -b -n 10000 -p 8) -f sea_1_0_8.arff -m 20000"
+	sed 's/groupA/0/' sea_1_0_8.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_1_0_8.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 0 -i 0 -c 33 -a 12 -n 52) -f rbf_0_52.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_0_52.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_0_52.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 1 -f 3 -b) -f sine_1_3.arff -m 20000"
+	sed 's/negative/0/' sine_1_3.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_1_3.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 4 -i 1 -b -n 10000 -p 8) -f sea_4_1_8.arff -m 20000"
+	sed 's/groupA/0/' sea_4_1_8.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_4_1_8.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 1 -i 1 -c 33 -a 12 -n 59) -f rbf_1_59.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_1_59.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_1_59.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 2 -f 3 -b) -f sine_2_3.arff -m 20000"
+	sed 's/negative/0/' sine_2_3.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_2_3.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 4 -i 2 -b -n 10000 -p 4) -f sea_4_2_4.arff -m 20000"
+	sed 's/groupA/0/' sea_4_2_4.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_4_2_4.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 2 -i 2 -c 33 -a 12 -n 190) -f rbf_2_190.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_2_190.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_2_190.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 3 -f 2 -b) -f sine_3_2.arff -m 20000"
+	sed 's/negative/0/' sine_3_2.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_3_2.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 4 -i 3 -b -n 10000 -p 4) -f sea_4_3_4.arff -m 20000"
+	sed 's/groupA/0/' sea_4_3_4.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_4_3_4.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 3 -i 3 -c 33 -a 12 -n 167) -f rbf_3_167.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_3_167.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_3_167.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 4 -f 3 -b) -f sine_4_3.arff -m 20000"
+	sed 's/negative/0/' sine_4_3.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_4_3.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 1 -i 4 -b -n 10000 -p 8) -f sea_1_4_8.arff -m 20000"
+	sed 's/groupA/0/' sea_1_4_8.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_1_4_8.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 4 -i 4 -c 33 -a 12 -n 37) -f rbf_4_37.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_4_37.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_4_37.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 5 -f 1 -b) -f sine_5_1.arff -m 20000"
+	sed 's/negative/0/' sine_5_1.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_5_1.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 4 -i 5 -b -n 10000 -p 8) -f sea_4_5_8.arff -m 20000"
+	sed 's/groupA/0/' sea_4_5_8.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_4_5_8.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 5 -i 5 -c 33 -a 12 -n 194) -f rbf_5_194.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_5_194.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_5_194.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 6 -f 1 -b) -f sine_6_1.arff -m 20000"
+	sed 's/negative/0/' sine_6_1.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_6_1.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 4 -i 6 -b -n 10000 -p 4) -f sea_4_6_4.arff -m 20000"
+	sed 's/groupA/0/' sea_4_6_4.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_4_6_4.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 6 -i 6 -c 33 -a 12 -n 96) -f rbf_6_96.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_6_96.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_6_96.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 7 -f 3 -b) -f sine_7_3.arff -m 20000"
+	sed 's/negative/0/' sine_7_3.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_7_3.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 1 -i 7 -b -n 10000 -p 0) -f sea_1_7_0.arff -m 20000"
+	sed 's/groupA/0/' sea_1_7_0.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_1_7_0.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 7 -i 7 -c 33 -a 12 -n 179) -f rbf_7_179.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_7_179.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_7_179.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 8 -f 2 -b) -f sine_8_2.arff -m 20000"
+	sed 's/negative/0/' sine_8_2.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_8_2.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 2 -i 8 -b -n 10000 -p 0) -f sea_2_8_0.arff -m 20000"
+	sed 's/groupA/0/' sea_2_8_0.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_2_8_0.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 8 -i 8 -c 33 -a 12 -n 173) -f rbf_8_173.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_8_173.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_8_173.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SineGenerator -i 9 -f 4 -b) -f sine_9_4.arff -m 20000"
+	sed 's/negative/0/' sine_9_4.arff | sed 's/positive/1/' | sed 's/,/	/g' | tail -n +11 > datasets/sine_9_4.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.SEAGenerator -f 1 -i 9 -b -n 10000 -p 0) -f sea_1_9_0.arff -m 20000"
+	sed 's/groupA/0/' sea_1_9_0.arff | sed 's/groupB/1/' | sed 's/,/	/g' | tail -n +10 > datasets/sea_1_9_0.log
+	$(MOA_COMMAND) "WriteStreamToARFFFile -s (generators.RandomRBFGenerator -r 9 -i 9 -c 33 -a 12 -n 115) -f rbf_9_115.arff -m 20000"
+	sed 's/class\([0-9]*\)/\1/' rbf_9_115.arff | sed 's/,/	/g' | tail -n +19 > datasets/rbf_9_115.log
 plot_results:
 	PYTHONHASHSEED=0 $(PYTHON_COMMAND) makefile.py plot_results
 plot_hyperparameters:
