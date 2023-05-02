@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -rf bin
 mkdir bin
-mkdir bin/banos_6 bin/recofit_6 bin/RandomRBF_drift bin/RandomRBF_stable bin/covtype bin/drift_6
+mkdir bin/banos_6 bin/recofit_6 bin/RandomRBF_drift bin/RandomRBF_stable bin/covtype bin/drift_6 bin/pamap_chest bin/har70 bin/harth
 
 compile () {
 	memory=$1
@@ -37,7 +37,25 @@ compile () {
 	cp bin/empty_classifier* bin/mondrian_* bin/recofit_6
 	rm -f bin/empty_classifier* bin/mondrian_*
 
-	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=3 BANOS=0 -j 8 xp1 #SEA
+	make MEMORY_SIZE=$memory LABEL_COUNT=12 FEATURES_COUNT=12 -j 8 xp1 #PAMAP2
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/pamap_chest
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory LABEL_COUNT=8 FEATURES_COUNT=6 BANOS=1 -j 8 xp1 #HAR70
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/har70
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory LABEL_COUNT=12 FEATURES_COUNT=6 BANOS=1 -j 8 xp1 #HARTH
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/harth
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=3 -j 8 xp1 #SEA
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	for dataset in datasets/sea*.log; do
@@ -47,7 +65,7 @@ compile () {
 	done
 	rm -f bin/empty_classifier* bin/mondrian_*
 
-	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=4 BANOS=0 -j 8 xp1 #SINE
+	make MEMORY_SIZE=$memory LABEL_COUNT=2 FEATURES_COUNT=4 -j 8 xp1 #SINE
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	for dataset in datasets/sine*.log; do
@@ -84,6 +102,22 @@ compile_opti_unbound () {
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	cp bin/empty_classifier* bin/mondrian_* bin/recofit_6
+	rm -f bin/empty_classifier* bin/mondrian_*
+
+	make MEMORY_SIZE=$memory UNBOUND_OPTIMIZE=1 LABEL_COUNT=12 FEATURES_COUNT=12 -j 8 xp1 #PAMAP
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/pamap_chest
+	rm -f bin/empty_classifier* bin/mondrian_*
+	make MEMORY_SIZE=$memory UNBOUND_OPTIMIZE=1 LABEL_COUNT=8 FEATURES_COUNT=12 BANOS=1 -j 8 xp1 #HAR70
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/har70
+	rm -f bin/empty_classifier* bin/mondrian_*
+	make MEMORY_SIZE=$memory UNBOUND_OPTIMIZE=1 LABEL_COUNT=12 FEATURES_COUNT=6 BANOS=1 -j 8 xp1 #HARTH
+	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
+	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
+	cp bin/empty_classifier* bin/mondrian_* bin/harth
 	rm -f bin/empty_classifier* bin/mondrian_*
 }
 
