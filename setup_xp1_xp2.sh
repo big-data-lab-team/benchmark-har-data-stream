@@ -109,7 +109,8 @@ compile_opti_unbound () {
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	cp bin/empty_classifier* bin/mondrian_* bin/pamap_chest
 	rm -f bin/empty_classifier* bin/mondrian_*
-	make MEMORY_SIZE=$memory UNBOUND_OPTIMIZE=1 LABEL_COUNT=8 FEATURES_COUNT=12 BANOS=1 -j 8 xp1 #HAR70
+
+	make MEMORY_SIZE=$memory UNBOUND_OPTIMIZE=1 LABEL_COUNT=8 FEATURES_COUNT=6 BANOS=1 -j 8 xp1 #HAR70
 	for f in bin/mondrian_*; do mv $f "${f}_${memory_name}"; done
 	mv bin/empty_classifier "bin/empty_classifier_${memory_name}"
 	cp bin/empty_classifier* bin/mondrian_* bin/har70
